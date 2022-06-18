@@ -1,1 +1,5 @@
 # Polypus
+
+## Dependencies
+
+Use yarn.
