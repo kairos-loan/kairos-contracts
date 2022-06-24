@@ -10,6 +10,8 @@ import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 // Remember to add the loupe functions from DiamondLoupeFacet to the diamond.
 // The loupe functions are required by the EIP2535 Diamonds standard
 
+/* solhint-disable */
+
 library LibDiamond {
     bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.diamond.storage");
 
