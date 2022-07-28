@@ -1,4 +1,6 @@
-# Polypus
+# NFTACLP
+
+NFT as collateral lending protocol. Real name TBD.
 
 ## Dependencies
 
@@ -14,4 +16,5 @@ No abreviation if the abreviated word is the whole name
 ## Repository management policy
 
 branches must follow the git-flow pattern  
-only merge used
+only merge used  
+use [Gitmoji](https://marketplace.visualstudio.com/items?itemName=seatonjiang.gitmoji-vscode) in commit names

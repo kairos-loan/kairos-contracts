@@ -3,25 +3,28 @@ pragma solidity 0.8.15;
 
 import "forge-std/Test.sol";
 
-import "src/contracts/experiments/diamond/facets/DiamondCutFacet.sol";
-import "src/script/experiments/DiamondDeploy.s.sol";
-import "src/contracts/experiments/diamond/upgradeInitializers/DiamondInit.sol";
-import "src/contracts/experiments/diamond/facets/DiamondLoupeFacet.sol";
-import "src/contracts/experiments/diamond/facets/OwnershipFacet.sol";
-import "src/contracts/experiments/diamond/Diamond.sol";
-import "src/contracts/experiments/diamond/interfaces/IDiamondCut.sol";
-import "src/contracts/utils/FuncSelectors.sol";
+import "diamond/facets/DiamondCutFacet.sol";
+import "../script/experiments/DiamondDeploy.s.sol";
+import "diamond/upgradeInitializers/DiamondInit.sol";
+import "diamond/facets/DiamondLoupeFacet.sol";
+import "diamond/facets/OwnershipFacet.sol";
+import "diamond/Diamond.sol";
+import "diamond/interfaces/IDiamondCut.sol";
+import "../utils/FuncSelectors.sol";
 
 bytes32 constant FACETA_STORAGE_POSITION = keccak256("eth.polypus.experiment.facetA");
 
+/* solhint-disable func-visibility */
+
 function facetAStorage() pure returns (AStorage storage a) {
     bytes32 position = FACETA_STORAGE_POSITION;
+    /* solhint-disable-next-line no-inline-assembly */
     assembly {
         a.slot := position
     }
 }
 
-function AFunctionSelectors() returns(bytes4[] memory) {
+function aFunctionSelectors() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
     
     functionSelectors[0] = FacetA.setTheNumberTo2.selector;
@@ -29,13 +32,15 @@ function AFunctionSelectors() returns(bytes4[] memory) {
     return functionSelectors;
 }
 
-function BFunctionSelectors() returns(bytes4[] memory) {
+function bFunctionSelectors() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
     
     functionSelectors[0] = FacetB.getTheNumber.selector;
 
     return functionSelectors;
 }
+
+/* solhint-disable enable-visibility */
 
 struct AStorage {
     uint256 number;
@@ -63,9 +68,9 @@ contract FacetB {
 contract DiamondExperiments is Test {
     // inspired by the deploy process of https://github.com/mudgen/diamond-1-hardhat
 
-    Diamond diamond;
-    DiamondInit diamondInit;
-    OwnershipFacet ownership;
+    Diamond private diamond;
+    DiamondInit private diamondInit;
+    OwnershipFacet private ownership;
 
     function setUp() public {
         // 1. Deploy Diamond cut facet
@@ -109,13 +114,13 @@ contract DiamondExperiments is Test {
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(facetA),
             action: IDiamondCut.FacetCutAction.Add,
-            functionSelectors: AFunctionSelectors()
+            functionSelectors: aFunctionSelectors()
         });
 
         facetCuts[1] = IDiamondCut.FacetCut({
             facetAddress: address(facetB),
             action: IDiamondCut.FacetCutAction.Add,
-            functionSelectors: BFunctionSelectors()
+            functionSelectors: bFunctionSelectors()
         });
 
         IDiamondCut(address(diamond)).diamondCut(

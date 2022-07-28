@@ -3,13 +3,12 @@ pragma solidity 0.8.15;
 
 import "forge-std/Script.sol";
 
-import "src/contracts/experiments/diamond/facets/DiamondCutFacet.sol";
-import "src/script/experiments/DiamondDeploy.s.sol";
-import "src/contracts/experiments/diamond/upgradeInitializers/DiamondInit.sol";
-import "src/contracts/experiments/diamond/facets/DiamondLoupeFacet.sol";
-import "src/contracts/experiments/diamond/facets/OwnershipFacet.sol";
-import "src/contracts/experiments/diamond/Diamond.sol";
-import "src/contracts/experiments/diamond/interfaces/IDiamondCut.sol";
+import "diamond/facets/DiamondCutFacet.sol";
+import "diamond/upgradeInitializers/DiamondInit.sol";
+import "diamond/facets/DiamondLoupeFacet.sol";
+import "diamond/facets/OwnershipFacet.sol";
+import "diamond/Diamond.sol";
+import "diamond/interfaces/IDiamondCut.sol";
 
 // inspired by the deploy process of https://github.com/mudgen/diamond-1-hardhat
 
@@ -33,7 +32,6 @@ contract DiamondDeploy is Script {
 
         // 4. Deploy Facets
         DiamondLoupeFacet loupe = new DiamondLoupeFacet();
-        OwnershipFacet ownership = new OwnershipFacet();
 
         // 6. Diamond is upgarded with facets
 
@@ -53,6 +51,9 @@ contract DiamondDeploy is Script {
             functionSelectors: functionSelectors
         });
 
-        IDiamondCut(address(diamond)).diamondCut(facetCuts, address(diamondInit), abi.encodeWithSelector(diamondInit.init.selector));
+        IDiamondCut(address(diamond)).diamondCut(
+            facetCuts, 
+            address(diamondInit), 
+            abi.encodeWithSelector(diamondInit.init.selector));
     }
 }

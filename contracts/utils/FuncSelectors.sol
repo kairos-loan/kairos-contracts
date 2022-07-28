@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
-import "src/contracts/experiments/diamond/facets/DiamondLoupeFacet.sol";
-import "src/contracts/experiments/diamond/facets/OwnershipFacet.sol";
+import "diamond/facets/DiamondLoupeFacet.sol";
+import "diamond/facets/OwnershipFacet.sol";
 
 /* solhint-disable func-visibility */
 
@@ -10,7 +10,7 @@ import "src/contracts/experiments/diamond/facets/OwnershipFacet.sol";
 /// @dev create a new function for each new facet and update them
 ///     according to their interface
 
-function loupeFunctionSelectors() returns(bytes4[] memory) {
+function loupeFunctionSelectors() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](5);
     
     functionSelectors[0] = DiamondLoupeFacet.facets.selector;
@@ -22,7 +22,7 @@ function loupeFunctionSelectors() returns(bytes4[] memory) {
     return functionSelectors;
 }
 
-function ownershipFunctionSelectors() returns(bytes4[] memory) {
+function ownershipFunctionSelectors() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](2);
     
     functionSelectors[0] = OwnershipFacet.transferOwnership.selector;

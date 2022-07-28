@@ -373,6 +373,10 @@ brorand@^1.1.0:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==
 
+"contracts-starter@https://github.com/mudgen/diamond-1-hardhat":
+  version "1.0.0"
+  resolved "https://github.com/mudgen/diamond-1-hardhat#6d0c76ca8bc6edcc401daf0eaeb5140844631580"
+
 "ds-test@https://github.com/dapphub/ds-test":
   version "0.0.0"
   resolved "https://github.com/dapphub/ds-test#9310e879db8ba3ea6d5c6489a579118fd264a3f5"
