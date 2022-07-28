@@ -373,6 +373,10 @@ brorand@^1.1.0:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==
 
+"ds-test@https://github.com/dapphub/ds-test":
+  version "0.0.0"
+  resolved "https://github.com/dapphub/ds-test#9310e879db8ba3ea6d5c6489a579118fd264a3f5"
+
 elliptic@6.5.4:
   version "6.5.4"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
@@ -421,6 +425,10 @@ ethers@^5.6.8:
     "@ethersproject/wallet" "5.6.2"
     "@ethersproject/web" "5.6.1"
     "@ethersproject/wordlists" "5.6.1"
+
+"forge-std@https://github.com/foundry-rs/forge-std":
+  version "0.0.0"
+  resolved "https://github.com/foundry-rs/forge-std#27e14b7f2448e5f5ac32719f51fe652aa0b0733e"
 
 hash.js@1.1.7, hash.js@^1.0.0, hash.js@^1.0.3:
   version "1.1.7"
