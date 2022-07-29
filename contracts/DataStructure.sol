@@ -4,14 +4,9 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-// Thought with the upgradable diamond storage pattern in mind
-
-// Open questions : 
-// - Q Will offers actually be stored anywhere ?
-// - A Probably yes for issuing lender NFT I.e bond
-
 error UnknownCollatSpecType(CollatSpecType);
-error CollateralDoesntMatchSpecs(IERC721 collateral, uint256 tokenId);
+error NFTContractDoesntMatchOfferSpecs(IERC721 sentCollat, IERC721 offerCollat);
+error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
 
 uint256 constant RAY = 1e27;
 uint256 constant WAD = 1 ether;
@@ -26,14 +21,15 @@ struct Ray {
     uint256 ray;
 }
 
-/// @notice General protocol parameters
+/// @notice General protocol
 /// @member rateOfTranche interest rate of tranche of provided id, in multiplier per second
-struct Config {
+struct Protocol {
     mapping(uint256 => Ray) rateOfTranche;
+    uint256 nbOfLoans;
+    mapping(uint256 => Loan) loan;
 }
 
 /// @notice Loan offer
-/// @member supplier account supplying
 /// @member assetToLend address of the ERC-20 to lend
 /// @member loanToValue amount to lend per collateral unit
 /// @member duration in seconds, time before mandatory repayment after loan start
@@ -42,7 +38,6 @@ struct Config {
 /// @member tranche identifies the interest rate tranche
 /// @member collateralSpecs abi-encoded arguments for the validity checker
 struct Offer {
-    address supplier;
     IERC20 assetToLend;
     uint256 loanToValue;
     uint256 duration;
@@ -82,4 +77,16 @@ struct Loan {
     uint256 nbOfSuppliers;
     mapping(uint256 => Offer) matchedOffer;
     mapping(uint256 => uint256) suppliedBy;
+}
+
+/* solhint-disable func-visibility */
+
+bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
+
+function configStorage() pure returns (Protocol storage protocol) {
+    bytes32 position = PROTOCOL_SP;
+    /* solhint-disable-next-line no-inline-assembly */
+    assembly {
+        protocol.slot := position
+    }
 }
