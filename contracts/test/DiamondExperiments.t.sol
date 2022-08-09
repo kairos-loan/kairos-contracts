@@ -10,7 +10,7 @@ import "diamond/facets/DiamondLoupeFacet.sol";
 import "diamond/facets/OwnershipFacet.sol";
 import "diamond/Diamond.sol";
 import "diamond/interfaces/IDiamondCut.sol";
-import "../utils/FuncSelectors.sol";
+import "../utils/FuncSelectors.h.sol";
 
 bytes32 constant FACETA_STORAGE_POSITION = keccak256("eth.polypus.experiment.facetA");
 
@@ -92,13 +92,13 @@ contract DiamondExperiments is Test {
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),
             action: IDiamondCut.FacetCutAction.Add,
-            functionSelectors: loupeFunctionSelectors()
+            functionSelectors: loupeFS()
         });
 
         facetCuts[1] = IDiamondCut.FacetCut({
             facetAddress: address(ownership),
             action: IDiamondCut.FacetCutAction.Add,
-            functionSelectors: ownershipFunctionSelectors()
+            functionSelectors: ownershipFS()
         });
 
         IDiamondCut(address(diamond)).diamondCut(

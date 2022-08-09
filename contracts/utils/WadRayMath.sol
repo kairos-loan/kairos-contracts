@@ -6,49 +6,49 @@ import "../DataStructure.sol";
 /// @notice Use to manipulate fixed-point unsigned decimals numbers
 library WadRayMath {
     /// @notice `a` times `b`
-    function mul(Ray memory a, Ray memory b)
+    function mul(Ray a, Ray b)
         internal
         pure
-        returns (Ray memory)
+        returns (Ray)
     {
-        return Ray({ray: (a.ray * b.ray) / RAY});
+        return Ray.wrap(Ray.unwrap(a) * Ray.unwrap(b) / RAY);
     }
 
     /// @notice `a` divided by `b`
-    function div(Ray memory a, Ray memory b)
+    function div(Ray a, Ray b)
         internal
         pure
-        returns (Ray memory)
+        returns (Ray)
     {
-        return Ray({ray: (a.ray * RAY) / b.ray});
+        return Ray.wrap((Ray.unwrap(a) * RAY) / Ray.unwrap(b));
     }
 
     /// @notice `a` times `b`
     /// @dev returns a WAD
-    function mulByWad(Ray memory a, uint256 b) internal pure returns (uint256) {
-        return (a.ray * b) / RAY;
+    function mulByWad(Ray a, uint256 b) internal pure returns (uint256) {
+        return (Ray.unwrap(a) * b) / RAY;
     }
 
     /// @notice is `a` less than `b`
-    function lt(Ray memory a, Ray memory b) internal pure returns (bool) {
-        return a.ray < b.ray;
+    function lt(Ray a, Ray b) internal pure returns (bool) {
+        return Ray.unwrap(a) < Ray.unwrap(b);
     }
 
     /// @notice is `a` greater or equal to `b`
-    function gte(Ray memory a, Ray memory b) internal pure returns (bool) {
-        return a.ray >= b.ray;
+    function gte(Ray a, Ray b) internal pure returns (bool) {
+        return Ray.unwrap(a) >= Ray.unwrap(b);
     }
 
     /// @notice `a` divided by `b`
-    function divWadByRay(uint256 a, Ray memory b)
+    function divWadByRay(uint256 a, Ray b)
         internal
         pure
-        returns (Ray memory)
+        returns (Ray)
     {
-        return Ray({ray: (a * (RAY * RAY)) / (b.ray * WAD)});
+        return Ray.wrap((a * (RAY * RAY)) / (Ray.unwrap(b) * WAD));
     }
 
-    function divToRay(uint256 a, uint256 b) internal pure returns (Ray memory) {
-        return Ray({ray: (a * RAY) / b});
+    function divToRay(uint256 a, uint256 b) internal pure returns (Ray) {
+        return Ray.wrap((a * RAY) / b);
     }
 }

@@ -9,10 +9,10 @@ import "../DataStructure.sol";
 /// @notice Polypus public facing functions
 /// @dev experiment only, Polypus will be organized around facets & use diamond storage
 contract ExpPolypus is IERC721Receiver, ReentrancyGuard {
-    Config internal config; 
+    Protocol internal protocol; 
 
-    constructor(uint256 rateOfTranche0Ray) {
-        config.rateOfTranche[0].ray = rateOfTranche0Ray;
+    constructor(Ray rateOfTranche0Ray) {
+        protocol.rateOfTranche[0] = rateOfTranche0Ray;
     }
     
     // todo : implement borrowing through here, useful to skip approval step
@@ -31,7 +31,7 @@ contract ExpPolypus is IERC721Receiver, ReentrancyGuard {
             if (collateral != spec.collateral) {
                 revert CollateralDoesntMatchSpecs(collateral, collatTokenId);
             }
-            offer.assetToLend.transferFrom(offer.supplier, msg.sender, offer.loanToValue);
+            // offer.assetToLend.transferFrom(offer.supplier, msg.sender, offer.loanToValue);
         } else {
             revert UnknownCollatSpecType(offer.collatSpecType); 
         }

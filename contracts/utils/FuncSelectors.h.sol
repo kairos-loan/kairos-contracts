@@ -1,8 +1,10 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.15;
 
-import "diamond/facets/DiamondLoupeFacet.sol";
+import "diamond/interfaces/IDiamondLoupe.sol";
 import "diamond/facets/OwnershipFacet.sol";
+
+import "../Borrow.f.sol";
 
 /* solhint-disable func-visibility */
 
@@ -10,19 +12,19 @@ import "diamond/facets/OwnershipFacet.sol";
 /// @dev create a new function for each new facet and update them
 ///     according to their interface
 
-function loupeFunctionSelectors() pure returns(bytes4[] memory) {
+function loupeFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](5);
     
-    functionSelectors[0] = DiamondLoupeFacet.facets.selector;
-    functionSelectors[1] = DiamondLoupeFacet.facetFunctionSelectors.selector;
-    functionSelectors[2] = DiamondLoupeFacet.facetAddresses.selector;
-    functionSelectors[3] = DiamondLoupeFacet.facetAddress.selector;
-    functionSelectors[4] = DiamondLoupeFacet.supportsInterface.selector;
+    functionSelectors[0] = IDiamondLoupe.facets.selector;
+    functionSelectors[1] = IDiamondLoupe.facetFunctionSelectors.selector;
+    functionSelectors[2] = IDiamondLoupe.facetAddresses.selector;
+    functionSelectors[3] = IDiamondLoupe.facetAddress.selector;
+    functionSelectors[4] = IERC165.supportsInterface.selector;
 
     return functionSelectors;
 }
 
-function ownershipFunctionSelectors() pure returns(bytes4[] memory) {
+function ownershipFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](2);
     
     functionSelectors[0] = OwnershipFacet.transferOwnership.selector;
@@ -30,3 +32,5 @@ function ownershipFunctionSelectors() pure returns(bytes4[] memory) {
 
     return functionSelectors;
 }
+
+// function

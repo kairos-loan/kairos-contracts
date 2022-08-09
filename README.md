@@ -13,6 +13,7 @@ No abreviation if the abreviated word is the whole name
 
 - "collat" is "collateral"
 - "SP" is "storage position"
+- "FS" is "function selectors"
 
 No file longer than 150 lines
 
@@ -21,3 +22,10 @@ No file longer than 150 lines
 branches must follow the git-flow pattern  
 only merge used  
 use [Gitmoji](https://marketplace.visualstudio.com/items?itemName=seatonjiang.gitmoji-vscode) in commit names
+
+## ."something".sol reference
+
+- .h as "header" for function selectors getters
+- .s as "script"
+- .t as "test"
+- .f as "facet"

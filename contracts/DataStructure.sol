@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.15;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "./interface/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 error UnknownCollatSpecType(CollatSpecType);
@@ -16,10 +16,7 @@ uint256 constant WAD = 1 ether;
 enum CollatSpecType { Floor }
 
 /// @notice 27-decimals fixed point unsigned number
-/// @member ray value
-struct Ray {
-    uint256 ray;
-}
+type Ray is uint256;
 
 /// @notice General protocol
 /// @member rateOfTranche interest rate of tranche of provided id, in multiplier per second
