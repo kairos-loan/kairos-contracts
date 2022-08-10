@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.15;
 
-import "diamond/facets/DiamondLoupeFacet.sol";
+import "diamond/interfaces/IERC165.sol";
 
 interface IERC721 is IERC165 {
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);

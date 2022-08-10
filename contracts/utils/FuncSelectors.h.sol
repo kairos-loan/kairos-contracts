@@ -3,8 +3,9 @@ pragma solidity 0.8.15;
 
 import "diamond/interfaces/IDiamondLoupe.sol";
 import "diamond/facets/OwnershipFacet.sol";
+import "diamond/interfaces/IERC165.sol";
 
-import "../Borrow.f.sol";
+import "../interface/IBorrow.sol";
 
 /* solhint-disable func-visibility */
 
@@ -33,4 +34,10 @@ function ownershipFS() pure returns(bytes4[] memory) {
     return functionSelectors;
 }
 
-// function
+function borrowFS() pure returns(bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](1);
+
+    functionSelectors[0] = IBorrow.onERC721Received.selector;
+
+    return functionSelectors;
+}

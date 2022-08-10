@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.15;
 
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+
 import "./DataStructure.sol";
 
 /// @notice Borrow Facet
-contract Borrow {
+contract Borrow is IERC721Receiver {
     struct BorrowArgs {
         Offer offer;
         bytes signature;

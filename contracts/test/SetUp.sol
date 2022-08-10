@@ -9,30 +9,37 @@ import "diamond/facets/DiamondCutFacet.sol";
 import "diamond/interfaces/IDiamondCut.sol";
 import "diamond/facets/DiamondLoupeFacet.sol";
 import "diamond/upgradeInitializers/DiamondInit.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
 import "../utils/FuncSelectors.h.sol";
+import "../utils/NFT.sol";
+import "../utils/Money.sol";
+import "../Borrow.f.sol";
 
-contract SetUp is Test {
-    Diamond private diamond;
+contract SetUp is Test, ERC721Holder {
+    Diamond internal nftaclp;
     DiamondInit private diamondInit;
     OwnershipFacet private ownership;
+    Money internal money;
+    NFT internal nft;
 
     function setUp() public {
-        // 1. Deploy Diamond cut facet
         DiamondCutFacet cut = new DiamondCutFacet();
-
-        // 2. Deploy the diamond setting owner & diamond cut facet
-        diamond = new Diamond(address(this), address(cut));
-
-        // 3. Deploy DiamondInit (func that will be delegatecall in future upgrades)
+        nftaclp = new Diamond(address(this), address(cut));
         diamondInit = new DiamondInit();
+        IDiamondCut.FacetCut[] memory facetCuts = getFacetCuts();
+        IDiamondCut(address(nftaclp)).diamondCut(
+            facetCuts, address(diamondInit), abi.encodeWithSelector(diamondInit.init.selector));
+        nft = new NFT("Test NFT", "TNFT");
+        money = new Money();
+    }
 
-        // 4. Deploy Facets
+    function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](3);
+
         DiamondLoupeFacet loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
-
-        // 6. Diamond is upgarded with facets
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](2);
+        Borrow borrow = new Borrow();
 
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),
@@ -46,7 +53,12 @@ contract SetUp is Test {
             functionSelectors: ownershipFS()
         });
 
-        IDiamondCut(address(diamond)).diamondCut(
-            facetCuts, address(diamondInit), abi.encodeWithSelector(diamondInit.init.selector));
+        facetCuts[2] = IDiamondCut.FacetCut({
+            facetAddress: address(borrow),
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: borrowFS()
+        });
+
+        return facetCuts;
     }
 }
