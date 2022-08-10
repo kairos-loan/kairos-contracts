@@ -38,8 +38,8 @@ function borrowFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](3);
 
     functionSelectors[0] = IBorrow.onERC721Received.selector;
-    functionSelectors[1] = IBorrow.onERC721Received.selector;
-    functionSelectors[2] = IBorrow.onERC721Received.selector;
+    functionSelectors[1] = IBorrow.hereToTest.selector;
+    functionSelectors[2] = IBorrow.getDigest.selector;
 
     return functionSelectors;
 }

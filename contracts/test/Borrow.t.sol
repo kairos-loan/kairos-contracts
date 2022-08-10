@@ -52,4 +52,12 @@ contract BorrowTest is SetUp {
     }
 
     // todo : test unknown collat spec type
+
+    function testSig() public {
+        uint256 aPrivateKey = uint256(0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa);
+        console.log("signer", vm.addr(aPrivateKey));
+        IBorrow.Test memory testtest = IBorrow.Test(12);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(aPrivateKey, IBorrow(address(nftaclp)).getDigest(testtest));
+        console.log("found ", IBorrow(address(nftaclp)).hereToTest(testtest, bytes.concat(r, s, bytes1(v))));
+    }
 }
