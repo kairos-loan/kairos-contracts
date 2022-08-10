@@ -8,7 +8,7 @@ import "diamond/facets/OwnershipFacet.sol";
 import "diamond/facets/DiamondCutFacet.sol";
 import "diamond/interfaces/IDiamondCut.sol";
 import "diamond/facets/DiamondLoupeFacet.sol";
-import "diamond/upgradeInitializers/DiamondInit.sol";
+import "../Initializer.sol"; 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
 import "../utils/FuncSelectors.h.sol";
@@ -18,7 +18,7 @@ import "../Borrow.f.sol";
 
 contract SetUp is Test, ERC721Holder {
     Diamond internal nftaclp;
-    DiamondInit private diamondInit;
+    Initializer private initializer;
     OwnershipFacet private ownership;
     Money internal money;
     NFT internal nft;
@@ -26,10 +26,10 @@ contract SetUp is Test, ERC721Holder {
     function setUp() public {
         DiamondCutFacet cut = new DiamondCutFacet();
         nftaclp = new Diamond(address(this), address(cut));
-        diamondInit = new DiamondInit();
+        initializer = new Initializer();
         IDiamondCut.FacetCut[] memory facetCuts = getFacetCuts();
         IDiamondCut(address(nftaclp)).diamondCut(
-            facetCuts, address(diamondInit), abi.encodeWithSelector(diamondInit.init.selector));
+            facetCuts, address(initializer), abi.encodeWithSelector(initializer.init.selector));
         nft = new NFT("Test NFT", "TNFT");
         money = new Money();
     }

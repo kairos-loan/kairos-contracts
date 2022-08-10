@@ -4,13 +4,22 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./DataStructure.sol";
+import "./Signature.sol";
 
 /// @notice Borrow Facet
-contract Borrow is IERC721Receiver {
+contract Borrow is IERC721Receiver, Signature {
     struct BorrowArgs {
         Offer offer;
         bytes signature;
     }
+
+    // todo : remove
+    struct Test {
+        uint256 test;
+    }
+
+    // todo : remove
+    bytes32 constant internal TEST_TYPEHASH = keccak256("Test(uint256 test)");
 
     // todo : add reentrency check
     // todo : add multiple offer support
@@ -40,5 +49,16 @@ contract Borrow is IERC721Receiver {
         // offer.assetToLend.transferFrom(offer.)
         
         return this.onERC721Received.selector;
+    }
+
+    function hereToTest(Test calldata _test, bytes calldata signature) external view returns(address) {
+        return ECDSA.recover(getDigest(_test), signature);
+    }
+
+    function getDigest(Test calldata _test) public view returns(bytes32) {
+        return _hashTypedDataV4(keccak256(abi.encode(
+            TEST_TYPEHASH,
+            _test.test
+        )));
     }
 }

@@ -76,9 +76,9 @@ struct Loan {
     mapping(uint256 => uint256) suppliedBy;
 }
 
-/* solhint-disable func-visibility */
-
 bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
+
+/* solhint-disable func-visibility */
 
 function configStorage() pure returns (Protocol storage protocol) {
     bytes32 position = PROTOCOL_SP;
