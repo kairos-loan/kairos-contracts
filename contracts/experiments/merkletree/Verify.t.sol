@@ -5,7 +5,25 @@ import "forge-std/Test.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 import "../../DataStructure.sol";
+import "generated/proof.sol";
 
 contract Verify is Test {
-    
+    using MerkleProof for bytes32[];
+
+    function testVerif() public pure {
+        bytes32[] memory proof = abi.decode(PROOF, (bytes32[]));
+        Offer memory offer = Offer({
+            assetToLend: IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F),
+            loanToValue: 12,
+            duration: 12,
+            nonce: 0,
+            collatSpecType: CollatSpecType.Floor,
+            tranche: 0,
+            collatSpecs: abi.encode(FloorSpec({
+                collateral: IERC721(0x1A92f7381B9F03921564a437210bB9396471050C)
+            }))
+        });
+        bytes32 root = 0x3abd9bf90814430d340a95b1766734c338cf92d3d7dfa8042f2bdd41ce60176e;
+        require(proof.verify(root, keccak256(abi.encode(offer))), "");
+    }
 }

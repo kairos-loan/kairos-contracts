@@ -1,6 +1,6 @@
 const { MerkleTree } = require("merkletreejs");
 const keccak256 = require("keccak256");
-// const fs = require("fs");
+const fs = require("fs");
 const ethers = require("ethers");
 
 async function main() {
@@ -42,9 +42,10 @@ async function main() {
     sortPairs: true,
     hashLeaves: true,
   });
-  console.log(tree);
-
-  //   console.log(offer1Coded);
+  let proof1 = tree.getHexProof(keccak256(offer1Coded));
+  let hex = abicoder.encode(["bytes32[]"], [proof1]).slice(2);
+  let text = `// SPDX-License-Identifier: UNLICENSED \n pragma solidity 0.8.15; \n \n bytes constant PROOF = hex"${hex}";`;
+  fs.writeFileSync("./generated/proof.sol", text);
 }
 
 main();
