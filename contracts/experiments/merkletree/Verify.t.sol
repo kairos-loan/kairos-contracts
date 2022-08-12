@@ -23,7 +23,6 @@ contract Verify is Test {
                 collateral: IERC721(0x1A92f7381B9F03921564a437210bB9396471050C)
             }))
         });
-        bytes32 root = 0x3abd9bf90814430d340a95b1766734c338cf92d3d7dfa8042f2bdd41ce60176e;
-        require(proof.verify(root, keccak256(abi.encode(offer))), "");
+        require(proof.verify(ROOT, keccak256(abi.encode(offer))), "");
     }
 }

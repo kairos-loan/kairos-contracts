@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 error UnknownCollatSpecType(CollatSpecType);
 error NFTContractDoesntMatchOfferSpecs(IERC721 sentCollat, IERC721 offerCollat);
+error TokenIdDoesntMatchOfferSpecs(uint256 sentTokenId, uint256 offerTokenId);
 error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
 
 uint256 constant RAY = 1e27;
@@ -13,7 +14,7 @@ uint256 constant WAD = 1 ether;
 
 /// @notice type ids for collateral specification
 /// @member Floor any NFT in a collection is accepted
-enum CollatSpecType { Floor }
+enum CollatSpecType { Floor, Single }
 
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
@@ -24,6 +25,7 @@ struct Protocol {
     mapping(uint256 => Ray) rateOfTranche;
     uint256 nbOfLoans;
     mapping(uint256 => Loan) loan;
+    mapping(address => uint256) supplierNonce;
 }
 
 /// @notice Loan offer
@@ -47,6 +49,8 @@ struct Offer {
 /// @dev Add "Spec" as suffix to structs meant for describing collaterals
 
 /// @notice Collateral type accepting any NFT of a collection
+/// @dev we use struct with a single member to keep the type check on
+///     collateral being an IERC721
 /// @member collateral NFT contract I.e collection
 struct FloorSpec {
     IERC721 collateral;
@@ -58,6 +62,13 @@ struct FloorSpec {
 struct SingleSpec {
     uint256 tokenId;
     IERC721 collateral;
+}
+/// @notice Root of a supplier offer merkle tree
+/// @dev we use a struct with a single member to sign in the EIP712 fashion
+///     so signed roots are only available for the desired contract on desired chain
+/// @member root the merkle root
+struct Root {
+    bytes32 root;
 }
 
 /// @notice Issued Loan (corresponding to one collateral)

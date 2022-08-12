@@ -44,7 +44,7 @@ async function main() {
   });
   let proof1 = tree.getHexProof(keccak256(offer1Coded));
   let hex = abicoder.encode(["bytes32[]"], [proof1]).slice(2);
-  let text = `// SPDX-License-Identifier: UNLICENSED \n pragma solidity 0.8.15; \n \n bytes constant PROOF = hex"${hex}";`;
+  let text = `// SPDX-License-Identifier: UNLICENSED \n pragma solidity 0.8.15; \n \n bytes constant PROOF = hex"${hex}"; \n bytes32 constant ROOT = ${tree.getHexRoot()};`;
   fs.writeFileSync("./generated/proof.sol", text);
 }
 
