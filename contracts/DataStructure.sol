@@ -52,6 +52,14 @@ struct FloorSpec {
     IERC721 collateral;
 }
 
+/// @notice Collateral type accepting one specific NFT
+/// @member tokenId token identifier
+/// @member collateral NFT contract I.e collection
+struct SingleSpec {
+    uint256 tokenId;
+    IERC721 collateral;
+}
+
 /// @notice Issued Loan (corresponding to one collateral)
 /// @member assetLent currency lent
 /// @member lent total amount lent
