@@ -10,10 +10,8 @@ error TokenIdDoesntMatchOfferSpecs(uint256 sentTokenId, uint256 offerTokenId);
 error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
 error OfferNotFound(Offer offer, Root merkleTreeRoot);
 error OfferHasBeenDeleted(Offer offer, uint256 currentSupplierNonce);
-
-
-uint256 constant RAY = 1e27;
-uint256 constant WAD = 1 ether;
+error RequestedAmountTooHigh(uint256 requested, uint256 offered);
+error InconsistentAssetRequests(IERC20 firstRequested, IERC20 requested);
 
 /// @notice type ids for collateral specification
 /// @member Floor any NFT in a collection is accepted
@@ -22,14 +20,7 @@ enum CollatSpecType { Floor, Single }
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
 
-/// @notice General protocol
-/// @member rateOfTranche interest rate of tranche of provided id, in multiplier per second
-struct Protocol {
-    mapping(uint256 => Ray) rateOfTranche;
-    uint256 nbOfLoans;
-    mapping(uint256 => Loan) loan;
-    mapping(address => uint256) supplierNonce;
-}
+// ~~~ structs not meant for storage ~~~ //
 
 /// @notice Loan offer
 /// @member assetToLend address of the ERC-20 to lend
@@ -66,6 +57,7 @@ struct SingleSpec {
     uint256 tokenId;
     IERC721 collateral;
 }
+
 /// @notice Root of a supplier offer merkle tree
 /// @dev we use a struct with a single member to sign in the EIP712 fashion
 ///     so signed roots are only available for the desired contract on desired chain
@@ -74,7 +66,16 @@ struct Root {
     bytes32 root;
 }
 
-bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
+// ~~~ structs used in storage ~~~ //
+
+/// @notice General protocol
+/// @member rateOfTranche interest rate of tranche of provided id, in multiplier per second
+struct Protocol {
+    mapping(uint256 => Ray) rateOfTranche;
+    uint256 nbOfLoans;
+    mapping(uint256 => Loan) loan;
+    mapping(address => uint256) supplierNonce;
+}
 
 /// @notice Issued Loan (corresponding to one collateral)
 /// @member assetLent currency lent
@@ -84,9 +85,7 @@ bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
 /// @member borrower borrowing account
 /// @member collateral NFT contract of collateral
 /// @member tokenId identifies the collateral in his collection
-/// @member nbOfSuppliers number of suppliers
-/// @member matchedOffer matched offer by id
-/// @member suppliedBy amount supplied 
+/// @member provisions sources of lent liquidity
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -95,12 +94,26 @@ struct Loan {
     address borrower;
     IERC721 collateral;
     uint256 tokenId;
-    uint256 nbOfSuppliers;
-    mapping(uint256 => Offer) matchedOffer;
-    mapping(uint256 => uint256) suppliedBy;
+    Provision[] provisions;
 }
 
+/// @title data on a liquidity provision from a supply offer in one existing loan
+/// @member supplier provider of liquidity
+/// @member amount - supplied for this provision
+/// @member share - of the collateral matched by this provision
+struct Provision {
+    address supplier;
+    uint256 amount;
+    // Ray share; // useful ?
+}
+
+bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
+
 bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
+
+uint256 constant RAY = 1e27;
+Ray constant ONE = Ray.wrap(RAY);
+// uint256 constant WAD = 1 ether;
 
 /* solhint-disable func-visibility */
 

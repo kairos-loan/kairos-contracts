@@ -16,7 +16,8 @@ No abreviation if the abreviated word is the whole name
 - "FS" is "function selectors"
 - "sig" is "signature"
 
-No file longer than 150 lines
+No file longer than 150 lines  
+use singular for mapping names, plural for arrays
 
 ## Repository management policy
 

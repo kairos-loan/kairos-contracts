@@ -39,7 +39,7 @@ contract SetUp is Test, ERC721Holder {
 
         DiamondLoupeFacet loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
-        Borrow borrow = new Borrow();
+        BorrowFacet borrow = new BorrowFacet();
 
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),

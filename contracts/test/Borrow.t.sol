@@ -7,8 +7,12 @@ contract BorrowTest is SetUp {
     // struct myCustomOffer
 
     function testSimpleBorrow() public {
-        bytes memory emptyBytes;
-        bytes memory data = abi.encode(Borrow.BorrowArgs({
+        BorrowFacet.OfferArgs[] memory offerArgs = new BorrowFacet.OfferArgs[](1);
+        offerArgs[0] = BorrowFacet.OfferArgs({
+            proof: ,
+            root: ,
+            signature: ,
+            amount: ,
             offer: Offer({
                 assetToLend: money,
                 loanToValue: 1 ether,
@@ -18,17 +22,16 @@ contract BorrowTest is SetUp {
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({
                     collateral: nft
-                }))
-            }),
-            signature: emptyBytes
-        }));
-
+                })
+            })
+        });
+        bytes memory data = abi.encode(offerArgs);
         nft.safeTransferFrom(address(this), address(nftaclp), 1, data);
     }
 
     function testWrongNFTAddress() public {
         bytes memory emptyBytes;
-        bytes memory data = abi.encode(Borrow.BorrowArgs({
+        bytes memory data = abi.encode(BorrowFacet.OfferArgs({
             offer: Offer({
                 assetToLend: money,
                 loanToValue: 1 ether,
