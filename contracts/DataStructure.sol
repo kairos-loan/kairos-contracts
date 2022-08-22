@@ -8,6 +8,9 @@ error UnknownCollatSpecType(CollatSpecType);
 error NFTContractDoesntMatchOfferSpecs(IERC721 sentCollat, IERC721 offerCollat);
 error TokenIdDoesntMatchOfferSpecs(uint256 sentTokenId, uint256 offerTokenId);
 error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
+error OfferNotFound(Offer offer, Root merkleTreeRoot);
+error OfferHasBeenDeleted(Offer offer, uint256 currentSupplierNonce);
+
 
 uint256 constant RAY = 1e27;
 uint256 constant WAD = 1 ether;
@@ -71,6 +74,8 @@ struct Root {
     bytes32 root;
 }
 
+bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
+
 /// @notice Issued Loan (corresponding to one collateral)
 /// @member assetLent currency lent
 /// @member lent total amount lent
@@ -99,7 +104,7 @@ bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
 
 /* solhint-disable func-visibility */
 
-function configStorage() pure returns (Protocol storage protocol) {
+function protocolStorage() pure returns (Protocol storage protocol) {
     bytes32 position = PROTOCOL_SP;
     /* solhint-disable-next-line no-inline-assembly */
     assembly {
