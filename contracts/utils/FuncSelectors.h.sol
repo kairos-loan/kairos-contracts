@@ -5,7 +5,7 @@ import "diamond/interfaces/IDiamondLoupe.sol";
 import "diamond/facets/OwnershipFacet.sol";
 import "diamond/interfaces/IERC165.sol";
 
-import "../interface/IBorrow.sol";
+import "../interface/IBorrowFacet.sol";
 
 /* solhint-disable func-visibility */
 
@@ -35,11 +35,10 @@ function ownershipFS() pure returns(bytes4[] memory) {
 }
 
 function borrowFS() pure returns(bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](3);
+    bytes4[] memory functionSelectors = new bytes4[](2);
 
-    functionSelectors[0] = IBorrow.onERC721Received.selector;
-    functionSelectors[1] = IBorrow.hereToTest.selector;
-    functionSelectors[2] = IBorrow.getDigest.selector;
+    functionSelectors[0] = IBorrowFacet.onERC721Received.selector;
+    functionSelectors[1] = IBorrowFacet.rootDigest.selector;
 
     return functionSelectors;
 }

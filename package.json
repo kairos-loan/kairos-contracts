@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": ". script/test.sh",
-    "build": "forge build && cast interface out/Borrow.f.sol/Borrow.json -o contracts/interface/IBorrow.sol -n IBorrow"
+    "build": "forge build"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.6.0",

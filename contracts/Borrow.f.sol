@@ -43,7 +43,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
     // todo : enforce minimal offer duration // useful ? if minimal interest // maybe max also
     /// @inheritdoc IERC721Receiver
     function onERC721Received(
-        address operator,
+        address,
         address from,
         uint256 tokenId,
         bytes calldata data
@@ -113,7 +113,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
             borrower: from,
             collateral: IERC721(msg.sender),
             tokenId: tokenId,
-            provisions : provisions
+            provisions : abi.encode(provisions)
         });
         proto.loan[proto.nbOfLoans] = loans[0];
         

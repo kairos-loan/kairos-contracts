@@ -15,6 +15,7 @@ async function main() {
     },
   ];
 
+  // abi encode floor specs
   let floorValue1Coded = abicoder.encode([FloorSpecString], floorValue1);
 
   let offerValue1 = {
@@ -32,6 +33,7 @@ async function main() {
   let offerValue3 = { ...offerValue1 };
   offerValue3.duration = 14;
 
+  // abi encode offers
   let offer1Coded = abicoder.encode([OfferString], [offerValue1]);
   let offer2Coded = abicoder.encode([OfferString], [offerValue2]);
   let offer3Coded = abicoder.encode([OfferString], [offerValue3]);
@@ -42,7 +44,9 @@ async function main() {
     sortPairs: true,
     hashLeaves: true,
   });
+  // console.log(tree);
   let proof1 = tree.getHexProof(keccak256(offer1Coded));
+  // console.log(proof1);
   let hex = abicoder.encode(["bytes32[]"], [proof1]).slice(2);
   let text = `// SPDX-License-Identifier: UNLICENSED \n pragma solidity 0.8.15; \n \n bytes constant PROOF = hex"${hex}"; \n bytes32 constant ROOT = ${tree.getHexRoot()};`;
   fs.writeFileSync("./generated/proof.sol", text);

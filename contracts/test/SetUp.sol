@@ -8,9 +8,9 @@ import "diamond/facets/OwnershipFacet.sol";
 import "diamond/facets/DiamondCutFacet.sol";
 import "diamond/interfaces/IDiamondCut.sol";
 import "diamond/facets/DiamondLoupeFacet.sol";
-import "../Initializer.sol"; 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
+import "../Initializer.sol"; 
 import "../utils/FuncSelectors.h.sol";
 import "../utils/NFT.sol";
 import "../utils/Money.sol";

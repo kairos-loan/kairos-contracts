@@ -85,7 +85,8 @@ struct Protocol {
 /// @member borrower borrowing account
 /// @member collateral NFT contract of collateral
 /// @member tokenId identifies the collateral in his collection
-/// @member provisions sources of lent liquidity
+/// @member provisions abi encoded Provision[] sources of lent liquidity 
+///         struct memory copy to storage is a solc unimplemented feature
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -94,7 +95,7 @@ struct Loan {
     address borrower;
     IERC721 collateral;
     uint256 tokenId;
-    Provision[] provisions;
+    bytes provisions;
 }
 
 /// @title data on a liquidity provision from a supply offer in one existing loan
