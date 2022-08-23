@@ -63,6 +63,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
                 // all offers used for a collateral must refer to the same erc20
                 revert InconsistentAssetRequests(assetLent, args[i].offer.assetToLend);
             }
+
             if (args[i].offer.collatSpecType == CollatSpecType.Floor) {
                 FloorSpec memory spec = abi.decode(args[i].offer.collatSpecs, (FloorSpec));
                 if (IERC721(msg.sender) != spec.collateral) { // check NFT address
@@ -80,6 +81,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
             else {
                 revert UnknownCollatSpecType(args[i].offer.collatSpecType); 
             }
+
             if (!args[i].proof.verify(args[i].root.root, keccak256(abi.encode(args[i].offer)))) {
                 revert OfferNotFound(args[i].offer, args[i].root);
             }

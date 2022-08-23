@@ -5,34 +5,71 @@ import "./SetUp.sol";
 
 contract BorrowTest is SetUp {
     function testSimpleBorrow() public {
-        uint256 key = 1;
-        address signer = vm.addr(key);
-        BorrowFacet.OfferArgs[] memory offerArgs = new BorrowFacet.OfferArgs[](1);
-        Offer memory offer = getOffer();
-        
-        bytes32 bytesRoot = keccak256(abi.encode(offer));
-        IBorrowFacet.Root memory root = IBorrowFacet.Root({root : bytesRoot});
-        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(key, digest);
-        bytes memory signature = bytes.concat(r, s, bytes1(v));
-        bytes32[] memory emptyArray;
-        
+        uint256 tokenId = getTokens(signer);
+
         vm.startPrank(signer);
 
-        uint256 tokenId = nft.mintOne();
-        money.mint(100 ether);
-        money.approve(address(nftaclp), 50 ether);
-        offerArgs[0] = BorrowFacet.OfferArgs({
-            proof: emptyArray,
-            root: Root({ root : bytesRoot }),
-            signature: signature,
-            amount: 1 ether,
-            offer: offer
-        });
-        bytes memory data = abi.encode(offerArgs);
+        bytes memory data = abi.encode(getOfferArgs(getOffer()));
 
         nft.safeTransferFrom(signer, address(nftaclp), tokenId, data);
     }
+
+    function testWrongNFTAddress() public {
+        IERC721 wrongNFT = IERC721(address(1));
+
+        Offer memory offer = Offer({
+                assetToLend: money,
+                loanToValue: 10 ether,
+                duration: 2 weeks,
+                nonce: 0,
+                collatSpecType: CollatSpecType.Floor,
+                tranche: 0,
+                collatSpecs: abi.encode(FloorSpec({
+                    collateral: wrongNFT
+                }))
+            });
+        bytes memory data = abi.encode(getOfferArgs(offer));
+        uint256 tokenId = getTokens(signer);
+
+        vm.startPrank(signer);
+        vm.expectRevert(abi.encodeWithSelector(
+            NFTContractDoesntMatchOfferSpecs.selector,
+            nft,
+            wrongNFT
+        ));
+        nft.safeTransferFrom(signer, address(nftaclp), tokenId, data);
+    }
+
+    function getOfferArgs(Offer memory offer) private returns(BorrowFacet.OfferArgs[] memory){
+        BorrowFacet.OfferArgs[] memory offerArgs = new BorrowFacet.OfferArgs[](1);
+        bytes32 bytesRoot = keccak256(abi.encode(offer));
+        bytes32[] memory emptyArray;
+        offerArgs[0] = BorrowFacet.OfferArgs({
+            proof: emptyArray,
+            root: Root({ root : bytesRoot }),
+            signature: getSignature(bytesRoot),
+            amount: 1 ether,
+            offer: offer
+        });
+        return offerArgs;
+    }
+
+    function getTokens(address receiver) private returns(uint256 tokenId){
+        vm.startPrank(receiver);
+
+        tokenId = nft.mintOne();
+        money.mint(100 ether);
+        money.approve(address(nftaclp), 100 ether);
+
+        vm.stopPrank();   
+    }
+
+    function getSignature(bytes32 bytesRoot) private returns(bytes memory signature){
+        IBorrowFacet.Root memory root = IBorrowFacet.Root({root : bytesRoot});
+        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
+        signature = bytes.concat(r, s, bytes1(v));
+    } 
 
     function getOffer() private view returns(Offer memory){
         return Offer({
@@ -47,31 +84,6 @@ contract BorrowTest is SetUp {
                 }))
             });
     }
-
-    // function testWrongNFTAddress() public {
-    //     bytes memory emptyBytes;
-    //     bytes memory data = abi.encode(BorrowFacet.OfferArgs({
-    //         offer: Offer({
-    //             assetToLend: money,
-    //             loanToValue: 1 ether,
-    //             duration: 2 weeks,
-    //             nonce: 0,
-    //             collatSpecType: CollatSpecType.Floor,
-    //             tranche: 0,
-    //             collatSpecs: abi.encode(FloorSpec({
-    //                 collateral: IERC721(address(1))
-    //             }))
-    //         }),
-    //         signature: emptyBytes
-    //     }));
-
-    //     vm.expectRevert(abi.encodeWithSelector(
-    //         NFTContractDoesntMatchOfferSpecs.selector,
-    //         nft,
-    //         IERC721(address(1))
-    //     ));
-    //     nft.safeTransferFrom(address(this), address(nftaclp), 1, data);
-    // }
 
     // todo : test unknown collat spec type
     // todo : test multiple offers used for one NFT

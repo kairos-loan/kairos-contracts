@@ -22,6 +22,12 @@ contract SetUp is Test, ERC721Holder {
     OwnershipFacet private ownership;
     Money internal money;
     NFT internal nft;
+    uint256 internal constant KEY = 0xA11CE;
+    address internal immutable signer;
+
+    constructor() {
+        signer = vm.addr(KEY);
+    }
 
     function setUp() public {
         DiamondCutFacet cut = new DiamondCutFacet();

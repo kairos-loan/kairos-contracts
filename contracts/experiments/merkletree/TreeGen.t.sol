@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "../../DataStructure.sol";
 
 // goal of this experiment is to gen the same proofs as with merkletreejs but in solidity
+// currently not in development
 
 contract TreeGen is Test {
     function test1() public pure {
