@@ -64,35 +64,10 @@ contract BorrowFacet is IERC721Receiver, Signature {
                 revert InconsistentAssetRequests(assetLent, args[i].offer.assetToLend);
             }
 
-            if (args[i].offer.collatSpecType == CollatSpecType.Floor) {
-                FloorSpec memory spec = abi.decode(args[i].offer.collatSpecs, (FloorSpec));
-                if (IERC721(msg.sender) != spec.collateral) { // check NFT address
-                    revert NFTContractDoesntMatchOfferSpecs(IERC721(msg.sender), spec.collateral);
-                }
-            } else if (args[i].offer.collatSpecType == CollatSpecType.Single) {
-                SingleSpec memory spec = abi.decode(args[i].offer.collatSpecs, (SingleSpec));
-                if (IERC721(msg.sender) != spec.collateral) { // check NFT address
-                    revert NFTContractDoesntMatchOfferSpecs(IERC721(msg.sender), spec.collateral);
-                }
-                if (tokenId != spec.tokenId) {
-                    revert TokenIdDoesntMatchOfferSpecs(tokenId, spec.tokenId); 
-                }
-            }
-            else {
-                revert UnknownCollatSpecType(args[i].offer.collatSpecType); 
-            }
-
-            if (!args[i].proof.verify(args[i].root.root, keccak256(abi.encode(args[i].offer)))) {
-                revert OfferNotFound(args[i].offer, args[i].root);
-            }
-            signer = ECDSA.recover(rootDigest(args[i].root), args[i].signature);
-            if (proto.supplierNonce[signer] != args[i].offer.nonce) {
-                revert OfferHasBeenDeleted(args[i].offer, proto.supplierNonce[signer]);
-            }
-            if (args[i].amount > args[i].offer.loanToValue) {
-                revert RequestedAmountTooHigh(args[i].amount, args[i].offer.loanToValue);
-            }
+            checkCollatSpecs(IERC721(msg.sender), tokenId, args[i].offer);
+            signer = checkOfferArgs(args[i]);
             matched = matched.add(args[i].amount.divToRay(args[i].offer.loanToValue));
+            
             if (matched.gt(ONE)) {
                 revert RequestedAmountTooHigh(
                     args[i].amount, 
@@ -106,6 +81,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
             });
             lent += args[i].amount;
         }
+        
         proto.nbOfLoans++;
         loans[0] = Loan({
             assetLent: assetLent,
@@ -129,5 +105,44 @@ contract BorrowFacet is IERC721Receiver, Signature {
             ROOT_TYPEHASH,
             _root.root
         )));
+    }
+
+    function checkOfferArgs(OfferArgs memory args) private view returns (address){
+        Protocol storage proto = protocolStorage();
+        address signer = ECDSA.recover(rootDigest(args.root), args.signature);
+
+        if (!args.proof.verify(args.root.root, keccak256(abi.encode(args.offer)))) {
+            revert OfferNotFound(args.offer, args.root);
+        }
+        if (proto.supplierNonce[signer] != args.offer.nonce) {
+                revert OfferHasBeenDeleted(args.offer, proto.supplierNonce[signer]);
+        }
+        if (args.amount > args.offer.loanToValue) {
+            revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);
+        }
+
+        return signer;
+    }
+
+    function checkCollatSpecs(IERC721 collateral, uint256 tokenId, Offer memory offer) private pure {
+        CollatSpecType collatSpecType = offer.collatSpecType;
+
+        if (collatSpecType == CollatSpecType.Floor) {
+            FloorSpec memory spec = abi.decode(offer.collatSpecs, (FloorSpec));
+            if (collateral != spec.collateral) { // check NFT address
+                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.collateral);
+            }
+        } else if (collatSpecType == CollatSpecType.Single) {
+            SingleSpec memory spec = abi.decode(offer.collatSpecs, (SingleSpec));
+            if (collateral != spec.collateral) { // check NFT address
+                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.collateral);
+            }
+            if (tokenId != spec.tokenId) {
+                revert TokenIdDoesntMatchOfferSpecs(tokenId, spec.tokenId); 
+            }
+        }
+        else {
+            revert UnknownCollatSpecType(offer.collatSpecType); 
+        }
     }
 }
