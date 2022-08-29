@@ -7,6 +7,8 @@ import "../DataStructure.sol";
 import "../Signature.sol";
 import "../utils/WadRayMath.sol";
 
+// todo : docs
+
 abstract contract BorrowLogic is Signature {
     using MerkleProof for bytes32[];
     using WadRayMath for Ray;
@@ -30,12 +32,11 @@ abstract contract BorrowLogic is Signature {
     }
 
     struct CollateralState {
-        IERC721 implementation;
-        uint256 tokenId;
         Ray matched;
         IERC20 assetLent;
         uint256 minOfferDuration;
         address from;
+        NFToken nft;
     }
 
     function rootDigest(Root memory _root) public view returns(bytes32) {
@@ -57,7 +58,7 @@ abstract contract BorrowLogic is Signature {
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
         }
 
-        checkCollatSpecs(collatState.implementation, collatState.tokenId, args.offer);
+        checkCollatSpecs(collatState.nft.implem, collatState.nft.id, args.offer);
         collatState.matched = collatState.matched.add(args.amount.divToRay(args.offer.loanToValue));
 
         if (collatState.matched.gt(ONE)) {

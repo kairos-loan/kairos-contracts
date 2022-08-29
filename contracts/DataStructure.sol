@@ -66,6 +66,11 @@ struct Root {
     bytes32 root;
 }
 
+struct NFToken {
+    IERC721 implem;
+    uint256 id;
+}
+
 // ~~~ structs used in storage ~~~ //
 
 /// @notice General protocol
