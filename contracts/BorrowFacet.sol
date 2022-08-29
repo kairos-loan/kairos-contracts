@@ -58,36 +58,4 @@ contract BorrowFacet is IERC721Receiver, BorrowLogic {
 
         emit Borrow(loans);
     }
-
-    function useCollateral(
-        OfferArgs[] memory args, 
-        address from, 
-        NFToken memory nft
-    ) internal returns(Loan memory loan) {
-        Provision[] memory provisions = new Provision[](args.length);
-        CollateralState memory collatState = CollateralState({
-            matched: Ray.wrap(0),
-            assetLent: args[0].offer.assetToLend,
-            minOfferDuration: type(uint256).max,
-            from: from,
-            nft: nft
-        });
-        uint256 lent;
-
-        for(uint8 i; i < args.length; i++) {
-            (provisions[i], collatState) = useOffer(args[i], collatState);
-            lent += args[i].amount;
-        }
-
-        loan = Loan({
-            assetLent: collatState.assetLent,
-            lent: lent,
-            endDate: block.timestamp + collatState.minOfferDuration,
-            tranche: 0, // will change in future implem
-            borrower: from,
-            collateral: IERC721(msg.sender),
-            tokenId: nft.id,
-            provisions : abi.encode(provisions)
-        });
-    }
 }

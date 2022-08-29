@@ -40,11 +40,11 @@ contract BorrowTest is SetUp {
         nft.safeTransferFrom(signer, address(nftaclp), tokenId, data);
     }
 
-    function getOfferArgs(Offer memory offer) private returns(BorrowFacet.OfferArgs[] memory){
-        BorrowFacet.OfferArgs[] memory offerArgs = new BorrowFacet.OfferArgs[](1);
+    function getOfferArgs(Offer memory offer) private returns(OfferArgs[] memory){
+        OfferArgs[] memory offerArgs = new OfferArgs[](1);
         bytes32 bytesRoot = keccak256(abi.encode(offer));
         bytes32[] memory emptyArray;
-        offerArgs[0] = BorrowLogic.OfferArgs({
+        offerArgs[0] = OfferArgs({
             proof: emptyArray,
             root: Root({ root : bytesRoot }),
             signature: getSignature(bytesRoot),

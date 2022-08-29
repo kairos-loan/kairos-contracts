@@ -14,30 +14,7 @@ abstract contract BorrowLogic is Signature {
     using WadRayMath for Ray;
     using WadRayMath for uint256;
 
-    /// @notice Arguments for the borrow parameters of an offer
-    /// @dev '-' means n^th
-    ///     possible opti is to use OZ's multiProofVerify func, not used here
-    ///     because it can mess with the ordering of the offer usage
-    /// @member proof - of the offer inclusion in his tree
-    /// @member root - of the supplier offer merkle tree
-    /// @member signature - of the supplier offer merkle tree root
-    /// @member amount - to borrow from this offer
-    /// @member offer intended for usage in the loan
-    struct OfferArgs {
-        bytes32[] proof;
-        Root root;
-        bytes signature;
-        uint256 amount;
-        Offer offer;
-    }
 
-    struct CollateralState {
-        Ray matched;
-        IERC20 assetLent;
-        uint256 minOfferDuration;
-        address from;
-        NFToken nft;
-    }
 
     function rootDigest(Root memory _root) public view returns(bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(
@@ -75,6 +52,38 @@ abstract contract BorrowLogic is Signature {
                 supplier: signer,
                 amount: args.amount
             }), collatState);
+    }
+
+    function useCollateral(
+        OfferArgs[] memory args, 
+        address from, 
+        NFToken memory nft
+    ) internal returns(Loan memory loan) {
+        Provision[] memory provisions = new Provision[](args.length);
+        CollateralState memory collatState = CollateralState({
+            matched: Ray.wrap(0),
+            assetLent: args[0].offer.assetToLend,
+            minOfferDuration: type(uint256).max,
+            from: from,
+            nft: nft
+        });
+        uint256 lent;
+
+        for(uint8 i; i < args.length; i++) {
+            (provisions[i], collatState) = useOffer(args[i], collatState);
+            lent += args[i].amount;
+        }
+
+        loan = Loan({
+            assetLent: collatState.assetLent,
+            lent: lent,
+            endDate: block.timestamp + collatState.minOfferDuration,
+            tranche: 0, // will change in future implem
+            borrower: from,
+            collateral: IERC721(msg.sender),
+            tokenId: nft.id,
+            provisions : abi.encode(provisions)
+        });
     }
 
     function checkOfferArgs(OfferArgs memory args) internal view returns (address){

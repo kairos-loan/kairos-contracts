@@ -22,6 +22,38 @@ type Ray is uint256;
 
 // ~~~ structs not meant for storage ~~~ //
 
+/// @notice Arguments for the borrow parameters of an offer
+/// @dev '-' means n^th
+///     possible opti is to use OZ's multiProofVerify func, not used here
+///     because it can mess with the ordering of the offer usage
+/// @member proof - of the offer inclusion in his tree
+/// @member root - of the supplier offer merkle tree
+/// @member signature - of the supplier offer merkle tree root
+/// @member amount - to borrow from this offer
+/// @member offer intended for usage in the loan
+struct OfferArgs {
+    bytes32[] proof;
+    Root root;
+    bytes signature;
+    uint256 amount;
+    Offer offer;
+}
+
+/// @notice Data on collateral state during the matching process of a NFT
+///     with multiple offers
+/// @member matched proportion from 0 to 1 of the collateral value matched by offers
+/// @member assetLent - ERC20 that the protocol will send as loan
+/// @member minOfferDuration minimal duration among offers used
+/// @member from original owner of the nft
+/// @member nft the collateral asset
+struct CollateralState {
+    Ray matched;
+    IERC20 assetLent;
+    uint256 minOfferDuration;
+    address from;
+    NFToken nft;
+}
+
 /// @notice Loan offer
 /// @member assetToLend address of the ERC-20 to lend
 /// @member loanToValue amount to lend per collateral unit
@@ -66,6 +98,10 @@ struct Root {
     bytes32 root;
 }
 
+/// @title Non Fungible Token
+/// @notice describes an ERC721 compliant token
+/// @member implem address of the NFT contract
+/// @member id token identifier
 struct NFToken {
     IERC721 implem;
     uint256 id;
@@ -119,7 +155,6 @@ bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
 
 uint256 constant RAY = 1e27;
 Ray constant ONE = Ray.wrap(RAY);
-// uint256 constant WAD = 1 ether;
 
 /* solhint-disable func-visibility */
 
