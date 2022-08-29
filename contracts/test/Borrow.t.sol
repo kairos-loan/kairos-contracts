@@ -44,7 +44,7 @@ contract BorrowTest is SetUp {
         BorrowFacet.OfferArgs[] memory offerArgs = new BorrowFacet.OfferArgs[](1);
         bytes32 bytesRoot = keccak256(abi.encode(offer));
         bytes32[] memory emptyArray;
-        offerArgs[0] = BorrowFacet.OfferArgs({
+        offerArgs[0] = BorrowLogic.OfferArgs({
             proof: emptyArray,
             root: Root({ root : bytesRoot }),
             signature: getSignature(bytesRoot),

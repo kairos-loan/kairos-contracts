@@ -16,6 +16,7 @@ No abreviation if the abreviated word is the whole name
 - "FS" is "function selectors"
 - "sig" is "signature"
 - "temp" is "temporary"
+- "func" is function
 
 No file longer than 150 lines  
 use singular for mapping names, plural for arrays

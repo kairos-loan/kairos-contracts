@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.15;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-import "./DataStructure.sol";
-import "./utils/WadRayMath.sol";
-import "./Signature.sol";
+import "../DataStructure.sol";
+import "../Signature.sol";
+import "../utils/WadRayMath.sol";
 
-/// @notice public facing methods for borrowers
-contract BorrowFacet is IERC721Receiver, Signature {
+abstract contract BorrowLogic is Signature {
     using MerkleProof for bytes32[];
     using WadRayMath for Ray;
     using WadRayMath for uint256;
@@ -40,62 +38,6 @@ contract BorrowFacet is IERC721Receiver, Signature {
         address from;
     }
 
-    event Borrow(Loan[] loans);
-
-    // todo : add reentrency check
-    // todo : add multiple offer support
-    // todo : not ask all possible liq
-    // todo : process supplier coins
-    // todo : support supplier signed approval
-    // todo : check and implement protocol rules
-    // todo : allow receive money then hook to get the NFT
-    // todo : enforce minimal offer duration // useful ? if minimal interest // maybe max also
-    /// @inheritdoc IERC721Receiver
-    function onERC721Received(
-        address,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external returns(bytes4) {
-        Protocol storage proto = protocolStorage();
-        OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
-        Provision[] memory provisions = new Provision[](args.length);
-        Loan[] memory loans = new Loan[](1);
-        uint256 lent;
-        Provision memory tempProvision;
-        CollateralState memory collatState = CollateralState({
-            implementation: IERC721(msg.sender),
-            tokenId: tokenId,
-            matched: Ray.wrap(0),
-            assetLent: args[0].offer.assetToLend,
-            minOfferDuration: type(uint256).max,
-            from: from
-        });
-
-        for(uint8 i; i < args.length; i++) {
-            (tempProvision, collatState) = useOffer(args[i], collatState);
-            provisions[i] = tempProvision;
-            lent += args[i].amount;
-        }
-        
-        proto.nbOfLoans++;
-        loans[0] = Loan({
-            assetLent: collatState.assetLent,
-            lent: lent,
-            endDate: block.timestamp + collatState.minOfferDuration,
-            tranche: 0, // will change in future implem
-            borrower: from,
-            collateral: IERC721(msg.sender),
-            tokenId: tokenId,
-            provisions : abi.encode(provisions)
-        });
-        proto.loan[proto.nbOfLoans] = loans[0];
-        
-        emit Borrow(loans);
-        
-        return this.onERC721Received.selector;
-    }
-
     function rootDigest(Root memory _root) public view returns(bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(
             ROOT_TYPEHASH,
@@ -105,7 +47,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
 
     function useOffer(
         OfferArgs memory args,
-        CollateralState memory collatState) private returns(
+        CollateralState memory collatState) internal returns(
             Provision memory, 
             CollateralState memory) {
         address signer = checkOfferArgs(args);
@@ -134,7 +76,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
             }), collatState);
     }
 
-    function checkOfferArgs(OfferArgs memory args) private view returns (address){
+    function checkOfferArgs(OfferArgs memory args) internal view returns (address){
         Protocol storage proto = protocolStorage();
         address signer = ECDSA.recover(rootDigest(args.root), args.signature);
 
@@ -151,7 +93,7 @@ contract BorrowFacet is IERC721Receiver, Signature {
         return signer;
     }
 
-    function checkCollatSpecs(IERC721 collateral, uint256 tokenId, Offer memory offer) private pure {
+    function checkCollatSpecs(IERC721 collateral, uint256 tokenId, Offer memory offer) internal pure {
         CollatSpecType collatSpecType = offer.collatSpecType;
 
         if (collatSpecType == CollatSpecType.Floor) {

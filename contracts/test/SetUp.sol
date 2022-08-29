@@ -14,7 +14,7 @@ import "../Initializer.sol";
 import "../utils/FuncSelectors.h.sol";
 import "../utils/NFT.sol";
 import "../utils/Money.sol";
-import "../Borrow.f.sol";
+import "../BorrowFacet.sol";
 
 contract SetUp is Test, ERC721Holder {
     Diamond internal nftaclp;
