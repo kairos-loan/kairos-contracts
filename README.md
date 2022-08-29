@@ -8,13 +8,14 @@ Use yarn.
 
 ## Code style policies
 
-Abreviations in naming is tolerated for well known ones such as nb, id  
+Abreviations in naming is tolerated  
 No abreviation if the abreviated word is the whole name
 
 - "collat" is "collateral"
 - "SP" is "storage position"
 - "FS" is "function selectors"
 - "sig" is "signature"
+- "temp" is "temporary"
 
 No file longer than 150 lines  
 use singular for mapping names, plural for arrays

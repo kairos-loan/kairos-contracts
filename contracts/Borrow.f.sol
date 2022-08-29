@@ -31,6 +31,15 @@ contract BorrowFacet is IERC721Receiver, Signature {
         Offer offer;
     }
 
+    struct CollateralState {
+        IERC721 implementation;
+        uint256 tokenId;
+        Ray matched;
+        IERC20 assetLent;
+        uint256 minOfferDuration;
+        address from;
+    }
+
     event Borrow(Loan[] loans);
 
     // todo : add reentrency check
@@ -52,41 +61,28 @@ contract BorrowFacet is IERC721Receiver, Signature {
         OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
         Provision[] memory provisions = new Provision[](args.length);
         Loan[] memory loans = new Loan[](1);
-        Ray matched; // proportion of the NFT matched by previous offers
         uint256 lent;
-        address signer;
-        uint256 minOfferDuration = type(uint256).max;
-        IERC20 assetLent = args[0].offer.assetToLend;
+        Provision memory tempProvision;
+        CollateralState memory collatState = CollateralState({
+            implementation: IERC721(msg.sender),
+            tokenId: tokenId,
+            matched: Ray.wrap(0),
+            assetLent: args[0].offer.assetToLend,
+            minOfferDuration: type(uint256).max,
+            from: from
+        });
 
         for(uint8 i; i < args.length; i++) {
-            if (i > 0 && args[i].offer.assetToLend != assetLent) {
-                // all offers used for a collateral must refer to the same erc20
-                revert InconsistentAssetRequests(assetLent, args[i].offer.assetToLend);
-            }
-
-            checkCollatSpecs(IERC721(msg.sender), tokenId, args[i].offer);
-            signer = checkOfferArgs(args[i]);
-            matched = matched.add(args[i].amount.divToRay(args[i].offer.loanToValue));
-            
-            if (matched.gt(ONE)) {
-                revert RequestedAmountTooHigh(
-                    args[i].amount, 
-                    args[i].offer.loanToValue - args[i].offer.loanToValue.mul(matched));
-            }
-            if (args[i].offer.duration < minOfferDuration) {minOfferDuration = args[i].offer.duration;}
-            assetLent.transferFrom(signer, msg.sender, args[i].amount);
-            provisions[i] = Provision({
-                supplier: signer,
-                amount: args[i].amount
-            });
+            (tempProvision, collatState) = useOffer(args[i], collatState);
+            provisions[i] = tempProvision;
             lent += args[i].amount;
         }
         
         proto.nbOfLoans++;
         loans[0] = Loan({
-            assetLent: assetLent,
+            assetLent: collatState.assetLent,
             lent: lent,
-            endDate: block.timestamp + minOfferDuration,
+            endDate: block.timestamp + collatState.minOfferDuration,
             tranche: 0, // will change in future implem
             borrower: from,
             collateral: IERC721(msg.sender),
@@ -105,6 +101,37 @@ contract BorrowFacet is IERC721Receiver, Signature {
             ROOT_TYPEHASH,
             _root.root
         )));
+    }
+
+    function useOffer(
+        OfferArgs memory args,
+        CollateralState memory collatState) private returns(
+            Provision memory, 
+            CollateralState memory) {
+        address signer = checkOfferArgs(args);
+
+        if (args.offer.assetToLend != collatState.assetLent) {
+            // all offers used for a collateral must refer to the same erc20
+            revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
+        }
+
+        checkCollatSpecs(collatState.implementation, collatState.tokenId, args.offer);
+        collatState.matched = collatState.matched.add(args.amount.divToRay(args.offer.loanToValue));
+
+        if (collatState.matched.gt(ONE)) {
+            revert RequestedAmountTooHigh(
+                args.amount, 
+                args.offer.loanToValue - args.offer.loanToValue.mul(collatState.matched));
+        }
+        if (args.offer.duration < collatState.minOfferDuration) {collatState.minOfferDuration = args.offer.duration;}
+
+        collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
+
+        return(
+            Provision({
+                supplier: signer,
+                amount: args.amount
+            }), collatState);
     }
 
     function checkOfferArgs(OfferArgs memory args) private view returns (address){
