@@ -139,6 +139,18 @@ struct Loan {
     bytes provisions;
 }
 
+// supply position facet storage //
+
+struct SupplyPosition {
+    string name;
+    string symbol;
+    uint256 totalSupply;
+    mapping(uint256 => address) owner;
+    mapping(address => uint256) balance;
+    mapping(uint256 => address) tokenApproval;
+    mapping(address => mapping(address => bool)) operatorApproval;
+}
+
 /// @title data on a liquidity provision from a supply offer in one existing loan
 /// @member supplier provider of liquidity
 /// @member amount - supplied for this provision
@@ -152,6 +164,7 @@ struct Provision {
 bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
 
 bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
+bytes32 constant SUPPLY_POSITION_SP = keccak256("eth.nftaclp.supply-position");
 
 uint256 constant RAY = 1e27;
 Ray constant ONE = Ray.wrap(RAY);
@@ -163,5 +176,13 @@ function protocolStorage() pure returns (Protocol storage protocol) {
     /* solhint-disable-next-line no-inline-assembly */
     assembly {
         protocol.slot := position
+    }
+}
+
+function supplyPositionStorage() pure returns (SupplyPosition storage sp) {
+    bytes32 position = SUPPLY_POSITION_SP;
+    /* solhint-disable-next-line no-inline-assembly */
+    assembly {
+        sp.slot := position
     }
 }

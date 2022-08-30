@@ -9,6 +9,8 @@ import { IDiamondCut } from "diamond/interfaces/IDiamondCut.sol";
 import { IERC173 } from "diamond/interfaces/IERC173.sol";
 import { IERC165 } from "diamond/interfaces/IERC165.sol";
 
+import "./DataStructure.sol";
+
 contract Initializer {    
     function init() external {
         // adding ERC165 data
@@ -17,5 +19,12 @@ contract Initializer {
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
+
+        // initializing supply position nft collection
+        SupplyPosition storage sp = supplyPositionStorage();
+        sp.name = "Kairos Supply Position";
+        sp.symbol = "KSP";
+        ds.supportedInterfaces[type(IERC721).interfaceId] = true;
+        // todo : add erc721 metadata support
     }
 }
