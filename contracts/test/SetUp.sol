@@ -15,6 +15,7 @@ import "../utils/FuncSelectors.h.sol";
 import "../utils/NFT.sol";
 import "../utils/Money.sol";
 import "../BorrowFacet.sol";
+import "../SupplyPositionFacet.sol";
 
 contract SetUp is Test, ERC721Holder {
     Diamond internal nftaclp;
@@ -41,11 +42,12 @@ contract SetUp is Test, ERC721Holder {
     }
 
     function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](3);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](4);
 
         DiamondLoupeFacet loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
         BorrowFacet borrow = new BorrowFacet();
+        SupplyPositionFacet supplyPosition= new SupplyPositionFacet();
 
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),
@@ -63,6 +65,12 @@ contract SetUp is Test, ERC721Holder {
             facetAddress: address(borrow),
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: borrowFS()
+        });
+
+        facetCuts[3] = IDiamondCut.FacetCut({
+            facetAddress: address(supplyPosition),
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: supplyPositionFS()
         });
 
         return facetCuts;

@@ -26,8 +26,7 @@ contract SupplyPositionFacet is IERC721 {
 
     error Unauthorized();
 
-    // actual constructor equivalent is in the Initializer contract
-    constructor(string memory, string memory) {}
+    // constructor equivalent is in the Initializer contract
 
     modifier onlySelf() {
         if(msg.sender != address(this)) { revert Unauthorized(); }
@@ -46,6 +45,8 @@ contract SupplyPositionFacet is IERC721 {
     }
 
     /// @dev don't use this method for inclusion in the facet function selectors
+    ///     prefer the LibDiamond implementation for this method
+    ///     it is included here for IERC721-compliance
     function supportsInterface(bytes4 interfaceId) public view returns (bool) {}
 
     function balanceOf(address owner) public view returns (uint256) {
@@ -143,7 +144,7 @@ contract SupplyPositionFacet is IERC721 {
         }
     }
 
-    function _exists(uint256 tokenId) internal returns (bool) {
+    function _exists(uint256 tokenId) internal view returns (bool) {
         SupplyPosition storage sp = supplyPositionStorage();
 
         return sp.owner[tokenId] != address(0);
@@ -247,7 +248,7 @@ contract SupplyPositionFacet is IERC721 {
                 if (reason.length == 0) {
                     revert ERC721TransferToNonERC721ReceiverImplementer();
                 } else {
-                    /// @solidity memory-safe-assembly
+                    /* solhint-disable-next-line no-inline-assembly */
                     assembly {
                         revert(add(32, reason), mload(reason))
                     }
