@@ -126,8 +126,7 @@ struct Protocol {
 /// @member borrower borrowing account
 /// @member collateral NFT contract of collateral
 /// @member tokenId identifies the collateral in his collection
-/// @member provisions abi encoded Provision[] sources of lent liquidity 
-///         struct memory copy to storage is a solc unimplemented feature
+/// @member supplyPositionIds identifier of the supply position tokens
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -136,7 +135,7 @@ struct Loan {
     address borrower;
     IERC721 collateral;
     uint256 tokenId;
-    bytes provisions;
+    uint256[] supplyPositionIds;
 }
 
 // supply position facet storage //
@@ -149,16 +148,15 @@ struct SupplyPosition {
     mapping(address => uint256) balance;
     mapping(uint256 => address) tokenApproval;
     mapping(address => mapping(address => bool)) operatorApproval;
+    mapping(uint256 => Provision) provision;
 }
 
 /// @title data on a liquidity provision from a supply offer in one existing loan
-/// @member supplier provider of liquidity
 /// @member amount - supplied for this provision
 /// @member share - of the collateral matched by this provision
 struct Provision {
-    address supplier;
     uint256 amount;
-    // Ray share; // useful ?
+    Ray share;
 }
 
 bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "../DataStructure.sol";
 import "../Signature.sol";
 import "../utils/WadRayMath.sol";
+import "../SupplyPositionFacet.sol";
 
 // todo : docs
 
@@ -13,8 +14,6 @@ abstract contract BorrowLogic is Signature {
     using MerkleProof for bytes32[];
     using WadRayMath for Ray;
     using WadRayMath for uint256;
-
-
 
     function rootDigest(Root memory _root) public view returns(bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(
@@ -25,10 +24,13 @@ abstract contract BorrowLogic is Signature {
 
     function useOffer(
         OfferArgs memory args,
-        CollateralState memory collatState) internal returns(
-            Provision memory, 
-            CollateralState memory) {
+        CollateralState memory collatState
+    ) internal returns(
+        uint256 supplyPositionId, 
+        CollateralState memory
+    ) {
         address signer = checkOfferArgs(args);
+        Ray shareMatched;
 
         if (args.offer.assetToLend != collatState.assetLent) {
             // all offers used for a collateral must refer to the same erc20
@@ -36,7 +38,8 @@ abstract contract BorrowLogic is Signature {
         }
 
         checkCollatSpecs(collatState.nft.implem, collatState.nft.id, args.offer);
-        collatState.matched = collatState.matched.add(args.amount.divToRay(args.offer.loanToValue));
+        shareMatched = args.amount.divToRay(args.offer.loanToValue);
+        collatState.matched = collatState.matched.add(shareMatched);
 
         if (collatState.matched.gt(ONE)) {
             revert RequestedAmountTooHigh(
@@ -47,11 +50,10 @@ abstract contract BorrowLogic is Signature {
 
         collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
 
-        return(
-            Provision({
-                supplier: signer,
-                amount: args.amount
-            }), collatState);
+        return(SupplyPositionFacet(address(this)).safeMint(signer, Provision({
+            amount: args.amount,
+            share: shareMatched
+        })), collatState);
     }
 
     function useCollateral(
@@ -59,7 +61,7 @@ abstract contract BorrowLogic is Signature {
         address from, 
         NFToken memory nft
     ) internal returns(Loan memory loan) {
-        Provision[] memory provisions = new Provision[](args.length);
+        uint256[] memory supplyPositionIds = new uint256[](args.length);
         CollateralState memory collatState = CollateralState({
             matched: Ray.wrap(0),
             assetLent: args[0].offer.assetToLend,
@@ -70,7 +72,7 @@ abstract contract BorrowLogic is Signature {
         uint256 lent;
 
         for(uint8 i; i < args.length; i++) {
-            (provisions[i], collatState) = useOffer(args[i], collatState);
+            (supplyPositionIds[i], collatState) = useOffer(args[i], collatState);
             lent += args[i].amount;
         }
 
@@ -82,7 +84,7 @@ abstract contract BorrowLogic is Signature {
             borrower: from,
             collateral: IERC721(msg.sender),
             tokenId: nft.id,
-            provisions : abi.encode(provisions)
+            supplyPositionIds : supplyPositionIds
         });
     }
 

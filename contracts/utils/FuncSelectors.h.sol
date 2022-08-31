@@ -36,30 +36,32 @@ function ownershipFS() pure returns(bytes4[] memory) {
 }
 
 function borrowFS() pure returns(bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](2);
+    bytes4[] memory functionSelectors = new bytes4[](3);
 
     functionSelectors[0] = IBorrowFacet.onERC721Received.selector;
     functionSelectors[1] = IBorrowFacet.rootDigest.selector;
+    functionSelectors[2] = IBorrowFacet.borrow.selector;
 
     return functionSelectors;
 }
 
 function supplyPositionFS() pure returns(bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](13);
+    bytes4[] memory functionSelectors = new bytes4[](14);
 
     functionSelectors[0] = SupplyPositionFacet.safeMint.selector;
     functionSelectors[1] = SupplyPositionFacet.burn.selector;
-    functionSelectors[2] = SupplyPositionFacet.balanceOf.selector;
-    functionSelectors[3] = SupplyPositionFacet.ownerOf.selector;
-    functionSelectors[4] = SupplyPositionFacet.name.selector;
-    functionSelectors[5] = SupplyPositionFacet.symbol.selector;
-    functionSelectors[6] = SupplyPositionFacet.approve.selector;
-    functionSelectors[7] = SupplyPositionFacet.getApproved.selector;
-    functionSelectors[8] = SupplyPositionFacet.setApprovalForAll.selector;
-    functionSelectors[9] = SupplyPositionFacet.isApprovedForAll.selector;
-    functionSelectors[10] = SupplyPositionFacet.transferFrom.selector;
+    functionSelectors[2] = IERC721.balanceOf.selector;
+    functionSelectors[3] = IERC721.ownerOf.selector;
+    functionSelectors[4] = DiamondERC721.name.selector;
+    functionSelectors[5] = DiamondERC721.symbol.selector;
+    functionSelectors[6] = IERC721.approve.selector;
+    functionSelectors[7] = IERC721.getApproved.selector;
+    functionSelectors[8] = IERC721.setApprovalForAll.selector;
+    functionSelectors[9] = IERC721.isApprovedForAll.selector;
+    functionSelectors[10] = IERC721.transferFrom.selector;
     functionSelectors[11] = getSelector("safeTransferFrom(address,address,uint256)");
     functionSelectors[12] = getSelector("safeTransferFrom(address,address,uint256,bytes)");
+    functionSelectors[13] = SupplyPositionFacet.position.selector;
 
     return functionSelectors;
 }

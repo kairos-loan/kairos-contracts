@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./funcs/BorrowLogic.sol";
 
+// todo : docs
+
 /// @notice public facing methods for borrowers
 contract BorrowFacet is IERC721Receiver, BorrowLogic {
     struct BorrowArgs {

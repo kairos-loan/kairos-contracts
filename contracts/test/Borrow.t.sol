@@ -65,7 +65,7 @@ contract BorrowTest is SetUp {
     }
 
     function getSignature(bytes32 bytesRoot) private returns(bytes memory signature){
-        IBorrowFacet.Root memory root = IBorrowFacet.Root({root : bytesRoot});
+        Root memory root = Root({root : bytesRoot});
         bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
         signature = bytes.concat(r, s, bytes1(v));
