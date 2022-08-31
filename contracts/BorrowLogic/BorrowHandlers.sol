@@ -1,26 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-
-import "../DataStructure.sol";
-import "../Signature.sol";
+import "./BorrowCheckers.sol";
 import "../utils/WadRayMath.sol";
 import "../SupplyPositionFacet.sol";
 
 // todo : docs
 
-abstract contract BorrowLogic is Signature {
-    using MerkleProof for bytes32[];
-    using WadRayMath for Ray;
+abstract contract BorrowHandlers is BorrowCheckers {
     using WadRayMath for uint256;
-
-    function rootDigest(Root memory _root) public view returns(bytes32) {
-        return _hashTypedDataV4(keccak256(abi.encode(
-            ROOT_TYPEHASH,
-            _root.root
-        )));
-    }
+    using WadRayMath for Ray;
 
     function useOffer(
         OfferArgs memory args,
@@ -86,44 +75,5 @@ abstract contract BorrowLogic is Signature {
             tokenId: nft.id,
             supplyPositionIds : supplyPositionIds
         });
-    }
-
-    function checkOfferArgs(OfferArgs memory args) internal view returns (address){
-        Protocol storage proto = protocolStorage();
-        address signer = ECDSA.recover(rootDigest(args.root), args.signature);
-
-        if (!args.proof.verify(args.root.root, keccak256(abi.encode(args.offer)))) {
-            revert OfferNotFound(args.offer, args.root);
-        }
-        if (proto.supplierNonce[signer] != args.offer.nonce) {
-                revert OfferHasBeenDeleted(args.offer, proto.supplierNonce[signer]);
-        }
-        if (args.amount > args.offer.loanToValue) {
-            revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);
-        }
-
-        return signer;
-    }
-
-    function checkCollatSpecs(IERC721 collateral, uint256 tokenId, Offer memory offer) internal pure {
-        CollatSpecType collatSpecType = offer.collatSpecType;
-
-        if (collatSpecType == CollatSpecType.Floor) {
-            FloorSpec memory spec = abi.decode(offer.collatSpecs, (FloorSpec));
-            if (collateral != spec.collateral) { // check NFT address
-                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.collateral);
-            }
-        } else if (collatSpecType == CollatSpecType.Single) {
-            SingleSpec memory spec = abi.decode(offer.collatSpecs, (SingleSpec));
-            if (collateral != spec.collateral) { // check NFT address
-                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.collateral);
-            }
-            if (tokenId != spec.tokenId) {
-                revert TokenIdDoesntMatchOfferSpecs(tokenId, spec.tokenId); 
-            }
-        }
-        else {
-            revert UnknownCollatSpecType(offer.collatSpecType); 
-        }
     }
 }

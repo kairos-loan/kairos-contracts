@@ -3,12 +3,12 @@ pragma solidity 0.8.16;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-import "./funcs/BorrowLogic.sol";
+import "./BorrowLogic/BorrowHandlers.sol";
 
 // todo : docs
 
 /// @notice public facing methods for borrowers
-contract BorrowFacet is IERC721Receiver, BorrowLogic {
+contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     struct BorrowArgs {
         NFToken nft;
         OfferArgs[] args;
