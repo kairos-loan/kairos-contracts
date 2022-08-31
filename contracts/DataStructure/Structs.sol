@@ -1,17 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "./interface/IERC721.sol";
+import "../interface/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-error UnknownCollatSpecType(CollatSpecType);
-error NFTContractDoesntMatchOfferSpecs(IERC721 sentCollat, IERC721 offerCollat);
-error TokenIdDoesntMatchOfferSpecs(uint256 sentTokenId, uint256 offerTokenId);
-error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
-error OfferNotFound(Offer offer, Root merkleTreeRoot);
-error OfferHasBeenDeleted(Offer offer, uint256 currentSupplierNonce);
-error RequestedAmountTooHigh(uint256 requested, uint256 offered);
-error InconsistentAssetRequests(IERC20 firstRequested, IERC20 requested);
 
 /// @notice type ids for collateral specification
 /// @member Floor any NFT in a collection is accepted
@@ -157,30 +148,4 @@ struct SupplyPosition {
 struct Provision {
     uint256 amount;
     Ray share;
-}
-
-bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
-
-bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
-bytes32 constant SUPPLY_POSITION_SP = keccak256("eth.nftaclp.supply-position");
-
-uint256 constant RAY = 1e27;
-Ray constant ONE = Ray.wrap(RAY);
-
-/* solhint-disable func-visibility */
-
-function protocolStorage() pure returns (Protocol storage protocol) {
-    bytes32 position = PROTOCOL_SP;
-    /* solhint-disable-next-line no-inline-assembly */
-    assembly {
-        protocol.slot := position
-    }
-}
-
-function supplyPositionStorage() pure returns (SupplyPosition storage sp) {
-    bytes32 position = SUPPLY_POSITION_SP;
-    /* solhint-disable-next-line no-inline-assembly */
-    assembly {
-        sp.slot := position
-    }
 }

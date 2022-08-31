@@ -9,7 +9,7 @@ import { IDiamondCut } from "diamond/interfaces/IDiamondCut.sol";
 import { IERC173 } from "diamond/interfaces/IERC173.sol";
 import { IERC165 } from "diamond/interfaces/IERC165.sol";
 
-import "./DataStructure.sol";
+import "./DataStructure/Global.sol";
 
 contract Initializer {    
     function init() external {

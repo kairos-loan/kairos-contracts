@@ -2,7 +2,7 @@
 pragma solidity 0.8.16;
 
 import "../interface/IERC721.sol";
-import "../DataStructure.sol";
+import "../DataStructure/Global.sol";
 
 interface ISupplyPositionFacet is IERC721 {
     function safeMint(address, Provision calldata) external returns(uint256);

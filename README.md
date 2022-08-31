@@ -18,6 +18,7 @@ No abreviation if the abreviated word is the whole name
 - "temp" is "temporary"
 - "func" is "function"
 - "implem" is "implementation"
+- "DS" is "Data Structure"
 
 No file longer than 150 lines  
 use singular for mapping names, plural for arrays

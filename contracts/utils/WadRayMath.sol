@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "../DataStructure.sol";
+import "../DataStructure/Global.sol";
 
 /// @notice Manipulates fixed-point unsigned decimals numbers
 library WadRayMath {

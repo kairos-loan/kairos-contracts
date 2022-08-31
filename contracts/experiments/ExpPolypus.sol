@@ -4,7 +4,7 @@ pragma solidity 0.8.16;
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "../DataStructure.sol";
+import "../DataStructure/Global.sol";
 
 /// @notice Polypus public facing functions
 /// @dev experiment only, Polypus will be organized around facets & use diamond storage

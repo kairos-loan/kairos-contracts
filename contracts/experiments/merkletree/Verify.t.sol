@@ -4,7 +4,7 @@ pragma solidity 0.8.16;
 import "forge-std/Test.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-import "../../DataStructure.sol";
+import "../../DataStructure/Global.sol";
 import "generated/proof.sol";
 
 contract Verify is Test {

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "forge-std/Test.sol";
-
 import "diamond/Diamond.sol";
 import "diamond/facets/OwnershipFacet.sol";
 import "diamond/facets/DiamondCutFacet.sol";
@@ -16,19 +14,14 @@ import "../utils/NFT.sol";
 import "../utils/Money.sol";
 import "../BorrowFacet.sol";
 import "../SupplyPositionFacet.sol";
+import "./TestCommons.sol";
 
-contract SetUp is Test, ERC721Holder {
+contract SetUp is TestCommons, ERC721Holder {
     Diamond internal nftaclp;
     Initializer private initializer;
     OwnershipFacet private ownership;
     Money internal money;
     NFT internal nft;
-    uint256 internal constant KEY = 0xA11CE;
-    address internal immutable signer;
-
-    constructor() {
-        signer = vm.addr(KEY);
-    }
 
     function setUp() public {
         DiamondCutFacet cut = new DiamondCutFacet();

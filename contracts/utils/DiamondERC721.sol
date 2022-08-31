@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "../interface/IERC721.sol";
-import "../DataStructure.sol";
+import "../DataStructure/Global.sol";
 
 /// @title ERC721 Diamond Facet
 /// @notice implements basic ERC721 for usage as a diamond facet
