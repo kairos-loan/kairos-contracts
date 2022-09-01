@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "../BorrowLogic/BorrowCheckers.sol";
-import "./TestCommons.sol";
+import "./InternalBorrowTestCommons.sol";
 
-contract BorrowCheckersTest is TestCommons, BorrowCheckers {
+contract TestBorrowCheckers is InternalBorrowTestCommons {
     using MerkleProof for bytes32[];
 
     // function setUp() public {
@@ -73,11 +72,5 @@ contract BorrowCheckersTest is TestCommons, BorrowCheckers {
 
     function checkOfferArgsExternal(OfferArgs memory args) public view returns (address) {
         return checkOfferArgs(args);
-    }
-
-    function getSignature(Root memory root) private returns(bytes memory signature){
-        bytes32 digest = rootDigest(root);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
-        signature = bytes.concat(r, s, bytes1(v));
     }
 }

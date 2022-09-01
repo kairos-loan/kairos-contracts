@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "./SetUp.sol";
+import "../SetUp.sol";
 
-contract BorrowTest is SetUp {
+contract TestBorrow is SetUp {
     function testSimpleBorrow() public {
         uint256 tokenId = getTokens(signer);
 
