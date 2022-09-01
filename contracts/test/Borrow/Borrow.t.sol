@@ -58,12 +58,21 @@ contract TestBorrow is SetUp {
 
         vm.prank(signer);
         money.mint(2 ether);
+        vm.prank(signer);
+        money.approve(address(nftaclp), 2 ether);
 
         vm.prank(signer2);
         money.mint(2 ether);
+        vm.prank(signer2);
+        money.approve(address(nftaclp), 2 ether);
 
         vm.prank(signer);
         money2.mint(2 ether);
+        vm.prank(signer);
+        money2.approve(address(nftaclp), 2 ether);
+
+        nft.approve(address(nftaclp), 1);
+        nft2.approve(address(nftaclp), 1);
 
         signer1Offer1 = Offer({
             assetToLend: money,
@@ -108,9 +117,13 @@ contract TestBorrow is SetUp {
             bytes32 hashSign1Off2 = keccak256(abi.encode(signer1Offer2));
             bytes32 hashSign2Off = keccak256(abi.encode(signer2Offer));
             Root memory rootSign1 = Root({root: keccak256(abi.encode(hashSign1Off1, hashSign1Off2))});
+            Root memory rootSign2 = Root({root: hashSign2Off});
             // hashSign1Off1 < hashSign1Off2 = true
             bytes32[] memory proofSign1Off1 = new bytes32[](1);
             proofSign1Off1[0] = hashSign1Off2;
+            bytes32[] memory proofSign1Off2 = new bytes32[](1);
+            proofSign1Off2[0] = hashSign1Off1;
+            bytes32[] memory proofSign2Off;
             oargs1 = OfferArgs({
                 proof: proofSign1Off1,
                 root: rootSign1,
@@ -119,6 +132,51 @@ contract TestBorrow is SetUp {
                 offer: signer1Offer1
             });
 
+            oargs2 = OfferArgs({
+                proof: proofSign2Off,
+                root: rootSign2,
+                signature: getSignature2(rootSign2),
+                amount: 3 ether / 4, // 75%
+                offer: signer2Offer
+            });
+
+            oargs3 = OfferArgs({
+                proof: proofSign1Off2,
+                root: rootSign1,
+                signature: getSignature2(rootSign1),
+                amount: 2 ether, // 100%
+                offer: signer1Offer2
+            });
+        }
+        {
+            OfferArgs[] memory offerArgs1 = new OfferArgs[](2);
+            offerArgs1[0] = oargs1;
+            offerArgs1[1] = oargs2;
+            OfferArgs[] memory offerArgs2 = new OfferArgs[](1);
+            offerArgs2[0] = oargs3;
+
+            bargs1 = BorrowArgs({
+                nft: NFToken({
+                    implem: nft,
+                    id: 1
+                }),
+                args: offerArgs1
+            });
+            
+            bargs2 = BorrowArgs({
+                nft: NFToken({
+                    implem: nft2,
+                    id: 1
+                }),
+                args: offerArgs2
+            });
+        }
+        {
+            BorrowArgs[] memory batchbargs = new BorrowArgs[](2);
+            batchbargs[0] = bargs1;
+            batchbargs[1] = bargs2;
+
+            IBorrowFacet(address(nftaclp)).borrow(batchbargs);
         }
     }
 
