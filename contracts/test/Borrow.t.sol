@@ -69,7 +69,7 @@ contract BorrowTest is SetUp {
         bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
         signature = bytes.concat(r, s, bytes1(v));
-    } 
+    }
 
     function getOffer() private view returns(Offer memory){
         return Offer({

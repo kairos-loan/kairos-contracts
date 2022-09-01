@@ -28,13 +28,6 @@ library WadRayMath {
         return Ray.wrap((Ray.unwrap(a) * RAY) / Ray.unwrap(b));
     }
 
-    // wrong implem
-    // /// @notice `a` times `b`
-    // /// @dev returns a WAD
-    // function mulByWad(Ray a, uint256 b) internal pure returns (uint256) {
-    //     return (Ray.unwrap(a) * b) / RAY;
-    // }
-
     /// @notice `a` times `b`
     function mul(uint256 a, Ray b) internal pure returns(uint256) {
         return a * Ray.unwrap(b) / RAY;
@@ -54,15 +47,6 @@ library WadRayMath {
     function gt(Ray a, Ray b) internal pure returns (bool) {
         return Ray.unwrap(a) > Ray.unwrap(b);
     }
-
-    // /// @notice `a` divided by `b`
-    // function divWadByRay(uint256 a, Ray b)
-    //     internal
-    //     pure
-    //     returns (Ray)
-    // {
-    //     return Ray.wrap((a * (RAY * RAY)) / (Ray.unwrap(b) * WAD));
-    // }
 
     /// @notice `a` divided by `b`
     function divToRay(uint256 a, uint256 b) internal pure returns (Ray) {

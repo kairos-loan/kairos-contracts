@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "./Structs.sol";
+import "./Storage.sol";
 
 error UnknownCollatSpecType(CollatSpecType);
 error NFTContractDoesntMatchOfferSpecs(IERC721 sentCollat, IERC721 offerCollat);
