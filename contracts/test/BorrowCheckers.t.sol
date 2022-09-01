@@ -36,10 +36,36 @@ contract BorrowCheckersTest is TestCommons, BorrowCheckers {
         args.root = root;
         args.proof = proof;
         args.signature = getSignature(root);
+        // offer1 is implicitely included in args
         checkOfferArgs(args);
         offer2.loanToValue = 2;
         args.offer = offer2;
         vm.expectRevert(abi.encodeWithSelector(OfferNotFound.selector, offer2, root));
+        this.checkOfferArgsExternal(args);
+    }
+
+    function testNonce() public {
+        OfferArgs memory args;
+        Offer memory offer;
+        offer.nonce = 1;
+        // stored supplier nonce is implicitely 0
+        Root memory root = Root({root: keccak256(abi.encode(offer))});
+        args.root = root;
+        args.offer = offer;
+        args.signature = getSignature(root);
+        vm.expectRevert(abi.encodeWithSelector(OfferHasBeenDeleted.selector, offer, uint256(0)));
+        this.checkOfferArgsExternal(args);
+    }
+
+    function testAmount() public {
+        OfferArgs memory args;
+        Offer memory offer;
+        Root memory root = Root({root: keccak256(abi.encode(offer))});
+
+        args.amount = 1 ether;
+        args.root = root;
+        args.signature = getSignature(root);
+        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, uint256(0)));
         this.checkOfferArgsExternal(args);
     }
 
