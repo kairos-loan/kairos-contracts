@@ -6,9 +6,12 @@ import "../BorrowLogic/BorrowCheckers.sol";
 
 contract TestCommons is Test {
     uint256 internal constant KEY = 0xA11CE;
+    uint256 internal constant KEY2 = 0xB0B;
     address internal immutable signer;
+    address internal immutable signer2;
 
     constructor() {
         signer = vm.addr(KEY);
+        signer2 = vm.addr(KEY2);
     }
 }

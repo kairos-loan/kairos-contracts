@@ -20,7 +20,7 @@ contract Verify is Test {
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({
-                collateral: IERC721(0x1A92f7381B9F03921564a437210bB9396471050C)
+                implem: IERC721(0x1A92f7381B9F03921564a437210bB9396471050C)
             }))
         });
         require(proof.verify(ROOT, keccak256(abi.encode(offer))), "");

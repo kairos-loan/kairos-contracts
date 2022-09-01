@@ -9,11 +9,6 @@ import "./BorrowLogic/BorrowHandlers.sol";
 
 /// @notice public facing methods for borrowers
 contract BorrowFacet is IERC721Receiver, BorrowHandlers {
-    struct BorrowArgs {
-        NFToken nft;
-        OfferArgs[] args;
-    }
-
     event Borrow(Loan[] loans);
 
     // todo : add reentrency check

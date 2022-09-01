@@ -11,6 +11,11 @@ enum CollatSpecType { Floor, Single }
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
 
+struct BorrowArgs {
+    NFToken nft;
+    OfferArgs[] args;
+}
+
 /// @notice Arguments for the borrow parameters of an offer
 /// @dev '-' means n^th
 ///     possible opti is to use OZ's multiProofVerify func, not used here
@@ -66,17 +71,9 @@ struct Offer {
 /// @notice Collateral type accepting any NFT of a collection
 /// @dev we use struct with a single member to keep the type check on
 ///     collateral being an IERC721
-/// @member collateral NFT contract I.e collection
+/// @member implem NFT contract I.e collection
 struct FloorSpec {
-    IERC721 collateral;
-}
-
-/// @notice Collateral type accepting one specific NFT
-/// @member tokenId token identifier
-/// @member collateral NFT contract I.e collection
-struct SingleSpec {
-    uint256 tokenId;
-    IERC721 collateral;
+    IERC721 implem;
 }
 
 /// @notice Root of a supplier offer merkle tree
@@ -88,7 +85,8 @@ struct Root {
 }
 
 /// @title Non Fungible Token
-/// @notice describes an ERC721 compliant token
+/// @notice describes an ERC721 compliant token, can be used as single spec
+///     I.e Collateral type accepting one specific NFT
 /// @member implem address of the NFT contract
 /// @member id token identifier
 struct NFToken {

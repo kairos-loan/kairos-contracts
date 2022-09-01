@@ -28,7 +28,7 @@ contract ExpPolypus is IERC721Receiver, ReentrancyGuard {
         collateral.transferFrom(msg.sender, address(this), collatTokenId);
         if (offer.collatSpecType == CollatSpecType.Floor) {
             (FloorSpec memory spec) = abi.decode(offer.collatSpecs, (FloorSpec));
-            if (collateral != spec.collateral) {
+            if (collateral != spec.implem) {
                 revert CollateralDoesntMatchSpecs(collateral, collatTokenId);
             }
             // offer.assetToLend.transferFrom(offer.supplier, msg.sender, offer.loanToValue);

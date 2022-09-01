@@ -4,7 +4,7 @@ pragma solidity 0.8.16;
 import "../SetUp.sol";
 
 contract TestBorrow is SetUp {
-    function testSimpleBorrow() public {
+    function testSimpleNFTonReceived() public {
         uint256 tokenId = getTokens(signer);
 
         vm.startPrank(signer);
@@ -25,7 +25,7 @@ contract TestBorrow is SetUp {
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({
-                    collateral: wrongNFT
+                    implem: wrongNFT
                 }))
             });
         bytes memory data = abi.encode(getOfferArgs(offer));
@@ -40,14 +40,98 @@ contract TestBorrow is SetUp {
         nft.safeTransferFrom(signer, address(nftaclp), tokenId, data);
     }
 
+    // should pass in a scenario as complex as possible
+    // should borrow from 2 NFTs, one of which should borrow from 2 offers of different suppliers
+    // use different cryptos for the 2 NFTs
+    // NFT 1 : from collec1 with money1 with 2 suppliers
+    // NFT 2 : from collec2 with money2 with 1 supplier
+    // NFT 1 : 25% from supp1 at 2 eth valuation, 75% from supp2 at 1 eth val 
+    function testComplexBorrow() public {
+        BorrowArgs memory bargs1;
+        BorrowArgs memory bargs2;
+        OfferArgs memory oargs1;
+        OfferArgs memory oargs2;
+        OfferArgs memory oargs3;
+        Offer memory signer1Offer1;
+        Offer memory signer1Offer2;
+        Offer memory signer2Offer;
+
+        vm.prank(signer);
+        money.mint(2 ether);
+
+        vm.prank(signer2);
+        money.mint(2 ether);
+
+        vm.prank(signer);
+        money2.mint(2 ether);
+
+        signer1Offer1 = Offer({
+            assetToLend: money,
+            loanToValue: 2 ether,
+            duration: 2 weeks,
+            nonce: 0,
+            collatSpecType: CollatSpecType.Single,
+            tranche: 0,
+            collatSpecs: abi.encode(NFToken({
+                implem: nft,
+                id: 1
+            }))
+        });
+
+        signer1Offer2 = Offer({
+            assetToLend: money2,
+            loanToValue: 2 ether,
+            duration: 4 weeks,
+            nonce: 0,
+            collatSpecType: CollatSpecType.Single,
+            tranche: 0,
+            collatSpecs: abi.encode(NFToken({
+                implem: nft2,
+                id: 1
+            }))
+        });
+
+        signer2Offer = Offer({
+            assetToLend: money2,
+            loanToValue: 1 ether,
+            duration: 1 weeks,
+            nonce: 0,
+            collatSpecType: CollatSpecType.Floor,
+            tranche: 0,
+            collatSpecs: abi.encode(FloorSpec({
+                implem: nft
+            }))
+        });
+
+        {
+            bytes32 hashSign1Off1 = keccak256(abi.encode(signer1Offer1));
+            bytes32 hashSign1Off2 = keccak256(abi.encode(signer1Offer2));
+            bytes32 hashSign2Off = keccak256(abi.encode(signer2Offer));
+            Root memory rootSign1 = Root({root: keccak256(abi.encode(hashSign1Off1, hashSign1Off2))});
+            // hashSign1Off1 < hashSign1Off2 = true
+            bytes32[] memory proofSign1Off1 = new bytes32[](1);
+            proofSign1Off1[0] = hashSign1Off2;
+            oargs1 = OfferArgs({
+                proof: proofSign1Off1,
+                root: rootSign1,
+                signature: getSignature(rootSign1),
+                amount: 1 ether / 2, // 25%
+                offer: signer1Offer1
+            });
+
+        }
+    }
+
+    // helpers
+
     function getOfferArgs(Offer memory offer) private returns(OfferArgs[] memory){
         OfferArgs[] memory offerArgs = new OfferArgs[](1);
-        bytes32 bytesRoot = keccak256(abi.encode(offer));
+        Root memory root = Root({root: keccak256(abi.encode(offer))});
         bytes32[] memory emptyArray;
         offerArgs[0] = OfferArgs({
             proof: emptyArray,
-            root: Root({ root : bytesRoot }),
-            signature: getSignature(bytesRoot),
+            root: root,
+            signature: getSignature(root),
             amount: 1 ether,
             offer: offer
         });
@@ -64,10 +148,15 @@ contract TestBorrow is SetUp {
         vm.stopPrank();   
     }
 
-    function getSignature(bytes32 bytesRoot) private returns(bytes memory signature){
-        Root memory root = Root({root : bytesRoot});
+    function getSignature(Root memory root) private returns(bytes memory signature){
         bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
+        signature = bytes.concat(r, s, bytes1(v));
+    }
+
+    function getSignature2(Root memory root) private returns(bytes memory signature){
+        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY2, digest);
         signature = bytes.concat(r, s, bytes1(v));
     }
 
@@ -80,7 +169,7 @@ contract TestBorrow is SetUp {
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({
-                    collateral: nft
+                    implem: nft
                 }))
             });
     }

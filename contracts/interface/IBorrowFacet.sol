@@ -4,11 +4,6 @@ pragma solidity 0.8.16;
 import "../DataStructure/Global.sol";
 
 interface IBorrowFacet {
-    struct BorrowArgs {
-        NFToken nft;
-        OfferArgs[] args;
-    }
-
     function onERC721Received(
         address operator, 
         address from, 

@@ -40,16 +40,16 @@ abstract contract BorrowCheckers is Signature {
 
         if (collatSpecType == CollatSpecType.Floor) {
             FloorSpec memory spec = abi.decode(offer.collatSpecs, (FloorSpec));
-            if (collateral != spec.collateral) { // check NFT address
-                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.collateral);
+            if (collateral != spec.implem) { // check NFT address
+                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.implem);
             }
         } else if (collatSpecType == CollatSpecType.Single) {
-            SingleSpec memory spec = abi.decode(offer.collatSpecs, (SingleSpec));
-            if (collateral != spec.collateral) { // check NFT address
-                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.collateral);
+            NFToken memory spec = abi.decode(offer.collatSpecs, (NFToken));
+            if (collateral != spec.implem) { // check NFT address
+                revert NFTContractDoesntMatchOfferSpecs(collateral, spec.implem);
             }
-            if (tokenId != spec.tokenId) {
-                revert TokenIdDoesntMatchOfferSpecs(tokenId, spec.tokenId); 
+            if (tokenId != spec.id) {
+                revert TokenIdDoesntMatchOfferSpecs(tokenId, spec.id); 
             }
         }
         else {

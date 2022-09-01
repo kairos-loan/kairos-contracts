@@ -40,6 +40,14 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         this.useOfferExternal(getOfferArgs(), collatState);
     }
 
+    function testRequestAmountCheckAndAssetTransfer() public {
+        CollateralState memory collatState;
+        collatState.assetLent = MOCK_TOKEN;
+        OfferArgs memory args = getOfferArgs();
+        args.amount = 1 ether;
+        // not finished
+    }
+
     // helpers
 
     function useOfferExternal(

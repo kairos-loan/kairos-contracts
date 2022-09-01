@@ -21,7 +21,9 @@ contract SetUp is TestCommons, ERC721Holder {
     Initializer private initializer;
     OwnershipFacet private ownership;
     Money internal money;
+    Money internal money2;
     NFT internal nft;
+    NFT internal nft2;
 
     function setUp() public {
         DiamondCutFacet cut = new DiamondCutFacet();
@@ -31,7 +33,9 @@ contract SetUp is TestCommons, ERC721Holder {
         IDiamondCut(address(nftaclp)).diamondCut(
             facetCuts, address(initializer), abi.encodeWithSelector(initializer.init.selector));
         nft = new NFT("Test NFT", "TNFT");
+        nft2 = new NFT("Test NFT2", "TNFT2");
         money = new Money();
+        money2 = new Money();
     }
 
     function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {

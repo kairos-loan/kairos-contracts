@@ -68,6 +68,8 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         this.checkOfferArgsExternal(args);
     }
 
+    // todo : check collat specs tests
+
     // helpers //
 
     function checkOfferArgsExternal(OfferArgs memory args) public view returns (address) {
