@@ -7,6 +7,7 @@ import "diamond/interfaces/IERC165.sol";
 
 import "../SupplyPositionFacet.sol";
 import "../interface/IBorrowFacet.sol";
+import "../interface/IProtocolFacet.sol";
 
 /* solhint-disable func-visibility */
 
@@ -62,6 +63,19 @@ function supplyPositionFS() pure returns(bytes4[] memory) {
     functionSelectors[11] = getSelector("safeTransferFrom(address,address,uint256)");
     functionSelectors[12] = getSelector("safeTransferFrom(address,address,uint256,bytes)");
     functionSelectors[13] = SupplyPositionFacet.position.selector;
+
+    return functionSelectors;
+}
+
+/// @notice protocol facet function selectors 
+function protoFS() pure returns(bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](5);
+
+    functionSelectors[0] = IProtocolFacet.updateOffers.selector;
+    functionSelectors[1] = IProtocolFacet.getRateOfTranche.selector;
+    functionSelectors[2] = IProtocolFacet.getNbOfLoans.selector;
+    functionSelectors[3] = IProtocolFacet.getLoan.selector;
+    functionSelectors[4] = IProtocolFacet.getSupplierNonce.selector;
 
     return functionSelectors;
 }

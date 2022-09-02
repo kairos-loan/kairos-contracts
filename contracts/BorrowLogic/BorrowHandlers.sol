@@ -73,6 +73,7 @@ abstract contract BorrowHandlers is BorrowCheckers {
             borrower: from,
             collateral: IERC721(msg.sender),
             tokenId: nft.id,
+            repaid: 0,
             supplyPositionIds : supplyPositionIds
         });
     }
