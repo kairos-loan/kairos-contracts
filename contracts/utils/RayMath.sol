@@ -4,7 +4,7 @@ pragma solidity 0.8.16;
 import "../DataStructure/Global.sol";
 
 /// @notice Manipulates fixed-point unsigned decimals numbers
-library WadRayMath {
+library RayMath {
     /// @notice `a` plus `b`
     function add(Ray a, Ray b) internal pure returns(Ray) {
         return Ray.wrap(Ray.unwrap(a) + Ray.unwrap(b));
@@ -19,6 +19,11 @@ library WadRayMath {
         return Ray.wrap(Ray.unwrap(a) * Ray.unwrap(b) / RAY);
     }
 
+    /// @notice `a` times `b`
+    function mul(uint256 a, Ray b) internal pure returns(uint256) {
+        return a * Ray.unwrap(b) / RAY;
+    }
+
     /// @notice `a` divided by `b`
     function div(Ray a, Ray b)
         internal
@@ -28,10 +33,12 @@ library WadRayMath {
         return Ray.wrap((Ray.unwrap(a) * RAY) / Ray.unwrap(b));
     }
 
-    /// @notice `a` times `b`
-    function mul(uint256 a, Ray b) internal pure returns(uint256) {
-        return a * Ray.unwrap(b) / RAY;
+    /// @notice `a` divided by `b`
+    function divToRay(uint256 a, uint256 b) internal pure returns (Ray) {
+        return Ray.wrap((a * RAY) / b);
     }
+
+    // ~~~ comparisons ~~~ //
 
     /// @notice is `a` less than `b`
     function lt(Ray a, Ray b) internal pure returns (bool) {
@@ -48,8 +55,8 @@ library WadRayMath {
         return Ray.unwrap(a) > Ray.unwrap(b);
     }
 
-    /// @notice `a` divided by `b`
-    function divToRay(uint256 a, uint256 b) internal pure returns (Ray) {
-        return Ray.wrap((a * RAY) / b);
+    /// @notice is `a` equal to `b`
+    function eq(Ray a, Ray b) internal pure returns(bool) {
+        return Ray.unwrap(a) == Ray.unwrap(b);
     }
 }

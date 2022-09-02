@@ -101,7 +101,7 @@ contract TestBorrow is SetUp {
         });
 
         signer2Offer = Offer({
-            assetToLend: money2,
+            assetToLend: money,
             loanToValue: 1 ether,
             duration: 1 weeks,
             nonce: 0,
@@ -143,7 +143,7 @@ contract TestBorrow is SetUp {
             oargs3 = OfferArgs({
                 proof: proofSign1Off2,
                 root: rootSign1,
-                signature: getSignature2(rootSign1),
+                signature: getSignature(rootSign1),
                 amount: 2 ether, // 100%
                 offer: signer1Offer2
             });
@@ -177,6 +177,17 @@ contract TestBorrow is SetUp {
             batchbargs[1] = bargs2;
 
             IBorrowFacet(address(nftaclp)).borrow(batchbargs);
+        }
+        assertEq(IERC721(address(nftaclp)).balanceOf(signer), 2);
+        assertEq(IERC721(address(nftaclp)).balanceOf(signer2), 1);
+        {
+            Provision memory supp1pos1 = ISupplyPositionFacet(address(nftaclp)).position(1);
+            Provision memory supp2pos = ISupplyPositionFacet(address(nftaclp)).position(2);
+            Provision memory supp1pos2 = ISupplyPositionFacet(address(nftaclp)).position(3);
+            assertEq(supp1pos1.amount, 1 ether / 2);
+            assertEq(supp2pos.amount, 3 ether / 4);
+            assertEq(supp1pos2.amount, 2 ether);
+            
         }
     }
 

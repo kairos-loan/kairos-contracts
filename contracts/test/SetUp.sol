@@ -33,9 +33,13 @@ contract SetUp is TestCommons, ERC721Holder {
         IDiamondCut(address(nftaclp)).diamondCut(
             facetCuts, address(initializer), abi.encodeWithSelector(initializer.init.selector));
         nft = new NFT("Test NFT", "TNFT");
+        vm.label(address(nft), "nft");
         nft2 = new NFT("Test NFT2", "TNFT2");
+        vm.label(address(nft), "nft2");
         money = new Money();
+        vm.label(address(money), "money");
         money2 = new Money();
+        vm.label(address(money2), "money2");
     }
 
     function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {

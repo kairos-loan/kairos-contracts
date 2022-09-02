@@ -2,14 +2,14 @@
 pragma solidity 0.8.16;
 
 import "./BorrowCheckers.sol";
-import "../utils/WadRayMath.sol";
+import "../utils/RayMath.sol";
 import "../SupplyPositionFacet.sol";
 
 // todo : docs
 
 abstract contract BorrowHandlers is BorrowCheckers {
-    using WadRayMath for uint256;
-    using WadRayMath for Ray;
+    using RayMath for uint256;
+    using RayMath for Ray;
 
     function useOffer(
         OfferArgs memory args,
