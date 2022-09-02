@@ -4,19 +4,23 @@ pragma solidity 0.8.16;
 import "../DataStructure/Global.sol";
 
 /// @notice Manipulates fixed-point unsigned decimals numbers
+/// @dev all uints are considered integers (no wad)
 library RayMath {
+    // ~~~ calculus ~~~ //
+
     /// @notice `a` plus `b`
     function add(Ray a, Ray b) internal pure returns(Ray) {
         return Ray.wrap(Ray.unwrap(a) + Ray.unwrap(b));
     }
 
     /// @notice `a` times `b`
-    function mul(Ray a, Ray b)
-        internal
-        pure
-        returns (Ray)
-    {
+    function mul(Ray a, Ray b) internal pure returns (Ray) {
         return Ray.wrap(Ray.unwrap(a) * Ray.unwrap(b) / RAY);
+    }
+
+    /// @notice `a` times `b`
+    function mul(Ray a, uint256 b) internal pure returns (Ray) {
+        return Ray.wrap(Ray.unwrap(a) * b);
     }
 
     /// @notice `a` times `b`
@@ -25,12 +29,13 @@ library RayMath {
     }
 
     /// @notice `a` divided by `b`
-    function div(Ray a, Ray b)
-        internal
-        pure
-        returns (Ray)
-    {
+    function div(Ray a, Ray b) internal pure returns (Ray) {
         return Ray.wrap((Ray.unwrap(a) * RAY) / Ray.unwrap(b));
+    }
+
+    /// @notice `a` divided by `b`
+    function div(Ray a, uint256 b) internal pure returns (Ray) {
+        return Ray.wrap(Ray.unwrap(a) / b);
     }
 
     /// @notice `a` divided by `b`

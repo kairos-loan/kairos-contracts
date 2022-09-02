@@ -4,6 +4,8 @@ pragma solidity 0.8.16;
 import "../SetUp.sol";
 
 contract TestBorrow is SetUp {
+    using RayMath for Ray;
+
     function testSimpleNFTonReceived() public {
         uint256 tokenId = getTokens(signer);
 
@@ -55,6 +57,8 @@ contract TestBorrow is SetUp {
         Offer memory signer1Offer1;
         Offer memory signer1Offer2;
         Offer memory signer2Offer;
+        uint256 m1InitialBalance = money.balanceOf(address(this));
+        uint256 m2InitialBalance = money2.balanceOf(address(this));
 
         vm.prank(signer);
         money.mint(2 ether);
@@ -187,8 +191,24 @@ contract TestBorrow is SetUp {
             assertEq(supp1pos1.amount, 1 ether / 2);
             assertEq(supp2pos.amount, 3 ether / 4);
             assertEq(supp1pos2.amount, 2 ether);
-            
+            assert(ONE.div(4).eq(supp1pos1.share));
+            assert(ONE.div(4).mul(3).eq(supp2pos.share));
+            assert(ONE.eq(supp1pos2.share));
         }
+        // supplier money balances
+        assertEq(money.balanceOf(signer), 1 ether / 2 * 3, "sig1 m1 bal pb");
+        assertEq(money.balanceOf(signer2), 1 ether / 4 * 5, "sig2 m1 bal pb");
+        assertEq(money2.balanceOf(signer), 0,  "sig1 m2 bal pb");
+        
+        // borrower money balances
+        assertEq(money.balanceOf(address(this)), (1 ether / 4 * 5) + m1InitialBalance, "bor m1 bal pb");
+        assertEq(money2.balanceOf(address(this)), (2 ether) + m2InitialBalance, "bor m2 bal pb");
+
+        // nft balances
+        assertEq(nft.balanceOf(address(this)), 0);
+        assertEq(nft2.balanceOf(address(this)), 0);
+        assertEq(nft.balanceOf(address(nftaclp)), 1);
+        assertEq(nft.balanceOf(address(nftaclp)), 1);
     }
 
     // helpers
