@@ -14,6 +14,7 @@ import "../utils/NFT.sol";
 import "../utils/Money.sol";
 import "../BorrowFacet.sol";
 import "../ProtocolFacet.sol";
+import "../interface/IProtocolFacet.sol";
 import "../SupplyPositionFacet.sol";
 import "./TestCommons.sol";
 

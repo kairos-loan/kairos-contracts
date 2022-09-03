@@ -69,13 +69,15 @@ abstract contract BorrowHandlers is BorrowCheckers {
             lent += args[i].amount;
         }
 
+        // todo : move loan minting here
+
         loan = Loan({
             assetLent: collatState.assetLent,
             lent: lent,
             endDate: block.timestamp + collatState.minOfferDuration,
             tranche: 0, // will change in future implem
             borrower: from,
-            collateral: IERC721(msg.sender),
+            collateral: nft.implem,
             tokenId: nft.id,
             repaid: 0,
             supplyPositionIds : supplyPositionIds

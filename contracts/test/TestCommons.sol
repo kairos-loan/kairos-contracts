@@ -17,4 +17,20 @@ contract TestCommons is Test {
         vm.label(signer, "signer");
         vm.label(signer2, "signer2");
     }
+
+    function logLoan(Loan memory loan, string memory name) internal view {
+        console.log("~~~~~~~ start loan ", name, " ~~~~~~~");
+        console.log("assetLent           ", address(loan.assetLent));
+        console.log("lent                ", loan.lent);
+        console.log("endDate             ", loan.endDate);
+        console.log("tranche             ", loan.tranche);
+        console.log("borrower            ", loan.borrower);
+        console.log("collateral          ", address(loan.collateral));
+        console.log("tokenId             ", loan.tokenId);
+        console.log("repaid              ", loan.repaid);
+        for(uint256 i; i < loan.supplyPositionIds.length; i++) {
+            console.log("supplyPositionIds %s: %s", i, loan.supplyPositionIds[i]);
+        }
+        console.log("~~~~~~~ end  loan ", name, " ~~~~~~~");
+    }
 }

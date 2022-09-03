@@ -3,6 +3,8 @@ pragma solidity 0.8.16;
 
 import "../SetUp.sol";
 
+error AssertionFailedLoanDontMatch();
+
 contract TestBorrow is SetUp {
     using RayMath for Ray;
 
@@ -209,6 +211,39 @@ contract TestBorrow is SetUp {
         assertEq(nft2.balanceOf(address(this)), 0);
         assertEq(nft.balanceOf(address(nftaclp)), 1);
         assertEq(nft.balanceOf(address(nftaclp)), 1);
+
+        // loan
+        {
+            uint256[] memory supplyPositionIds1 = new uint256[](2);
+            supplyPositionIds1[0] = 1;
+            supplyPositionIds1[1] = 2;
+            uint256[] memory supplyPositionIds2 = new uint256[](1);
+            supplyPositionIds2[0] = 3;
+            Loan memory loan1 = Loan({
+                assetLent: money,
+                lent: 1 ether / 4 * 5,
+                endDate: block.timestamp + 1 weeks,
+                tranche: 0,
+                borrower: address(this),
+                collateral: nft,
+                tokenId: 1,
+                repaid: 0,
+                supplyPositionIds: supplyPositionIds1
+            });
+            Loan memory loan2 = Loan({
+                assetLent: money2,
+                lent: 2 ether,
+                endDate: block.timestamp + 4 weeks,
+                tranche: 0,
+                borrower: address(this),
+                collateral: nft2,
+                tokenId: 1,
+                repaid: 0,
+                supplyPositionIds: supplyPositionIds2
+            });
+            assertEqL(loan1, IProtocolFacet(address(nftaclp)).getLoan(1));
+            assertEqL(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
+        }
     }
 
     // helpers
@@ -261,6 +296,14 @@ contract TestBorrow is SetUp {
                     implem: nft
                 }))
             });
+    }
+
+    function assertEqL(Loan memory actual, Loan memory expected) private view {
+        if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
+            logLoan(expected, "expected");
+            logLoan(actual, "actual  ");
+            revert AssertionFailedLoanDontMatch();
+        }
     }
 
     // todo : test unknown collat spec type

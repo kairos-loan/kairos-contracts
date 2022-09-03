@@ -28,12 +28,12 @@ struct Loan {
     IERC20 assetLent;
     uint256 lent;
     uint256 endDate;
-    uint256 tranche;
+    uint256 tranche; // todo : should replace with mean
     address borrower;
     IERC721 collateral;
     uint256 tokenId;
     uint256 repaid;
-    uint256[] supplyPositionIds; // useful ?
+    uint256[] supplyPositionIds; // todo : useful ? can be replaced by startId + nbOfPos
 }
 
 struct SupplyPosition {
