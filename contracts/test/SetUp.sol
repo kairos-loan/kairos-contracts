@@ -35,6 +35,7 @@ contract SetUp is TestCommons, ERC721Holder {
         cut = new DiamondCutFacet();
         loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
+        // won't work if the facet isn't deployed here also
         borrow = new BorrowFacet();
         supplyPosition = new SupplyPositionFacet();
         protocol = new ProtocolFacet();
@@ -56,8 +57,11 @@ contract SetUp is TestCommons, ERC721Holder {
         vm.label(address(money2), "money2");
     }
 
-    function getFacetCuts() private view returns(IDiamondCut.FacetCut[] memory) {
+    function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {
         IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](5);
+
+        // todo : won't work if the borrow facet isn't deployed here, still need to figurate why
+        borrow = new BorrowFacet();
 
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),
