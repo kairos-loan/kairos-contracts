@@ -27,15 +27,18 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
         Protocol storage proto = protocolStorage();
         OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
         Loan[] memory loans = new Loan[](1);
+        uint256 nbOfLoans;
 
-        proto.nbOfLoans++;
+        nbOfLoans = ++proto.nbOfLoans;
 
-        loans[0] = useCollateral(args, from, NFToken({
-            implem: IERC721(msg.sender),
-            id: tokenId
-        }));
+        loans[0] = useCollateral(args, from, 
+            NFToken({
+                implem: IERC721(msg.sender),
+                id: tokenId}),
+            nbOfLoans
+        );
 
-        proto.loan[proto.nbOfLoans] = loans[0];
+        proto.loan[nbOfLoans] = loans[0];
         
         emit Borrow(loans);
         
@@ -45,12 +48,13 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     function borrow(BorrowArgs[] calldata args) external {
         Protocol storage proto = protocolStorage();
         Loan[] memory loans = new Loan[](args.length);
+        uint256 nbOfLoans;
 
         for(uint8 i; i < args.length; i++){
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
-            proto.nbOfLoans++;
-            loans[i] = useCollateral(args[i].args, msg.sender, args[i].nft);
-            proto.loan[proto.nbOfLoans] = loans[i];
+            nbOfLoans = ++proto.nbOfLoans;
+            loans[i] = useCollateral(args[i].args, msg.sender, args[i].nft, nbOfLoans);
+            proto.loan[nbOfLoans] = loans[i];
         }
 
         emit Borrow(loans);

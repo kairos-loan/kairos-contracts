@@ -50,7 +50,9 @@ struct SupplyPosition {
 /// @title data on a liquidity provision from a supply offer in one existing loan
 /// @member amount - supplied for this provision
 /// @member share - of the collateral matched by this provision
+/// @member loanId identifier of the loan the liquidity went to
 struct Provision {
     uint256 amount;
     Ray share;
+    uint256 loanId;
 }

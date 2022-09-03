@@ -40,12 +40,14 @@ struct OfferArgs {
 /// @member minOfferDuration minimal duration among offers used
 /// @member from original owner of the nft
 /// @member nft the collateral asset
+/// @member loanId loan identifier
 struct CollateralState {
     Ray matched;
     IERC20 assetLent;
     uint256 minOfferDuration;
     address from;
     NFToken nft;
+    uint256 loanId;
 }
 
 /// @notice Loan offer

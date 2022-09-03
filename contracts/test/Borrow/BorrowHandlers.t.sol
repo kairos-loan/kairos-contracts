@@ -34,7 +34,8 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
                 SupplyPositionFacet.safeMint.selector,
                 signer, Provision({
                     amount: uint256(0),
-                    share: Ray.wrap(0)
+                    share: Ray.wrap(0),
+                    loanId: 0
                 })),
             abi.encode(uint256(1)));
         this.useOfferExternal(getOfferArgs(), collatState);

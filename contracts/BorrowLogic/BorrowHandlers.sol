@@ -41,22 +41,26 @@ abstract contract BorrowHandlers is BorrowCheckers {
 
         return(SupplyPositionFacet(address(this)).safeMint(signer, Provision({
             amount: args.amount,
-            share: shareMatched
+            share: shareMatched,
+            loanId: collatState.loanId
         })), collatState);
     }
 
     function useCollateral(
         OfferArgs[] memory args, 
         address from, 
-        NFToken memory nft
+        NFToken memory nft,
+        uint256 loanId
     ) internal returns(Loan memory loan) {
         uint256[] memory supplyPositionIds = new uint256[](args.length);
+
         CollateralState memory collatState = CollateralState({
             matched: Ray.wrap(0),
             assetLent: args[0].offer.assetToLend,
             minOfferDuration: type(uint256).max,
             from: from,
-            nft: nft
+            nft: nft,
+            loanId: loanId
         });
         uint256 lent;
 
