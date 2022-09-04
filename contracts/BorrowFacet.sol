@@ -24,37 +24,26 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
         uint256 tokenId,
         bytes calldata data
     ) external returns(bytes4) {
-        Protocol storage proto = protocolStorage();
         OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
         Loan[] memory loans = new Loan[](1);
-        uint256 nbOfLoans;
-
-        nbOfLoans = ++proto.nbOfLoans;
 
         loans[0] = useCollateral(args, from, 
             NFToken({
                 implem: IERC721(msg.sender),
-                id: tokenId}),
-            nbOfLoans
-        );
+                id: tokenId}));
 
-        proto.loan[nbOfLoans] = loans[0];
-        
         emit Borrow(loans);
         
         return this.onERC721Received.selector;
     }
 
+    // todo : should return loan ids ?
     function borrow(BorrowArgs[] calldata args) external {
-        Protocol storage proto = protocolStorage();
         Loan[] memory loans = new Loan[](args.length);
-        uint256 nbOfLoans;
 
         for(uint8 i; i < args.length; i++){
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
-            nbOfLoans = ++proto.nbOfLoans;
-            loans[i] = useCollateral(args[i].args, msg.sender, args[i].nft, nbOfLoans);
-            proto.loan[nbOfLoans] = loans[i];
+            loans[i] = useCollateral(args[i].args, msg.sender, args[i].nft);
         }
 
         emit Borrow(loans);

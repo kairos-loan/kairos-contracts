@@ -49,27 +49,24 @@ abstract contract BorrowHandlers is BorrowCheckers {
     function useCollateral(
         OfferArgs[] memory args, 
         address from, 
-        NFToken memory nft,
-        uint256 loanId
+        NFToken memory nft
     ) internal returns(Loan memory loan) {
+        Protocol storage proto = protocolStorage();
         uint256[] memory supplyPositionIds = new uint256[](args.length);
-
+        uint256 lent;
         CollateralState memory collatState = CollateralState({
             matched: Ray.wrap(0),
             assetLent: args[0].offer.assetToLend,
             minOfferDuration: type(uint256).max,
             from: from,
             nft: nft,
-            loanId: loanId
+            loanId: ++proto.nbOfLoans
         });
-        uint256 lent;
 
         for(uint8 i; i < args.length; i++) {
             (supplyPositionIds[i], collatState) = useOffer(args[i], collatState);
             lent += args[i].amount;
         }
-
-        // todo : move loan minting here
 
         loan = Loan({
             assetLent: collatState.assetLent,
@@ -80,7 +77,8 @@ abstract contract BorrowHandlers is BorrowCheckers {
             collateral: nft.implem,
             tokenId: nft.id,
             repaid: 0,
-            supplyPositionIds : supplyPositionIds
+            supplyPositionIds: supplyPositionIds
         });
+        proto.loan[collatState.loanId] = loan;
     }
 }
