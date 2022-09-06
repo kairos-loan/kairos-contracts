@@ -73,7 +73,7 @@ abstract contract BorrowHandlers is BorrowCheckers {
             lent: lent,
             startDate: block.timestamp,
             endDate: block.timestamp + collatState.minOfferDuration,
-            interestPerSecond: lent.mul(proto.tranche[0]), // todo : adapt rate to the offers
+            interestPerSecond: proto.tranche[0], // todo : adapt rate to the offers
             borrower: from,
             collateral: nft.implem,
             tokenId: nft.id,

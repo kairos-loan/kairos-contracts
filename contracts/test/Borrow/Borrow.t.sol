@@ -227,7 +227,7 @@ contract TestBorrow is SetUp {
                 lent: 1 ether / 4 * 5,
                 startDate: block.timestamp,
                 endDate: block.timestamp + 1 weeks,
-                interestPerSecond: uint256(1 ether / 4 * 5).mul(tranche0Rate),
+                interestPerSecond: tranche0Rate,
                 borrower: address(this),
                 collateral: nft,
                 tokenId: 1,
@@ -239,15 +239,15 @@ contract TestBorrow is SetUp {
                 lent: 2 ether,
                 startDate: block.timestamp,
                 endDate: block.timestamp + 4 weeks,
-                interestPerSecond: uint256(2 ether).mul(tranche0Rate),
+                interestPerSecond: tranche0Rate,
                 borrower: address(this),
                 collateral: nft2,
                 tokenId: 1,
                 repaid: 0,
                 supplyPositionIds: supplyPositionIds2
             });
-            assertEqL(loan1, IProtocolFacet(address(nftaclp)).getLoan(1));
-            assertEqL(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
+            assertEq(loan1, IProtocolFacet(address(nftaclp)).getLoan(1));
+            assertEq(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
         }
     }
 

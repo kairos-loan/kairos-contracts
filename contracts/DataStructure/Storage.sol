@@ -19,7 +19,7 @@ struct Protocol {
 /// @member lent total amount lent
 /// @member startDate timestamp of the borrowing transaction
 /// @member endDate timestamp after which sale starts & repay is impossible
-/// @member interestPerSecond amount added to the debt per second
+/// @member interestPerSecond share of the amount lent added to the debt per second
 /// @member borrower borrowing account
 /// @member collateral NFT contract of collateral
 /// @member tokenId identifies the collateral in his collection
@@ -30,7 +30,7 @@ struct Loan {
     uint256 lent;
     uint256 startDate;
     uint256 endDate;
-    uint256 interestPerSecond;
+    Ray interestPerSecond;
     address borrower;
     IERC721 collateral;
     uint256 tokenId;
