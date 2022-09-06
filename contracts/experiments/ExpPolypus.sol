@@ -12,7 +12,7 @@ contract ExpPolypus is IERC721Receiver, ReentrancyGuard {
     Protocol internal protocol; 
 
     constructor(Ray rateOfTranche0Ray) {
-        protocol.rateOfTranche[0] = rateOfTranche0Ray;
+        protocol.tranche[0] = rateOfTranche0Ray;
     }
     
     // todo : implement borrowing through here, useful to skip approval step

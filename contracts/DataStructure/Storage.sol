@@ -8,7 +8,7 @@ import "./Objects.sol";
 /// @notice General protocol
 /// @member rateOfTranche interest rate of tranche of provided id, in multiplier per second
 struct Protocol {
-    mapping(uint256 => Ray) rateOfTranche;
+    mapping(uint256 => Ray) tranche;
     uint256 nbOfLoans;
     mapping(uint256 => Loan) loan;
     mapping(address => uint256) supplierNonce;
@@ -17,8 +17,9 @@ struct Protocol {
 /// @notice Issued Loan (corresponding to one collateral)
 /// @member assetLent currency lent
 /// @member lent total amount lent
+/// @member startDate timestamp of the borrowing transaction
 /// @member endDate timestamp after which sale starts & repay is impossible
-/// @member tranche identifies the interest rate tranche
+/// @member interestPerSecond amount added to the debt per second
 /// @member borrower borrowing account
 /// @member collateral NFT contract of collateral
 /// @member tokenId identifies the collateral in his collection
@@ -27,8 +28,9 @@ struct Protocol {
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
+    uint256 startDate;
     uint256 endDate;
-    uint256 tranche; // todo : should replace with mean
+    uint256 interestPerSecond;
     address borrower;
     IERC721 collateral;
     uint256 tokenId;

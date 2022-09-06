@@ -3,10 +3,9 @@ pragma solidity 0.8.16;
 
 import "../SetUp.sol";
 
-error AssertionFailedLoanDontMatch();
-
 contract TestBorrow is SetUp {
     using RayMath for Ray;
+    using RayMath for uint256;
 
     function testSimpleNFTonReceived() public {
         uint256 tokenId = getTokens(signer);
@@ -62,6 +61,9 @@ contract TestBorrow is SetUp {
         uint256 m1InitialBalance = money.balanceOf(address(this));
         uint256 m2InitialBalance = money2.balanceOf(address(this));
 
+        vm.prank(signer2);
+        IProtocolFacet(address(nftaclp)).updateOffers();
+
         vm.prank(signer);
         money.mint(2 ether);
         vm.prank(signer);
@@ -110,7 +112,7 @@ contract TestBorrow is SetUp {
             assetToLend: money,
             loanToValue: 1 ether,
             duration: 1 weeks,
-            nonce: 0,
+            nonce: 1,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({
@@ -219,11 +221,13 @@ contract TestBorrow is SetUp {
             supplyPositionIds1[1] = 2;
             uint256[] memory supplyPositionIds2 = new uint256[](1);
             supplyPositionIds2[0] = 3;
+            Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
             Loan memory loan1 = Loan({
                 assetLent: money,
                 lent: 1 ether / 4 * 5,
+                startDate: block.timestamp,
                 endDate: block.timestamp + 1 weeks,
-                tranche: 0,
+                interestPerSecond: uint256(1 ether / 4 * 5).mul(tranche0Rate),
                 borrower: address(this),
                 collateral: nft,
                 tokenId: 1,
@@ -233,8 +237,9 @@ contract TestBorrow is SetUp {
             Loan memory loan2 = Loan({
                 assetLent: money2,
                 lent: 2 ether,
+                startDate: block.timestamp,
                 endDate: block.timestamp + 4 weeks,
-                tranche: 0,
+                interestPerSecond: uint256(2 ether).mul(tranche0Rate),
                 borrower: address(this),
                 collateral: nft2,
                 tokenId: 1,
@@ -296,14 +301,6 @@ contract TestBorrow is SetUp {
                     implem: nft
                 }))
             });
-    }
-
-    function assertEqL(Loan memory actual, Loan memory expected) private view {
-        if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
-            logLoan(expected, "expected");
-            logLoan(actual, "actual  ");
-            revert AssertionFailedLoanDontMatch();
-        }
     }
 
     // todo : test unknown collat spec type

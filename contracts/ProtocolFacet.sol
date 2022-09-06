@@ -9,7 +9,7 @@ contract ProtocolFacet {
     }
 
     function getRateOfTranche(uint256 id) external view returns(Ray rate){
-        return protocolStorage().rateOfTranche[id];
+        return protocolStorage().tranche[id];
     }
 
     function getNbOfLoans() external view returns(uint256){

@@ -5,6 +5,8 @@ import "forge-std/Test.sol";
 import "../BorrowLogic/BorrowCheckers.sol";
 import "../interface/ISupplyPositionFacet.sol";
 
+error AssertionFailedLoanDontMatch();
+
 contract TestCommons is Test {
     uint256 internal constant KEY = 0xA11CE;
     uint256 internal constant KEY2 = 0xB0B;
@@ -22,8 +24,9 @@ contract TestCommons is Test {
         console.log("~~~~~~~ start loan ", name, " ~~~~~~~");
         console.log("assetLent           ", address(loan.assetLent));
         console.log("lent                ", loan.lent);
+        console.log("startDate           ", loan.startDate);
         console.log("endDate             ", loan.endDate);
-        console.log("tranche             ", loan.tranche);
+        console.log("interestPerSecond   ", loan.interestPerSecond);
         console.log("borrower            ", loan.borrower);
         console.log("collateral          ", address(loan.collateral));
         console.log("tokenId             ", loan.tokenId);
@@ -31,6 +34,14 @@ contract TestCommons is Test {
         for(uint256 i; i < loan.supplyPositionIds.length; i++) {
             console.log("supplyPositionIds %s: %s", i, loan.supplyPositionIds[i]);
         }
-        console.log("~~~~~~~ end  loan ", name, " ~~~~~~~");
+        console.log("~~~~~~~ end loan ", name, "  ~~~~~~~");
+    }
+
+    function assertEqL(Loan memory actual, Loan memory expected) internal view {
+        if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
+            logLoan(expected, "expected");
+            logLoan(actual, "actual  ");
+            revert AssertionFailedLoanDontMatch();
+        }
     }
 }

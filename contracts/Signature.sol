@@ -3,6 +3,8 @@ pragma solidity 0.8.16;
 
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 
+// todo : adapt this to diamond
+
 /// @notice handles signature verification
 abstract contract Signature is EIP712 {
     /* solhint-disable-next-line no-empty-blocks */
