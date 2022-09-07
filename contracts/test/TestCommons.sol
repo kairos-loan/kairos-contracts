@@ -80,6 +80,25 @@ contract TestCommons is Test {
         console.log("~~~~~~~ end loan ", name, "  ~~~~~~~");
     }
 
+    function logOffer(Offer memory offer, string memory name) internal view {
+        console.log("~~~~~~~ start offer ", name, " ~~~~~~~");
+        console.log("assetToLend    ", address(offer.assetToLend));
+        console.log("loanToValue    ", offer.loanToValue);
+        console.log("duration       ", offer.duration);
+        console.log("duration       ", offer.duration);
+        console.log("collatSpecType ", uint8(offer.collatSpecType));
+        console.log("tranche        ", offer.tranche);
+        if (offer.collatSpecType == CollatSpecType.Floor) {
+            FloorSpec memory spec = abi.decode(offer.collatSpecs, (FloorSpec));
+            console.log("spec implem    ", address(spec.implem));
+        } else {
+            NFToken memory spec = abi.decode(offer.collatSpecs, (NFToken));
+            console.log("spec implem    ", address(spec.implem));
+            console.log("spec id        ", spec.id);
+        }
+        console.log("~~~~~~~ end offer ", name, "  ~~~~~~~");
+    }
+
     function assertEq(Loan memory actual, Loan memory expected) internal view {
         if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
             logLoan(expected, "expected");

@@ -19,7 +19,13 @@ abstract contract Signature {
     }
 
     function _domainSeparatorV4() internal view returns (bytes32) {
-        return signatureStorage().cachedDomainSeparator;
+        // return signatureStorage().cachedDomainSeparator;
+        bytes32 hashedName = keccak256(bytes("Kairos protocol"));
+        bytes32 hashedVersion = keccak256(bytes("0.1"));
+        bytes32 typeHash = keccak256(
+            "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+        );
+        return _buildDomainSeparator(typeHash, hashedName, hashedVersion);
     }
 
     function _hashTypedDataV4(bytes32 structHash) internal view virtual returns (bytes32) {
