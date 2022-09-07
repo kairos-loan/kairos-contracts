@@ -19,6 +19,7 @@ No abreviation if the abreviated word is the whole name
 - "func" is "function"
 - "implem" is "implementation"
 - "DS" is "Data Structure"
+- "OZ" is "Open Zeppelin"
 
 No file longer than 150 lines  
 use singular for mapping names, plural for arrays
