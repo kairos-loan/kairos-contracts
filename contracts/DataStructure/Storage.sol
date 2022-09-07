@@ -58,12 +58,3 @@ struct Provision {
     Ray share;
     uint256 loanId;
 }
-
-struct EIP712Signature {
-    bytes32 cachedDomainSeparator;
-    // uint256 cachedChainId;
-    // address cachedThis;
-    // bytes32 hashedName;
-    // bytes32 hashedVersion;
-    // bytes32 typeHash;
-}

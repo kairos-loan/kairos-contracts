@@ -7,7 +7,6 @@ bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
 
 bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
 bytes32 constant SUPPLY_SP = keccak256("eth.nftaclp.supply-position");
-bytes32 constant SIGNATURE_SP = keccak256("eth.nftaclp.eip712.signature");
 
 uint256 constant RAY = 1e27;
 Ray constant ONE = Ray.wrap(RAY);
@@ -27,13 +26,5 @@ function supplyPositionStorage() pure returns (SupplyPosition storage sp) {
     /* solhint-disable-next-line no-inline-assembly */
     assembly {
         sp.slot := position
-    }
-}
-
-function signatureStorage() pure returns (EIP712Signature storage sig) {
-    bytes32 position = SIGNATURE_SP;
-    /* solhint-disable-next-line no-inline-assembly */
-    assembly {
-        sig.slot := position
     }
 }

@@ -10,10 +10,9 @@ import { IERC173 } from "diamond/interfaces/IERC173.sol";
 import { IERC165 } from "diamond/interfaces/IERC165.sol";
 
 import "./DataStructure/Global.sol";
-import "./Signature.sol";
 import "./utils/RayMath.sol";
 
-contract Initializer is Signature {
+contract Initializer {
     using RayMath for Ray;
 
     function init() external {
@@ -33,8 +32,5 @@ contract Initializer is Signature {
         sp.symbol = "KSP";
         ds.supportedInterfaces[type(IERC721).interfaceId] = true;
         // todo : add erc721 metadata support
-
-        // initializing eip712 domain separator
-        initSignature("Kairos protocol", "0.1");
     }
 }

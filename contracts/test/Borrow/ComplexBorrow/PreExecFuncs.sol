@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.16;
 
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-
 import "../Borrow.t.sol";
 
 struct ComplexBorrowData {

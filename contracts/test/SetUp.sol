@@ -22,7 +22,7 @@ contract SetUp is TestCommons, ERC721Holder {
     }
 
     function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](6);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](5);
 
         // todo : won't work if the borrow facet isn't deployed here, still need to figurate why
         borrow = new BorrowFacet();
@@ -55,12 +55,6 @@ contract SetUp is TestCommons, ERC721Holder {
             facetAddress: address(protocol),
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: protoFS()
-        });
-
-        facetCuts[5] = IDiamondCut.FacetCut({
-            facetAddress: address(repay),
-            action: IDiamondCut.FacetCutAction.Add,
-            functionSelectors: repayFS()
         });
 
         return facetCuts;
