@@ -14,18 +14,16 @@ contract SetUp is TestCommons, ERC721Holder {
         nft = new NFT("Test NFT", "TNFT");
         vm.label(address(nft), "nft");
         nft2 = new NFT("Test NFT2", "TNFT2");
-        vm.label(address(nft), "nft2");
+        vm.label(address(nft2), "nft2");
         money = new Money();
         vm.label(address(money), "money");
         money2 = new Money();
         vm.label(address(money2), "money2");
     }
 
-    function getFacetCuts() private returns(IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](5);
-
-        // todo : won't work if the borrow facet isn't deployed here, still need to figurate why
-        borrow = new BorrowFacet();
+    /* solhint-disable-next-line function-max-lines */
+    function getFacetCuts() private view returns(IDiamondCut.FacetCut[] memory) {
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](7);
 
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),
@@ -57,6 +55,27 @@ contract SetUp is TestCommons, ERC721Holder {
             functionSelectors: protoFS()
         });
 
+        facetCuts[5] = IDiamondCut.FacetCut({
+            facetAddress: address(repay),
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: repayFS()
+        });
+        
+        /// @dev : this facet is added for test purposes only, do not include in prod
+        facetCuts[6] = IDiamondCut.FacetCut({
+            facetAddress: address(helper),
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: helperFS()
+        });
+
         return facetCuts;
+    }
+
+    function helperFS() private pure returns(bytes4[] memory) {
+        bytes4[] memory functionSelectors = new bytes4[](1);
+
+        functionSelectors[0] = DCHelperFacet.delegateCall.selector;
+
+        return functionSelectors;
     }
 }

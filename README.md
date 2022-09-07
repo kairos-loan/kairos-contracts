@@ -22,6 +22,8 @@ No abreviation if the abreviated word is the whole name
 - "OZ" is "Open Zeppelin"
 - "exec" is "execute"
 - "init" is "initialize"
+- "ret" is "returned"
+- "prod" is "production"
 
 respect solhint warnings and errors
 No file longer than 150 lines  

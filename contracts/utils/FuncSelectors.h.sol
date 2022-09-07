@@ -8,6 +8,7 @@ import "diamond/interfaces/IERC165.sol";
 import "../SupplyPositionFacet.sol";
 import "../interface/IBorrowFacet.sol";
 import "../interface/IProtocolFacet.sol";
+import "../interface/IRepayFacet.sol";
 
 /* solhint-disable func-visibility */
 
@@ -76,6 +77,14 @@ function protoFS() pure returns(bytes4[] memory) {
     functionSelectors[2] = IProtocolFacet.getNbOfLoans.selector;
     functionSelectors[3] = IProtocolFacet.getLoan.selector;
     functionSelectors[4] = IProtocolFacet.getSupplierNonce.selector;
+
+    return functionSelectors;
+}
+
+function repayFS() pure returns(bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](1);
+
+    functionSelectors[0] = IRepayFacet.repay.selector;
 
     return functionSelectors;
 }
