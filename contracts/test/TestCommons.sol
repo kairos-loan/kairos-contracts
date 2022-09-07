@@ -17,6 +17,7 @@ import "../BorrowFacet.sol";
 import "../ProtocolFacet.sol";
 import "../interface/IProtocolFacet.sol";
 import "../SupplyPositionFacet.sol";
+import "../RepayFacet.sol";
 
 error AssertionFailedLoanDontMatch();
 
@@ -35,10 +36,13 @@ contract TestCommons is Test {
     BorrowFacet internal borrow;
     SupplyPositionFacet internal supplyPosition;
     ProtocolFacet internal protocol;
+    RepayFacet internal repay;
     Money internal money;
     Money internal money2;
     NFT internal nft;
     NFT internal nft2;
+    bytes4 immutable internal erc721SafeTransferFromSelector;
+    bytes4 immutable internal erc721SafeTransferFromDataSelector;
 
     constructor() {
         signer = vm.addr(KEY);
@@ -48,12 +52,15 @@ contract TestCommons is Test {
         cut = new DiamondCutFacet();
         loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
+        repay = new RepayFacet();
         // won't work if the facet isn't deployed here also
         borrow = new BorrowFacet();
         supplyPosition = new SupplyPositionFacet();
         protocol = new ProtocolFacet();
         initializer = new Initializer();
         protocolStorage().tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
+        erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
+        erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
     }
 
     function logLoan(Loan memory loan, string memory name) internal view {
