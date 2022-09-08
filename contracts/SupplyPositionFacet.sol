@@ -32,4 +32,9 @@ contract SupplyPositionFacet is DiamondERC721 {
 
         return sp.provision[tokenId];
     }
+
+    /// @notice total number of supply positions ever minted (counting burned ones)
+    function totalSupply() external view returns(uint256) {
+        return supplyPositionStorage().totalSupply;
+    }
 }

@@ -23,6 +23,7 @@ import "./DCHelperFacet.sol";
 import "../interface/IDCHelperFacet.sol";
 
 error AssertionFailedLoanDontMatch();
+error AssertionFailedRayDontMatch(Ray expected, Ray actual);
 
 contract TestCommons is Test {
     using RayMath for Ray;
@@ -72,6 +73,12 @@ contract TestCommons is Test {
             logLoan(expected, "expected");
             logLoan(actual, "actual  ");
             revert AssertionFailedLoanDontMatch();
+        }
+    }
+
+    function assertEq(Ray actual, Ray expected) internal pure {
+        if(Ray.unwrap(actual) != Ray.unwrap(expected)){
+            revert AssertionFailedRayDontMatch(expected, actual);
         }
     }
 

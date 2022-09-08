@@ -13,6 +13,11 @@ library RayMath {
         return Ray.wrap(Ray.unwrap(a) + Ray.unwrap(b));
     }
 
+    /// @notice `a` minus `b`
+    function sub(Ray a, Ray b) internal pure returns(Ray) {
+        return Ray.wrap(Ray.unwrap(a) - Ray.unwrap(b));
+    }
+
     /// @notice `a` times `b`
     function mul(Ray a, Ray b) internal pure returns (Ray) {
         return Ray.wrap(Ray.unwrap(a) * Ray.unwrap(b) / RAY);
@@ -50,14 +55,14 @@ library RayMath {
         return Ray.unwrap(a) < Ray.unwrap(b);
     }
 
-    /// @notice is `a` greater or equal to `b`
-    function gte(Ray a, Ray b) internal pure returns (bool) {
-        return Ray.unwrap(a) >= Ray.unwrap(b);
-    }
-
     /// @notice is `a` greater than `b`
     function gt(Ray a, Ray b) internal pure returns (bool) {
         return Ray.unwrap(a) > Ray.unwrap(b);
+    }
+
+    /// @notice is `a` greater or equal to `b`
+    function gte(Ray a, Ray b) internal pure returns (bool) {
+        return Ray.unwrap(a) >= Ray.unwrap(b);
     }
 
     /// @notice is `a` equal to `b`

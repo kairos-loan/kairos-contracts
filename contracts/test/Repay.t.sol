@@ -31,6 +31,7 @@ contract TestRepay is SetUp {
         proto.loan[1] = Loan({
             assetLent: _money,
             lent: 1 ether,
+            shareLent: ONE,
             startDate: block.timestamp - 2 weeks,
             endDate: block.timestamp + 2 weeks,
             interestPerSecond: proto.tranche[0],

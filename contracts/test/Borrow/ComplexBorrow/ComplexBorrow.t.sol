@@ -40,21 +40,21 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         Provision memory supp1pos2 = ISupplyPositionFacet(address(nftaclp)).position(3);
         assertEq(supp1pos1.amount, 1 ether / 2);
         assertEq(supp2pos.amount, 3 ether / 4);
-        assertEq(supp1pos2.amount, 2 ether);
-        assert(ONE.div(4).eq(supp1pos1.share));
-        assert(ONE.div(4).mul(3).eq(supp2pos.share));
-        assert(ONE.eq(supp1pos2.share));
+        assertEq(supp1pos2.amount, 1 ether);
+        assertEq(supp1pos1.share, ONE.div(4));
+        assertEq(supp2pos.share, ONE.div(4).mul(3));
+        assertEq(supp1pos2.share, ONE.div(2));
     }
 
     function checkBalances(ComplexBorrowData memory d) private {
         // supplier money balances
         assertEq(money.balanceOf(signer), 1 ether / 2 * 3, "sig1 m1 bal pb");
         assertEq(money.balanceOf(signer2), 1 ether / 4 * 5, "sig2 m1 bal pb");
-        assertEq(money2.balanceOf(signer), 0,  "sig1 m2 bal pb");
+        assertEq(money2.balanceOf(signer), 1 ether,  "sig1 m2 bal pb");
         
         // borrower money balances
         assertEq(money.balanceOf(address(this)), (1 ether / 4 * 5) + d.m1InitialBalance, "bor m1 bal pb");
-        assertEq(money2.balanceOf(address(this)), (2 ether) + d.m2InitialBalance, "bor m2 bal pb");
+        assertEq(money2.balanceOf(address(this)), (1 ether) + d.m2InitialBalance, "bor m2 bal pb");
 
         // nft balances
         assertEq(nft.balanceOf(address(this)), 0);
@@ -73,6 +73,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         Loan memory loan1 = Loan({
             assetLent: money,
             lent: 1 ether / 4 * 5,
+            shareLent: ONE,
             startDate: block.timestamp,
             endDate: block.timestamp + 1 weeks,
             interestPerSecond: tranche0Rate,
@@ -84,7 +85,8 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         });
         Loan memory loan2 = Loan({
             assetLent: money2,
-            lent: 2 ether,
+            lent: 1 ether,
+            shareLent: ONE.div(2),
             startDate: block.timestamp,
             endDate: block.timestamp + 4 weeks,
             interestPerSecond: tranche0Rate,

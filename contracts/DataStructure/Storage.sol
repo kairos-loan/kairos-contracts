@@ -28,6 +28,7 @@ struct Protocol {
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
+    Ray shareLent;
     uint256 startDate;
     uint256 endDate;
     Ray interestPerSecond;

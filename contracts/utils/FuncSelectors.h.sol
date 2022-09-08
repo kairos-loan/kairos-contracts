@@ -48,7 +48,7 @@ function borrowFS() pure returns(bytes4[] memory) {
 }
 
 function supplyPositionFS() pure returns(bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](14);
+    bytes4[] memory functionSelectors = new bytes4[](15);
 
     functionSelectors[0] = SupplyPositionFacet.safeMint.selector;
     functionSelectors[1] = SupplyPositionFacet.burn.selector;
@@ -64,6 +64,7 @@ function supplyPositionFS() pure returns(bytes4[] memory) {
     functionSelectors[11] = getSelector("safeTransferFrom(address,address,uint256)");
     functionSelectors[12] = getSelector("safeTransferFrom(address,address,uint256,bytes)");
     functionSelectors[13] = SupplyPositionFacet.position.selector;
+    functionSelectors[14] = SupplyPositionFacet.totalSupply.selector;
 
     return functionSelectors;
 }

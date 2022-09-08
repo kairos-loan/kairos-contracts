@@ -71,6 +71,7 @@ abstract contract BorrowHandlers is BorrowCheckers {
         loan = Loan({
             assetLent: collatState.assetLent,
             lent: lent,
+            shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: block.timestamp + collatState.minOfferDuration,
             interestPerSecond: proto.tranche[0], // todo : adapt rate to the offers

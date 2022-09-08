@@ -10,6 +10,8 @@ contract RepayFacet {
     using RayMath for Ray;
     using RayMath for uint256;
 
+    event Repaid(uint256 indexed loanId);
+
     // todo : implement minimal repayment
     // todo : analysis on possible reentrency
     // repay on behalf is activated, the collateral goes to the original borrower
@@ -25,6 +27,7 @@ contract RepayFacet {
             loan.assetLent.transferFrom(msg.sender, address(this), toRepay);
             loan.repaid = toRepay;
             loan.collateral.safeTransferFrom(address(this), loan.borrower, loan.tokenId);
+            emit Repaid(loanIds[i]);
         }
     }
 }

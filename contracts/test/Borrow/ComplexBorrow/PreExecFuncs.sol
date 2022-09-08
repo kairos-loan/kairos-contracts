@@ -72,7 +72,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             proof: proofSign1Off2,
             root: rootSign1,
             signature: getSignature(rootSign1),
-            amount: 2 ether, // 100%
+            amount: 1 ether, // 50%
             offer: d.signer1Offer2
         });
 
