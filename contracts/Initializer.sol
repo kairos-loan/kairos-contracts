@@ -23,8 +23,11 @@ contract Initializer {
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
 
-        // initializing tranches
-        protocolStorage().tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
+        // initializing protocol
+        Protocol storage proto = protocolStorage();
+        proto.tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
+        proto.auctionPriceFactor = ONE.mul(3);
+        proto.auctionDuration = 3 days;
 
         // initializing supply position nft collection
         SupplyPosition storage sp = supplyPositionStorage();

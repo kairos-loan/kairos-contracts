@@ -10,6 +10,7 @@ bytes32 constant SUPPLY_SP = keccak256("eth.nftaclp.supply-position");
 
 uint256 constant RAY = 1e27;
 Ray constant ONE = Ray.wrap(RAY);
+Ray constant ZERO = Ray.wrap(0);
 
 /* solhint-disable func-visibility */
 

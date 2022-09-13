@@ -12,3 +12,5 @@ error OfferHasBeenDeleted(Offer offer, uint256 currentSupplierNonce);
 error RequestedAmountTooHigh(uint256 requested, uint256 offered);
 error InconsistentAssetRequests(IERC20 firstRequested, IERC20 requested);
 error LoanAlreadyRepaid(uint256 loanId);
+error NotOwnerOfTheSupplyPosition(uint256 positionId, address owner);
+error SupplyPositionDoesntBelongToTheLoan(uint256 positionId, uint256 loanId);

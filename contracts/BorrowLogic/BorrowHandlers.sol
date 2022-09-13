@@ -27,7 +27,7 @@ abstract contract BorrowHandlers is BorrowCheckers {
         }
 
         checkCollatSpecs(collatState.nft.implem, collatState.nft.id, args.offer);
-        shareMatched = args.amount.divToRay(args.offer.loanToValue);
+        shareMatched = args.amount.div(args.offer.loanToValue);
         collatState.matched = collatState.matched.add(shareMatched);
 
         if (collatState.matched.gt(ONE)) {

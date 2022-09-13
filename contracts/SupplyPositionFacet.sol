@@ -13,16 +13,16 @@ contract SupplyPositionFacet is DiamondERC721 {
         _;
     }
 
+    function burn(uint256 tokenId) external onlySelf {
+        _burn(tokenId);
+    }
+
     function safeMint(address to, Provision calldata provision) external onlySelf returns(uint256 tokenId) {
         SupplyPosition storage sp = supplyPositionStorage();
 
         tokenId = ++sp.totalSupply;
         sp.provision[tokenId] = provision;
         _safeMint(to, tokenId);
-    }
-
-    function burn(uint256 tokenId) external onlySelf {
-        _burn(tokenId);
     }
 
     function position(uint256 tokenId) external view returns(Provision memory) {

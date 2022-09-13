@@ -75,7 +75,7 @@ function protoFS() pure returns(bytes4[] memory) {
 
     functionSelectors[0] = IProtocolFacet.updateOffers.selector;
     functionSelectors[1] = IProtocolFacet.getRateOfTranche.selector;
-    functionSelectors[2] = IProtocolFacet.getNbOfLoans.selector;
+    functionSelectors[2] = IProtocolFacet.getParameters.selector;
     functionSelectors[3] = IProtocolFacet.getLoan.selector;
     functionSelectors[4] = IProtocolFacet.getSupplierNonce.selector;
 

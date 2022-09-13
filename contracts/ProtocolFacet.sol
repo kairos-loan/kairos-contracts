@@ -12,8 +12,15 @@ contract ProtocolFacet {
         return protocolStorage().tranche[id];
     }
 
-    function getNbOfLoans() external view returns(uint256){
-        return protocolStorage().nbOfLoans;
+    function getParameters() external view returns(
+        Ray auctionPriceFactor,
+        uint256 auctionDuration,
+        uint256 nbOfLoans
+    ) {
+        Protocol storage proto = protocolStorage();
+        auctionPriceFactor = proto.auctionPriceFactor;
+        auctionDuration = proto.auctionDuration;
+        nbOfLoans = proto.nbOfLoans;
     }
 
     function getLoan(uint256 id) external view returns(Loan memory){

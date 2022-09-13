@@ -6,10 +6,14 @@ import "./Objects.sol";
 // todo : docs 
 
 /// @notice General protocol
-/// @member rateOfTranche interest rate of tranche of provided id, in multiplier per second
+/// @member tranche interest rate of tranche of provided id, in multiplier per second
+/// @member auctionDuration number of seconds after the auction start when the price hits 0 
+/// @member auctionPriceFactor multiplier of the mean tvl used as start price for the auction
 struct Protocol {
-    mapping(uint256 => Ray) tranche;
+    uint256 auctionDuration;
     uint256 nbOfLoans;
+    Ray auctionPriceFactor;
+    mapping(uint256 => Ray) tranche;
     mapping(uint256 => Loan) loan;
     mapping(address => uint256) supplierNonce;
 }
@@ -25,6 +29,7 @@ struct Protocol {
 /// @member tokenId identifies the collateral in his collection
 /// @member repaid amount repaid or obtained from sale, non 0 value means the loan lifecycle is over
 /// @member supplyPositionIds identifier of the supply position tokens
+/// @member borrowerClaimed the borrower claimed his redeemable value (useful in liquidations)
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -36,6 +41,7 @@ struct Loan {
     IERC721 collateral;
     uint256 tokenId;
     uint256 repaid;
+    bool borrowerClaimed;
     uint256[] supplyPositionIds; // todo : useful ? can be replaced by startId + nbOfPos
 }
 
@@ -50,7 +56,7 @@ struct SupplyPosition {
     mapping(uint256 => Provision) provision;
 }
 
-/// @title data on a liquidity provision from a supply offer in one existing loan
+/// @notice data on a liquidity provision from a supply offer in one existing loan
 /// @member amount - supplied for this provision
 /// @member share - of the collateral matched by this provision
 /// @member loanId identifier of the loan the liquidity went to

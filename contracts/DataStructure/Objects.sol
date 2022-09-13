@@ -11,6 +11,12 @@ enum CollatSpecType { Floor, Single }
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
 
+struct BuyArgs {
+    uint256 loanId;
+    address to;
+    uint256[] positionIds;
+}
+
 struct BorrowArgs {
     NFToken nft;
     OfferArgs[] args;

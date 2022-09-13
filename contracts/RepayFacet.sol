@@ -26,6 +26,7 @@ contract RepayFacet {
             toRepay = loan.lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate));
             loan.assetLent.transferFrom(msg.sender, address(this), toRepay);
             loan.repaid = toRepay;
+            loan.borrowerClaimed = true;
             loan.collateral.safeTransferFrom(address(this), loan.borrower, loan.tokenId);
             emit Repaid(loanIds[i]);
         }

@@ -44,7 +44,12 @@ library RayMath {
     }
 
     /// @notice `a` divided by `b`
-    function divToRay(uint256 a, uint256 b) internal pure returns (Ray) {
+    function div(uint256 a, Ray b) internal pure returns (uint256) {
+        return a * RAY / Ray.unwrap(b);
+    }
+
+    /// @notice `a` divided by `b`
+    function div(uint256 a, uint256 b) internal pure returns (Ray) {
         return Ray.wrap((a * RAY) / b);
     }
 
