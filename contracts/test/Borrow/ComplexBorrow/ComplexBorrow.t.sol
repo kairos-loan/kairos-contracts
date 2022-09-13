@@ -81,7 +81,8 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             collateral: nft,
             tokenId: 1,
             repaid: 0,
-            supplyPositionIds: supplyPositionIds1
+            supplyPositionIds: supplyPositionIds1,
+            borrowerClaimed: false
         });
         Loan memory loan2 = Loan({
             assetLent: money2,
@@ -94,7 +95,8 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             collateral: nft2,
             tokenId: 1,
             repaid: 0,
-            supplyPositionIds: supplyPositionIds2
+            supplyPositionIds: supplyPositionIds2,
+            borrowerClaimed: false
         });
         assertEq(loan1, IProtocolFacet(address(nftaclp)).getLoan(1));
         assertEq(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
