@@ -23,7 +23,7 @@ contract SetUp is TestCommons, ERC721Holder {
 
     /* solhint-disable-next-line function-max-lines */
     function getFacetCuts() private view returns(IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](7);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](8);
 
         facetCuts[0] = IDiamondCut.FacetCut({
             facetAddress: address(loupe),
@@ -60,9 +60,15 @@ contract SetUp is TestCommons, ERC721Holder {
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: repayFS()
         });
+
+        facetCuts[6] = IDiamondCut.FacetCut({
+            facetAddress: address(auction),
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: auctionFS()
+        });
         
         /// @dev : this facet is added for test purposes only, do not include in prod
-        facetCuts[6] = IDiamondCut.FacetCut({
+        facetCuts[7] = IDiamondCut.FacetCut({
             facetAddress: address(helper),
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: helperFS()

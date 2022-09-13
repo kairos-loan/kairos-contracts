@@ -21,6 +21,8 @@ import "../RepayFacet.sol";
 import "../interface/IRepayFacet.sol";
 import "./DCHelperFacet.sol";
 import "../interface/IDCHelperFacet.sol";
+import "../AuctionFacet.sol";
+import "../interface/IAuctionFacet.sol";
 
 error AssertionFailedLoanDontMatch();
 error AssertionFailedRayDontMatch(Ray expected, Ray actual);
@@ -42,6 +44,7 @@ contract TestCommons is Test {
     ProtocolFacet internal protocol;
     RepayFacet internal repay;
     DCHelperFacet internal helper;
+    AuctionFacet internal auction;
     Money internal money;
     Money internal money2;
     NFT internal nft;
@@ -63,6 +66,7 @@ contract TestCommons is Test {
         protocol = new ProtocolFacet();
         helper = new DCHelperFacet();
         initializer = new Initializer();
+        auction = new AuctionFacet();
         protocolStorage().tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
         erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");

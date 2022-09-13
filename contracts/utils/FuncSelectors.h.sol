@@ -9,6 +9,7 @@ import "../SupplyPositionFacet.sol";
 import "../interface/IBorrowFacet.sol";
 import "../interface/IProtocolFacet.sol";
 import "../interface/IRepayFacet.sol";
+import "../interface/IAuctionFacet.sol";
 
 /* solhint-disable func-visibility */
 
@@ -86,6 +87,14 @@ function repayFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
 
     functionSelectors[0] = IRepayFacet.repay.selector;
+
+    return functionSelectors;
+}
+
+function auctionFS() pure returns(bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](1);
+
+    functionSelectors[0] = IAuctionFacet.buy.selector;
 
     return functionSelectors;
 }
