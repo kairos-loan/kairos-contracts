@@ -49,23 +49,21 @@ function borrowFS() pure returns(bytes4[] memory) {
 }
 
 function supplyPositionFS() pure returns(bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](15);
+    bytes4[] memory functionSelectors = new bytes4[](13);
 
-    functionSelectors[0] = SupplyPositionFacet.safeMint.selector;
-    functionSelectors[1] = SupplyPositionFacet.burn.selector;
-    functionSelectors[2] = IERC721.balanceOf.selector;
-    functionSelectors[3] = IERC721.ownerOf.selector;
-    functionSelectors[4] = DiamondERC721.name.selector;
-    functionSelectors[5] = DiamondERC721.symbol.selector;
-    functionSelectors[6] = IERC721.approve.selector;
-    functionSelectors[7] = IERC721.getApproved.selector;
-    functionSelectors[8] = IERC721.setApprovalForAll.selector;
-    functionSelectors[9] = IERC721.isApprovedForAll.selector;
-    functionSelectors[10] = IERC721.transferFrom.selector;
-    functionSelectors[11] = getSelector("safeTransferFrom(address,address,uint256)");
-    functionSelectors[12] = getSelector("safeTransferFrom(address,address,uint256,bytes)");
-    functionSelectors[13] = SupplyPositionFacet.position.selector;
-    functionSelectors[14] = SupplyPositionFacet.totalSupply.selector;
+    functionSelectors[0] = IERC721.balanceOf.selector;
+    functionSelectors[1] = IERC721.ownerOf.selector;
+    functionSelectors[2] = DiamondERC721.name.selector;
+    functionSelectors[3] = DiamondERC721.symbol.selector;
+    functionSelectors[4] = IERC721.approve.selector;
+    functionSelectors[5] = IERC721.getApproved.selector;
+    functionSelectors[6] = IERC721.setApprovalForAll.selector;
+    functionSelectors[7] = IERC721.isApprovedForAll.selector;
+    functionSelectors[8] = IERC721.transferFrom.selector;
+    functionSelectors[9] = getSelector("safeTransferFrom(address,address,uint256)");
+    functionSelectors[10] = getSelector("safeTransferFrom(address,address,uint256,bytes)");
+    functionSelectors[11] = SupplyPositionFacet.position.selector;
+    functionSelectors[12] = SupplyPositionFacet.totalSupply.selector;
 
     return functionSelectors;
 }

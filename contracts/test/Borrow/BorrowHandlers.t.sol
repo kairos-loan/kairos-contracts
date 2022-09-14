@@ -4,13 +4,12 @@ pragma solidity 0.8.16;
 import "../../BorrowLogic/BorrowHandlers.sol";
 import "./InternalBorrowTestCommons.sol";
 
-// import "forge-std/Test.sol";
-
 contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
     // useOffer tests
 
     function testConsistentAssetRequests() public {
         CollateralState memory collatState;
+        
         vm.mockCall(
             address(MOCK_TOKEN), 
             abi.encodeWithSelector(
@@ -28,17 +27,8 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
                 IERC20.transferFrom.selector,
                 signer, address(0), uint256(0)),
             abi.encode(true));
-        vm.mockCall(
-            address(this), 
-            abi.encodeWithSelector(
-                SupplyPositionFacet.safeMint.selector,
-                signer, Provision({
-                    amount: uint256(0),
-                    share: Ray.wrap(0),
-                    loanId: 0
-                })),
-            abi.encode(uint256(1)));
         this.useOfferExternal(getOfferArgs(), collatState);
+        assertEq(supplyPositionStorage().totalSupply, 1);
     }
 
     function testRequestAmountCheckAndAssetTransfer() public {

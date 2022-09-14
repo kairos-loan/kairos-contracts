@@ -2,12 +2,9 @@
 pragma solidity 0.8.16;
 
 import "diamond/interfaces/IERC165.sol";
+import "./IERC721Events.sol";
 
-interface IERC721 is IERC165 {
-    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
-    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
-
+interface IERC721 is IERC721Events, IERC165 {
     function safeTransferFrom(
         address from,
         address to,

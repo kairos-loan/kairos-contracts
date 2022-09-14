@@ -4,10 +4,11 @@ pragma solidity 0.8.16;
 import "./BorrowCheckers.sol";
 import "../utils/RayMath.sol";
 import "../SupplyPositionFacet.sol";
+import "../SupplyPositionLogic/SafeMint.sol";
 
 // todo : docs
 
-abstract contract BorrowHandlers is BorrowCheckers {
+abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 
@@ -39,7 +40,7 @@ abstract contract BorrowHandlers is BorrowCheckers {
 
         collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
 
-        return(SupplyPositionFacet(address(this)).safeMint(signer, Provision({
+        return(safeMint(signer, Provision({
             amount: args.amount,
             share: shareMatched,
             loanId: collatState.loanId
@@ -62,12 +63,10 @@ abstract contract BorrowHandlers is BorrowCheckers {
             nft: nft,
             loanId: ++proto.nbOfLoans
         });
-
         for(uint8 i; i < args.length; i++) {
             (supplyPositionIds[i], collatState) = useOffer(args[i], collatState);
             lent += args[i].amount;
         }
-
         loan = Loan({
             assetLent: collatState.assetLent,
             lent: lent,
