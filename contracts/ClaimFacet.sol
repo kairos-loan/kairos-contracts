@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.16;
+pragma solidity 0.8.17;
 
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
@@ -12,7 +12,7 @@ contract ClaimFacet {
 
     function claim(uint256[] calldata positionIds) external {
         for (uint8 i; i < positionIds.length; i++) {
-            
+
         }
     }
 

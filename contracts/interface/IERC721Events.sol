@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.16;
+pragma solidity 0.8.17;
 
 interface IERC721Events {
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);

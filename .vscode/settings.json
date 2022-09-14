@@ -1,6 +1,6 @@
 {
   "editor.formatOnSave": true,
-  "solidity.compileUsingRemoteVersion": "v0.8.16+commit.e14f2714",
+  "solidity.compileUsingRemoteVersion": "v0.8.17+commit.e14f2714",
   "solidity.formatter": "prettier",
   "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
