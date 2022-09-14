@@ -10,6 +10,7 @@ import "../interface/IBorrowFacet.sol";
 import "../interface/IProtocolFacet.sol";
 import "../interface/IRepayFacet.sol";
 import "../interface/IAuctionFacet.sol";
+import "../interface/IClaimFacet.sol";
 
 /* solhint-disable func-visibility */
 
@@ -93,6 +94,15 @@ function auctionFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
 
     functionSelectors[0] = IAuctionFacet.buy.selector;
+
+    return functionSelectors;
+}
+
+function claimFS() pure returns(bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](2);
+
+    functionSelectors[0] = IClaimFacet.claim.selector;
+    functionSelectors[1] = IClaimFacet.claimAsBorrower.selector;
 
     return functionSelectors;
 }

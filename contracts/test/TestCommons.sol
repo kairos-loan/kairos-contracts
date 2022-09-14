@@ -23,6 +23,7 @@ import "./DCHelperFacet.sol";
 import "../interface/IDCHelperFacet.sol";
 import "../AuctionFacet.sol";
 import "../interface/IAuctionFacet.sol";
+import "../ClaimFacet.sol";
 
 error AssertionFailedLoanDontMatch();
 error AssertionFailedRayDontMatch(Ray expected, Ray actual);
@@ -45,6 +46,7 @@ contract TestCommons is Test {
     RepayFacet internal repay;
     DCHelperFacet internal helper;
     AuctionFacet internal auction;
+    ClaimFacet internal claim;
     Money internal money;
     Money internal money2;
     NFT internal nft;
@@ -67,6 +69,7 @@ contract TestCommons is Test {
         helper = new DCHelperFacet();
         initializer = new Initializer();
         auction = new AuctionFacet();
+        claim = new ClaimFacet();
         protocolStorage().tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
         erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
@@ -106,10 +109,12 @@ function logLoan(Loan memory loan, string memory name) view {
     console.log("collateral          ", address(loan.collateral));
     console.log("tokenId             ", loan.tokenId);
     console.log("repaid              ", loan.repaid);
+    console.log("liquidated          ", loan.liquidated);
+    console.log("borrowerClaimed     ", loan.borrowerClaimed);
     for(uint256 i; i < loan.supplyPositionIds.length; i++) {
         console.log("supplyPositionIds %s: %s", i, loan.supplyPositionIds[i]);
     }
-    console.log("~~~~~~~ end loan ", name, "  ~~~~~~~");
+    console.log("~~~~~~~ end loan ", name, "   ~~~~~~~");
 }
 
 function logOffer(Offer memory offer, string memory name) view {
@@ -128,5 +133,13 @@ function logOffer(Offer memory offer, string memory name) view {
         console.log("spec implem    ", address(spec.implem));
         console.log("spec id        ", spec.id);
     }
-    console.log("~~~~~~~ end offer ", name, "  ~~~~~~~");
+    console.log("~~~~~~~ end offer ", name, "   ~~~~~~~");
+}
+
+function logProvision(Provision memory provision, string memory name) view {
+    console.log("~~~~~~~ start provision ", name, " ~~~~~~~");
+    console.log("amount ", provision.amount);
+    console.log("share  ", Ray.unwrap(provision.share));
+    console.log("loanId ", provision.loanId);
+    console.log("~~~~~~~ end provision ", name, "   ~~~~~~~");
 }
