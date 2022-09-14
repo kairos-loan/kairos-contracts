@@ -34,17 +34,13 @@ contract AuctionFacet is NFTUtils {
         uint256 timeSinceLiquidable = loan.endDate - block.timestamp; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
-        address positionOwner;
 
         loan.liquidated = true;
         if (loan.repaid != 0) { revert LoanAlreadyRepaid(args.loanId); }
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
-            positionOwner = _ownerOf(args.positionIds[i]);
-            if (msg.sender != positionOwner){
-                revert NotOwnerOfTheSupplyPosition(args.positionIds[i], positionOwner);
-            }
+            if (!_isApprovedOrOwner(msg.sender, args.positionIds[i])) { revert ERC721CallerIsNotOwnerNorApproved(); }
             if (provision.loanId != args.loanId) {
                 revert SupplyPositionDoesntBelongToTheLoan(args.positionIds[i], args.loanId);
             }

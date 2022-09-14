@@ -8,18 +8,6 @@ import "@openzeppelin/contracts/utils/Address.sol";
 contract NFTUtils is IERC721Events {
     using Address for address;
 
-    error ERC721AddressZeroIsNotAValidOwner();
-    error ERC721InvalidTokenId();
-    error ERC721ApprovalToCurrentOwner();
-    error ERC721CallerIsNotOwnerNorApprovedForAll();
-    error ERC721CallerIsNotOwnerNorApproved();
-    error ERC721TransferToNonERC721ReceiverImplementer();
-    error ERC721MintToTheZeroAddress();
-    error ERC721TokenAlreadyMinted();
-    error ERC721TransferToIncorrectOwner();
-    error ERC721TransferToTheZeroAddress();
-    error ERC721ApproveToCaller();
-
     function _safeTransfer(
         address from,
         address to,
@@ -30,32 +18,6 @@ contract NFTUtils is IERC721Events {
         if (!_checkOnERC721Received(from, to, tokenId, data)) { 
             revert ERC721TransferToNonERC721ReceiverImplementer(); 
         }
-    }
-
-    function _exists(uint256 tokenId) internal view returns (bool) {
-        SupplyPosition storage sp = supplyPositionStorage();
-
-        return sp.owner[tokenId] != address(0);
-    }
-
-    function _ownerOf(uint256 tokenId) internal view returns (address) {
-        SupplyPosition storage sp = supplyPositionStorage();
-
-        address owner = sp.owner[tokenId];
-        if (owner == address(0)) { revert ERC721InvalidTokenId(); }
-        return owner;
-    }
-
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view returns (bool) {
-        address owner = _ownerOf(tokenId);
-        return (spender == owner || _isApprovedForAll(owner, spender) || _getApproved(tokenId) == spender);
-    }
-
-
-    function _getApproved(uint256 tokenId) internal view returns (address) {
-        if (!_exists(tokenId)) { revert ERC721InvalidTokenId(); }
-
-        return supplyPositionStorage().tokenApproval[tokenId];
     }
 
     function _safeMint(address to, uint256 tokenId) internal {
@@ -138,11 +100,6 @@ contract NFTUtils is IERC721Events {
         emit ApprovalForAll(owner, operator, approved);
     }
 
-    
-    function _isApprovedForAll(address owner, address operator) internal view returns (bool) {
-        return supplyPositionStorage().operatorApproval[owner][operator];
-    }
-
     function _checkOnERC721Received(
         address from,
         address to,
@@ -165,5 +122,34 @@ contract NFTUtils is IERC721Events {
         } else {
             return true;
         }
+    }
+
+    function _exists(uint256 tokenId) internal view returns (bool) {
+        SupplyPosition storage sp = supplyPositionStorage();
+
+        return sp.owner[tokenId] != address(0);
+    }
+
+    function _ownerOf(uint256 tokenId) internal view returns (address) {
+        SupplyPosition storage sp = supplyPositionStorage();
+
+        address owner = sp.owner[tokenId];
+        if (owner == address(0)) { revert ERC721InvalidTokenId(); }
+        return owner;
+    }
+
+    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view returns (bool) {
+        address owner = _ownerOf(tokenId);
+        return (spender == owner || _isApprovedForAll(owner, spender) || _getApproved(tokenId) == spender);
+    }
+
+    function _getApproved(uint256 tokenId) internal view returns (address) {
+        if (!_exists(tokenId)) { revert ERC721InvalidTokenId(); }
+
+        return supplyPositionStorage().tokenApproval[tokenId];
+    }
+    
+    function _isApprovedForAll(address owner, address operator) internal view returns (bool) {
+        return supplyPositionStorage().operatorApproval[owner][operator];
     }
 }
