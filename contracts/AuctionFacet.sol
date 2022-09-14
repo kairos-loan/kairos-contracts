@@ -3,11 +3,11 @@ pragma solidity 0.8.16;
 
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
-import "./interface/ISupplyPositionFacet.sol";
+import "./SupplyPositionLogic/NFTUtils.sol";
 
 // todo : docs
 
-contract AuctionFacet {
+contract AuctionFacet is NFTUtils {
     using RayMath for Ray;
     using RayMath for uint256;
 
@@ -41,14 +41,14 @@ contract AuctionFacet {
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
-            positionOwner = ISupplyPositionFacet(address(this)).ownerOf(args.positionIds[i]);
+            positionOwner = _ownerOf(args.positionIds[i]);
             if (msg.sender != positionOwner){
                 revert NotOwnerOfTheSupplyPosition(args.positionIds[i], positionOwner);
             }
             if (provision.loanId != args.loanId) {
                 revert SupplyPositionDoesntBelongToTheLoan(args.positionIds[i], args.loanId);
             }
-            ISupplyPositionFacet(address(this)).burn(args.positionIds[i]);
+            _burn(args.positionIds[i]);
         }
         toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
         loan.assetLent.transferFrom(msg.sender, address(this), toPay);
