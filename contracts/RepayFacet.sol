@@ -10,7 +10,7 @@ contract RepayFacet {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    event Repaid(uint256 indexed loanId);
+    event Repay(uint256 indexed loanId);
 
     // todo : implement minimal repayment
     // todo : analysis on possible reentrency
@@ -28,7 +28,7 @@ contract RepayFacet {
             loan.repaid = toRepay;
             loan.borrowerClaimed = true;
             loan.collateral.safeTransferFrom(address(this), loan.borrower, loan.tokenId);
-            emit Repaid(loanIds[i]);
+            emit Repay(loanIds[i]);
         }
     }
 }

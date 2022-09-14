@@ -28,14 +28,15 @@ contract AuctionFacet {
         Loan storage loan = proto.loan[args.loanId];
         Ray shareToPay = ONE;
         if (args.to == loan.borrower) {
-            shareToPay = loan.shareLent;
             loan.borrowerClaimed = true;
+            shareToPay = loan.shareLent;    
         }
         uint256 timeSinceLiquidable = loan.endDate - block.timestamp; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
         address positionOwner;
 
+        loan.liquidated = true;
         if (loan.repaid != 0) { revert LoanAlreadyRepaid(args.loanId); }
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];

@@ -40,7 +40,8 @@ contract TestRepay is SetUp {
             tokenId: 1,
             repaid: 0,
             supplyPositionIds: uint256Array,
-            borrowerClaimed: false
+            borrowerClaimed: false,
+            liquidated: false
         });
     }
 }

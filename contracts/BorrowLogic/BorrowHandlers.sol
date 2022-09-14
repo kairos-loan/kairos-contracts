@@ -79,8 +79,9 @@ abstract contract BorrowHandlers is BorrowCheckers {
             collateral: nft.implem,
             tokenId: nft.id,
             repaid: 0,
-            supplyPositionIds: supplyPositionIds,
-            borrowerClaimed: false
+            borrowerClaimed: false,
+            liquidated: false,
+            supplyPositionIds: supplyPositionIds
         });
         proto.loan[collatState.loanId] = loan;
     }

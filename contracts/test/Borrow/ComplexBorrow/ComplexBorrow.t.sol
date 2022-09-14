@@ -82,6 +82,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             tokenId: 1,
             repaid: 0,
             supplyPositionIds: supplyPositionIds1,
+            liquidated: false,
             borrowerClaimed: false
         });
         Loan memory loan2 = Loan({
@@ -96,6 +97,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             tokenId: 1,
             repaid: 0,
             supplyPositionIds: supplyPositionIds2,
+            liquidated: false,
             borrowerClaimed: false
         });
         assertEq(loan1, IProtocolFacet(address(nftaclp)).getLoan(1));

@@ -28,8 +28,9 @@ struct Protocol {
 /// @member collateral NFT contract of collateral
 /// @member tokenId identifies the collateral in his collection
 /// @member repaid amount repaid or obtained from sale, non 0 value means the loan lifecycle is over
+/// @member liquidated the asset has been sold in auction
+/// @member borrowerClaimed the borrower claimed his rights on this loan (used in case of liquidation)
 /// @member supplyPositionIds identifier of the supply position tokens
-/// @member borrowerClaimed the borrower claimed his redeemable value (useful in liquidations)
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -41,6 +42,7 @@ struct Loan {
     IERC721 collateral;
     uint256 tokenId;
     uint256 repaid;
+    bool liquidated;
     bool borrowerClaimed;
     uint256[] supplyPositionIds; // todo : useful ? can be replaced by startId + nbOfPos
 }
