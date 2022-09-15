@@ -64,27 +64,9 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
     }
 
     function checkLoans() private view {
-        uint256[] memory supplyPositionIds1 = new uint256[](2);
-        supplyPositionIds1[0] = 1;
-        supplyPositionIds1[1] = 2;
         uint256[] memory supplyPositionIds2 = new uint256[](1);
         supplyPositionIds2[0] = 3;
         Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
-        Loan memory loan1 = Loan({
-            assetLent: money,
-            lent: 1 ether / 4 * 5,
-            shareLent: ONE,
-            startDate: block.timestamp,
-            endDate: block.timestamp + 1 weeks,
-            interestPerSecond: tranche0Rate,
-            borrower: address(this),
-            collateral: nft,
-            tokenId: 1,
-            repaid: 0,
-            supplyPositionIds: supplyPositionIds1,
-            liquidated: false,
-            borrowerClaimed: false
-        });
         Loan memory loan2 = Loan({
             assetLent: money2,
             lent: 1 ether,
@@ -98,9 +80,32 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             repaid: 0,
             supplyPositionIds: supplyPositionIds2,
             liquidated: false,
-            borrowerClaimed: false
+            borrowerClaimed: false 
         });
-        assertEq(loan1, IProtocolFacet(address(nftaclp)).getLoan(1));
+        assertEq(loan1(), IProtocolFacet(address(nftaclp)).getLoan(1));
         assertEq(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
+    }
+
+    function loan1() private view returns(Loan memory) {
+        Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
+        uint256[] memory supplyPositionIds1 = new uint256[](2);
+        supplyPositionIds1[0] = 1;
+        supplyPositionIds1[1] = 2;
+
+        return Loan({
+            assetLent: money,
+            lent: 1 ether / 4 * 5,
+            shareLent: ONE,
+            startDate: block.timestamp,
+            endDate: block.timestamp + 1 weeks,
+            interestPerSecond: tranche0Rate,
+            borrower: address(this),
+            collateral: nft,
+            tokenId: 1,
+            repaid: 0,
+            supplyPositionIds: supplyPositionIds1,
+            liquidated: false,
+            borrowerClaimed: false 
+        });
     }
 }

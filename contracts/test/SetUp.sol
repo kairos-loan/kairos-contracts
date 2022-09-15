@@ -19,6 +19,7 @@ contract SetUp is TestCommons, ERC721Holder {
         vm.label(address(money), "money");
         money2 = new Money();
         vm.label(address(money2), "money2");
+        vm.warp(2 * 365 days);
     }
 
     /* solhint-disable-next-line function-max-lines */

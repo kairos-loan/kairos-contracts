@@ -11,12 +11,19 @@ enum CollatSpecType { Floor, Single }
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
 
+/// @notice Arguments to buy the collateral of one loan
+/// @member loanId loan identifier
+/// @member to address that will receive the collateral
+/// @member positionIds eventual supply positions to burn to reduce totally or partially the sale price
 struct BuyArgs {
     uint256 loanId;
     address to;
     uint256[] positionIds;
 }
 
+/// @notice Arguments to borrow from one collateral
+/// @member nft asset to use as collateral
+/// @member args arguments for the borrow parameters of the offers to use with the collateral
 struct BorrowArgs {
     NFToken nft;
     OfferArgs[] args;
