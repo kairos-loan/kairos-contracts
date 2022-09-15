@@ -48,7 +48,7 @@ contract ClaimFacet is NFTUtils {
                 ? loan.repaid.mul(ONE.sub(loan.shareLent))
                 : 0;
             loan.assetLent.transfer(msg.sender, sentTemp);
-            emit Claim(msg.sender, sentTemp, loanIds[i]);
+            if (sentTemp > 0) { emit Claim(msg.sender, sentTemp, loanIds[i]); }
             sent += sentTemp;
         }
     }

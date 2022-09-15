@@ -17,7 +17,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
 
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.root = root;
-        args.signature = getSignature(root);
+        args.signature = getSignatureInternal(root);
         assertEq(signer, checkOfferArgs(args));
     }
 
@@ -34,7 +34,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         Root memory root = Root({root: keccak256(bytes.concat(hashOne, hashTwo))});
         args.root = root;
         args.proof = proof;
-        args.signature = getSignature(root);
+        args.signature = getSignatureInternal(root);
         // offer1 is implicitely included in args
         checkOfferArgs(args);
         offer2.loanToValue = 2;
@@ -51,7 +51,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.root = root;
         args.offer = offer;
-        args.signature = getSignature(root);
+        args.signature = getSignatureInternal(root);
         vm.expectRevert(abi.encodeWithSelector(OfferHasBeenDeleted.selector, offer, uint256(0)));
         this.checkOfferArgsExternal(args);
     }
@@ -63,7 +63,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
 
         args.amount = 1 ether;
         args.root = root;
-        args.signature = getSignature(root);
+        args.signature = getSignatureInternal(root);
         vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, uint256(0)));
         this.checkOfferArgsExternal(args);
     }

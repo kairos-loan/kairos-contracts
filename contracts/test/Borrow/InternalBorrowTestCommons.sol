@@ -12,7 +12,7 @@ contract InternalBorrowTestCommons is BorrowCheckers, TestCommons {
         vm.etch(address(MOCK_TOKEN), randoCode); // for mock calls to work, code needs to be not empty
     }
 
-    function getSignature(Root memory root) internal returns(bytes memory signature){
+    function getSignatureInternal(Root memory root) internal returns(bytes memory signature){
         bytes32 digest = rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
         signature = bytes.concat(r, s, bytes1(v));

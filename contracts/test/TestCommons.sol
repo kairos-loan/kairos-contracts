@@ -37,6 +37,42 @@ contract TestCommons is Constructor, SafeMint {
         tokenId = abi.decode(data, (uint256));
     }
 
+    function getSignature(Root memory root) internal returns(bytes memory signature){
+        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
+        signature = bytes.concat(r, s, bytes1(v));
+    }
+
+    function getSignature2(Root memory root) internal returns(bytes memory signature){    
+        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY2, digest);
+        signature = bytes.concat(r, s, bytes1(v));
+    }
+
+    function getOfferArgs(Offer memory offer) internal returns(OfferArgs[] memory){
+        OfferArgs[] memory offerArgs = new OfferArgs[](1);
+        Root memory root = Root({root: keccak256(abi.encode(offer))});
+        bytes32[] memory emptyArray;
+        offerArgs[0] = OfferArgs({
+            proof: emptyArray,
+            root: root,
+            signature: getSignature(root),
+            amount: 1 ether,
+            offer: offer
+        });
+        return offerArgs;
+    }
+
+    function getTokens(address receiver) internal returns(uint256 tokenId){
+        vm.startPrank(receiver);
+
+        tokenId = nft.mintOne();
+        money.mint(100 ether);
+        money.approve(address(nftaclp), 100 ether);
+
+        vm.stopPrank();   
+    }
+
     function getDefaultLoan() internal view returns(Loan memory) {
         uint256[] memory uint256Array = new uint256[](1);
         uint256Array[0] = 1;
@@ -63,6 +99,20 @@ contract TestCommons is Constructor, SafeMint {
             logLoan(actual, "actual  ");
             revert AssertionFailedLoanDontMatch();
         }
+    }
+
+    function getOffer() internal view returns(Offer memory){
+        return Offer({
+                assetToLend: money,
+                loanToValue: 10 ether,
+                duration: 2 weeks,
+                nonce: 0,
+                collatSpecType: CollatSpecType.Floor,
+                tranche: 0,
+                collatSpecs: abi.encode(FloorSpec({
+                    implem: nft
+                }))
+            });
     }
 
     function assertEq(Ray actual, Ray expected) internal pure {

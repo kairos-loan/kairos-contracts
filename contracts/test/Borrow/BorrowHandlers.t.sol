@@ -60,7 +60,7 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         ret.offer = offer;
         ret.root = root;
-        ret.signature = getSignature(root);
+        ret.signature = getSignatureInternal(root);
     }
 }
 

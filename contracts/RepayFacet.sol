@@ -12,6 +12,7 @@ contract RepayFacet {
 
     event Repay(uint256 indexed loanId);
 
+    // todo : propose erc777 onReceive hook for repayment ?
     // todo : implement minimal repayment
     // todo : analysis on possible reentrency
     // repay on behalf is activated, the collateral goes to the original borrower
