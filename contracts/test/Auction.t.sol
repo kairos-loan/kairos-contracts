@@ -4,9 +4,6 @@ pragma solidity 0.8.17;
 import "./SetUp.sol";
 
 contract TestAuction is SetUp {
-    using RayMath for Ray;
-    using RayMath for uint256;
-
     // test simplest case of auction
     function testSimpleAuction() public {
         BuyArgs[] memory args = new BuyArgs[](1);
@@ -26,5 +23,7 @@ contract TestAuction is SetUp {
         vm.prank(signer);
         kairos.buy(args);
         assertEq(nft.ownerOf(1), signer2);
+        vm.expectRevert(ERC721InvalidTokenId.selector);
+        assertEq(kairos.ownerOf(1), address(0));
     }
 }
