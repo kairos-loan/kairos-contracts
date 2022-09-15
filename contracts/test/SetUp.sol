@@ -4,8 +4,11 @@ pragma solidity 0.8.17;
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
 import "./TestCommons.sol";
+import "../interface/IKairos.sol";
 
 contract SetUp is TestCommons, ERC721Holder {
+    IKairos internal kairos;
+
     function setUp() public {
         nftaclp = new Diamond(address(this), address(cut));
         IDiamondCut.FacetCut[] memory facetCuts = getFacetCuts();
@@ -20,6 +23,7 @@ contract SetUp is TestCommons, ERC721Holder {
         money2 = new Money();
         vm.label(address(money2), "money2");
         vm.warp(2 * 365 days);
+        kairos = IKairos(address(nftaclp));
     }
 
     /* solhint-disable-next-line function-max-lines */

@@ -31,7 +31,7 @@ contract AuctionFacet is NFTUtils {
             loan.borrowerClaimed = true;
             shareToPay = loan.shareLent;    
         }
-        uint256 timeSinceLiquidable = loan.endDate - block.timestamp; // reverts if asset is not yet liquidable
+        uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
 

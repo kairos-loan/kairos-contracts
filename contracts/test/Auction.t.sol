@@ -10,7 +10,8 @@ contract TestAuction is SetUp {
     // test simplest case of auction
     function testSimpleAuction() public {
         BuyArgs[] memory args = new BuyArgs[](1);
-        uint256[] memory positionIds;
+        uint256[] memory positionIds = new uint256[](1);
+        positionIds[0] = 1;
         args[0] = BuyArgs({
             loanId: 1,
             to: signer2,
@@ -20,7 +21,10 @@ contract TestAuction is SetUp {
         loan.startDate = block.timestamp - 1 weeks;
         loan.endDate = block.timestamp - 2 days; // price should be the same as lent amount
         store(loan, 1);
-        store(getDefaultProvision(), 1);
-        nft.transferFrom(address(this), address(nftaclp), 1);
+        mintPosition(signer, getDefaultProvision());
+        nft.transferFrom(address(this), address(kairos), 1);
+        vm.prank(signer);
+        kairos.buy(args);
+        assertEq(nft.ownerOf(1), signer2);
     }
 }
