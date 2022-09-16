@@ -44,10 +44,7 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
     function useOfferExternal(
         OfferArgs memory args,
         CollateralState memory collatState
-    ) public returns(
-        uint256 supplyPositionId, 
-        CollateralState memory
-    ) {
+    ) public returns(CollateralState memory) {
         return useOffer(args, collatState);
     }
 

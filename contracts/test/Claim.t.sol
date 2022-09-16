@@ -10,7 +10,7 @@ contract TestClaim is SetUp {
         uint256[] memory positionIds = new uint256[](1);
         positionIds[0] = 1;
         Loan memory loan = getDefaultLoan();
-        loan.repaid = 1 ether;
+        loan.payment.paid = 1 ether;
         store(loan, 1);
         mintPosition(signer, getDefaultProvision());
         money.transfer(address(kairos), 1 ether);
@@ -26,9 +26,9 @@ contract TestClaim is SetUp {
         uint256[] memory loanIds = new uint256[](1);
         loanIds[0] = 1;
         Loan memory loan = getDefaultLoan();
-        loan.repaid = 1 ether;
+        loan.payment.paid = 1 ether;
         loan.shareLent = ONE.div(2);
-        loan.liquidated = true;
+        loan.payment.liquidated = true;
         store(loan, 1);
         money.transfer(address(kairos), 1 ether / 2);
         vm.prank(signer);

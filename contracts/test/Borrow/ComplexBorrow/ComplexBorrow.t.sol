@@ -67,6 +67,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         uint256[] memory supplyPositionIds2 = new uint256[](1);
         supplyPositionIds2[0] = 3;
         Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
+        Payment memory payment;
         Loan memory loan2 = Loan({
             assetLent: money2,
             lent: 1 ether,
@@ -75,12 +76,13 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             endDate: block.timestamp + 4 weeks,
             interestPerSecond: tranche0Rate,
             borrower: address(this),
-            collateral: nft2,
-            tokenId: 1,
-            repaid: 0,
-            supplyPositionIds: supplyPositionIds2,
-            liquidated: false,
-            borrowerClaimed: false 
+            collateral: NFToken({
+                implem: nft2,
+                id: 1
+            }),
+            payment: payment,
+            supplyPositionIndex: 3,
+            nbOfPositions: 1
         });
         assertEq(loan1(), IProtocolFacet(address(nftaclp)).getLoan(1));
         assertEq(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
@@ -88,6 +90,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
 
     function loan1() private view returns(Loan memory) {
         Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
+        Payment memory payment;
         uint256[] memory supplyPositionIds1 = new uint256[](2);
         supplyPositionIds1[0] = 1;
         supplyPositionIds1[1] = 2;
@@ -100,12 +103,13 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             endDate: block.timestamp + 1 weeks,
             interestPerSecond: tranche0Rate,
             borrower: address(this),
-            collateral: nft,
-            tokenId: 1,
-            repaid: 0,
-            supplyPositionIds: supplyPositionIds1,
-            liquidated: false,
-            borrowerClaimed: false 
+            collateral: NFToken({
+                implem: nft,
+                id: 1
+            }),
+            payment: payment,
+            supplyPositionIndex: 1,
+            nbOfPositions: 2
         });
     }
 }

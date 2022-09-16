@@ -74,8 +74,7 @@ contract TestCommons is Constructor, SafeMint {
     }
 
     function getDefaultLoan() internal view returns(Loan memory) {
-        uint256[] memory uint256Array = new uint256[](1);
-        uint256Array[0] = 1;
+        Payment memory payment;
         return Loan({
             assetLent: money,
             lent: 1 ether,
@@ -84,12 +83,13 @@ contract TestCommons is Constructor, SafeMint {
             endDate: block.timestamp + 2 weeks,
             interestPerSecond: protocolStorage().tranche[0],
             borrower: signer,
-            collateral: nft,
-            tokenId: 1,
-            repaid: 0,
-            supplyPositionIds: uint256Array,
-            borrowerClaimed: false,
-            liquidated: false
+            collateral: NFToken({
+                implem: nft,
+                id: 1
+            }),
+            supplyPositionIndex: 1,
+            payment: payment,
+            nbOfPositions: 1
         });
     }
 

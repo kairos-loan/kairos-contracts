@@ -20,8 +20,11 @@ function logLoan(Loan memory loan, string memory name) view {
     console.log("liquidated          ", loan.payment.liquidated);
     console.log("borrowerClaimed     ", loan.payment.borrowerClaimed);
     console.log("borrowerBought      ", loan.payment.borrowerBought);
-    for(uint256 i; i < loan.supplyPositionIds.length; i++) {
-        console.log("supplyPositionIds %s: %s", i, loan.supplyPositionIds[i]);
+    console.log("supplyPositionIndex:");
+    if (loan.nbOfPositions >= 2) {
+        console.log("from %s to %s", loan.supplyPositionIndex, loan.supplyPositionIndex + loan.nbOfPositions -1 );
+    } else {
+        console.log("position ", loan.supplyPositionIndex);
     }
     console.log("~~~~~~~ end loan ", name, "   ~~~~~~~");
 }
