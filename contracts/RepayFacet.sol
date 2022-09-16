@@ -24,13 +24,12 @@ contract RepayFacet {
 
         for(uint8 i; i < loanIds.length; i++){
             loan = proto.loan[loanIds[i]];
-            if (loan.repaid > 0) { revert LoanAlreadyRepaid(loanIds[i]); }
+            if (loan.payment.paid > 0) { revert LoanAlreadyRepaid(loanIds[i]); }
             lent = loan.lent;
             toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate));
             loan.assetLent.transferFrom(msg.sender, address(this), toRepay);
-            loan.repaid = toRepay;
-            loan.borrowerClaimed = true;
-            loan.collateral.safeTransferFrom(address(this), loan.borrower, loan.tokenId);
+            loan.payment.paid = toRepay;
+            loan.collateral.implem.safeTransferFrom(address(this), loan.borrower, loan.collateral.id);
             emit Repay(loanIds[i]);
         }
     }

@@ -22,15 +22,14 @@ struct Protocol {
 /// @member assetLent currency lent
 /// @member lent total amount lent
 /// @member startDate timestamp of the borrowing transaction
+/// @member shareLent between 0 and 1, the share of the collateral value lent
 /// @member endDate timestamp after which sale starts & repay is impossible
 /// @member interestPerSecond share of the amount lent added to the debt per second
 /// @member borrower borrowing account
-/// @member collateral NFT contract of collateral
-/// @member tokenId identifies the collateral in his collection
-/// @member repaid amount repaid or obtained from sale, non 0 value means the loan lifecycle is over
-/// @member liquidated the asset has been sold in auction
-/// @member borrowerClaimed the borrower claimed his rights on this loan (used in case of liquidation)
-/// @member supplyPositionIds identifier of the supply position tokens
+/// @member collateral NFT asset used as collateral
+/// @member supplyPositionIndex identifier of the first supply position used in the loan
+/// @member payment data on the payment, a non-0 payment.paid value means the loan lifecyle is over
+/// @member nbOfPositions number of supply positions used, which ids are consecutive to the index
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -39,12 +38,17 @@ struct Loan {
     uint256 endDate;
     Ray interestPerSecond;
     address borrower;
-    IERC721 collateral;
-    uint256 tokenId;
-    uint256 repaid;
+    NFToken collateral;
+    uint256 supplyPositionIndex;
+    Payment payment;
+    uint8 nbOfPositions;
+}
+
+struct Payment {
+    uint256 paid;
     bool liquidated;
     bool borrowerClaimed;
-    uint256[] supplyPositionIds; // todo : useful ? can be replaced by startId + nbOfPos
+    bool borrowerBought;
 }
 
 struct SupplyPosition {

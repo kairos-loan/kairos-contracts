@@ -11,7 +11,7 @@ contract AuctionFacet is NFTUtils {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    event Buy(uint256 indexed loanId, IERC721 indexed collection, uint256 indexed tokenId);
+    event Buy(uint256 indexed loanId, NFToken indexed nft);
 
     function buy(BuyArgs[] memory args) external {
         for (uint8 i; i < args.length; i++) {
@@ -28,15 +28,15 @@ contract AuctionFacet is NFTUtils {
         Loan storage loan = proto.loan[args.loanId];
         Ray shareToPay = ONE;
         if (args.to == loan.borrower) {
-            loan.borrowerClaimed = true;
+            loan.payment.borrowerBought = true;
             shareToPay = loan.shareLent;    
         }
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
 
-        loan.liquidated = true;
-        if (loan.repaid != 0) { revert LoanAlreadyRepaid(args.loanId); }
+        loan.payment.liquidated = true;
+        if (loan.payment.paid != 0) { revert LoanAlreadyRepaid(args.loanId); }
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
@@ -48,10 +48,10 @@ contract AuctionFacet is NFTUtils {
         }
         toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
         loan.assetLent.transferFrom(msg.sender, address(this), toPay);
-        loan.repaid = toPay;
-        loan.collateral.safeTransferFrom(address(this), args.to, loan.tokenId);
+        loan.payment.paid = toPay;
+        loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
 
-        emit Buy(args.loanId, loan.collateral, loan.tokenId);
+        emit Buy(args.loanId, loan.collateral);
     }
 
     /// @notice gets price calculated following a linear dutch auction

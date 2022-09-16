@@ -22,6 +22,3 @@ contract TestIntegration is SetUp {
         kairos.claim(oneInArray);
     }
 }
-
-// 7671232876712328 reimbursed
-// 767123287671232  principal plus interests

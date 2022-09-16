@@ -15,10 +15,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     function useOffer(
         OfferArgs memory args,
         CollateralState memory collatState
-    ) internal returns(
-        uint256 supplyPositionId, 
-        CollateralState memory
-    ) {
+    ) internal returns(CollateralState memory) {
         address signer = checkOfferArgs(args);
         Ray shareMatched;
 
@@ -39,12 +36,14 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         if (args.offer.duration < collatState.minOfferDuration) {collatState.minOfferDuration = args.offer.duration;}
 
         collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
-
-        return(safeMint(signer, Provision({
-            amount: args.amount,
-            share: shareMatched,
-            loanId: collatState.loanId
-        })), collatState);
+        safeMint(signer, 
+            Provision({
+                amount: args.amount,
+                share: shareMatched,
+                loanId: collatState.loanId
+            })
+        );
+        return(collatState);
     }
 
     function useCollateral(
@@ -53,8 +52,8 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         NFToken memory nft
     ) internal returns(Loan memory loan) {
         Protocol storage proto = protocolStorage();
-        uint256[] memory supplyPositionIds = new uint256[](args.length);
         uint256 lent;
+        uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
         CollateralState memory collatState = CollateralState({
             matched: Ray.wrap(0),
             assetLent: args[0].offer.assetToLend,
@@ -64,9 +63,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             loanId: ++proto.nbOfLoans
         });
         for(uint8 i; i < args.length; i++) {
-            (supplyPositionIds[i], collatState) = useOffer(args[i], collatState);
+            collatState = useOffer(args[i], collatState);
             lent += args[i].amount;
         }
+        Payment memory notPaid;
         loan = Loan({
             assetLent: collatState.assetLent,
             lent: lent,
@@ -75,12 +75,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             endDate: block.timestamp + collatState.minOfferDuration,
             interestPerSecond: proto.tranche[0], // todo : adapt rate to the offers
             borrower: from,
-            collateral: nft.implem,
-            tokenId: nft.id,
-            repaid: 0,
-            borrowerClaimed: false,
-            liquidated: false,
-            supplyPositionIds: supplyPositionIds
+            collateral: nft,
+            supplyPositionIndex: supplyPositionIndex,
+            payment: notPaid,
+            nbOfPositions: uint8(args.length)
         });
         proto.loan[collatState.loanId] = loan;
     }

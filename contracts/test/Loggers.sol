@@ -14,11 +14,12 @@ function logLoan(Loan memory loan, string memory name) view {
     console.log("endDate             ", loan.endDate);
     console.log("interestPerSecond   ", Ray.unwrap(loan.interestPerSecond));
     console.log("borrower            ", loan.borrower);
-    console.log("collateral          ", address(loan.collateral));
-    console.log("tokenId             ", loan.tokenId);
-    console.log("repaid              ", loan.repaid);
-    console.log("liquidated          ", loan.liquidated);
-    console.log("borrowerClaimed     ", loan.borrowerClaimed);
+    console.log("collat implem       ", address(loan.collateral.implem));
+    console.log("collat id           ", loan.collateral.id);
+    console.log("paid                ",   loan.payment.paid);
+    console.log("liquidated          ", loan.payment.liquidated);
+    console.log("borrowerClaimed     ", loan.payment.borrowerClaimed);
+    console.log("borrowerBought      ", loan.payment.borrowerBought);
     for(uint256 i; i < loan.supplyPositionIds.length; i++) {
         console.log("supplyPositionIds %s: %s", i, loan.supplyPositionIds[i]);
     }
