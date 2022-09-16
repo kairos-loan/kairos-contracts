@@ -55,13 +55,13 @@ contract ClaimFacet is NFTUtils {
 
     /// @notice sends principal plus interests of the loan to `msg.sender`
     function sendInterests(Loan storage loan, Provision storage provision) private returns(uint256 sent) {
-        sent = loan.repaid.mul(provision.share);
+        sent = loan.repaid.mul(provision.share.div(loan.shareLent));
         loan.assetLent.transfer(msg.sender, sent);
     }
 
     function sendShareOfSaleAsSupplier(Loan storage loan, Provision storage provision) private returns(uint256 sent) {
         sent = loan.borrowerClaimed
-            ? loan.repaid.mul(provision.share.div(loan.shareLent))
+            ? loan.repaid.mul(provision.share.div(loan.shareLent)) // pb
             : loan.repaid.mul(provision.share);
         loan.assetLent.transfer(msg.sender, sent);
     }
