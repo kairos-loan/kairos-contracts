@@ -28,14 +28,35 @@ import "./Loggers.sol";
 error AssertionFailedLoanDontMatch();
 error AssertionFailedRayDontMatch(Ray expected, Ray actual);
 
-contract Constructor is Test {
-    using RayMath for Ray;
-
+contract ExtendConstructor is Test {
+    uint256[] internal oneInArray;
     uint256 internal constant KEY = 0xA11CE;
     uint256 internal constant KEY2 = 0xB0B;
     address internal immutable signer;
     address internal immutable signer2;
+    bytes4 immutable internal erc721SafeTransferFromSelector;
+    bytes4 immutable internal erc721SafeTransferFromDataSelector;
     Diamond internal nftaclp;
+    Money internal money;
+    Money internal money2;
+    NFT internal nft;
+    NFT internal nft2;
+
+    constructor() {
+        oneInArray = new uint256[](1);
+        oneInArray[0] = 1;
+        signer = vm.addr(KEY);
+        signer2 = vm.addr(KEY2);
+        vm.label(signer, "signer");
+        vm.label(signer2, "signer2");
+        erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
+        erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
+    }
+}
+
+contract Constructor is ExtendConstructor {
+    using RayMath for Ray;
+
     Initializer internal initializer;
     DiamondCutFacet internal cut;
     OwnershipFacet internal ownership;
@@ -47,18 +68,8 @@ contract Constructor is Test {
     DCHelperFacet internal helper;
     AuctionFacet internal auction;
     ClaimFacet internal claim;
-    Money internal money;
-    Money internal money2;
-    NFT internal nft;
-    NFT internal nft2;
-    bytes4 immutable internal erc721SafeTransferFromSelector;
-    bytes4 immutable internal erc721SafeTransferFromDataSelector;
 
     constructor() {
-        signer = vm.addr(KEY);
-        signer2 = vm.addr(KEY2);
-        vm.label(signer, "signer");
-        vm.label(signer2, "signer2");
         cut = new DiamondCutFacet();
         loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
@@ -71,7 +82,5 @@ contract Constructor is Test {
         auction = new AuctionFacet();
         claim = new ClaimFacet();
         protocolStorage().tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
-        erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
-        erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
     }
 }
