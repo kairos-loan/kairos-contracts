@@ -3,9 +3,9 @@ pragma solidity 0.8.17;
 
 import "../SupplyPositionLogic/SafeMint.sol";
 import "../interface/IDCHelperFacet.sol";
-import "./Constructor.sol";
+import "./TestConstructor.sol";
 
-contract TestCommons is Constructor, SafeMint {
+contract TestCommons is TestConstructor, SafeMint {
     function publicStoreLoan(Loan memory loan, uint256 loanId) public {
         protocolStorage().loan[loanId] = loan;
     }
