@@ -14,7 +14,7 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     // todo : add reentrency check
     // todo : process supplier coins
     // todo : support supplier signed approval
-    // todo : support contract signatures
+    // todo : support contract signatures (erc1271)
     // todo : check and implement protocol rules
     // todo : allow receive money then hook to get the NFT
     // todo : enforce minimal offer duration // useful ? if minimal interest // maybe max also

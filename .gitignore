@@ -7,3 +7,4 @@ artifacts
 *.log
 Secrets.sol
 foundry.toml
+broadcast

@@ -7,6 +7,7 @@ import "../ContractsCreator.sol";
 
 contract Deploy is Script, ContractsCreator {
     function run() public {
+        vm.broadcast();
         createContracts();
         Diamond diamond = new Diamond(address(this), address(cut));
         IDiamondCut(address(diamond)).diamondCut(
