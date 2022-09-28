@@ -7,10 +7,11 @@ import "../ContractsCreator.sol";
 
 contract Deploy is Script, ContractsCreator {
     function run() public {
-        vm.broadcast();
+        vm.startBroadcast();
         createContracts();
-        Diamond diamond = new Diamond(address(this), address(cut));
+        Diamond diamond = new Diamond(msg.sender, address(cut));
         IDiamondCut(address(diamond)).diamondCut(
             getFacetCuts(), address(initializer), abi.encodeWithSelector(initializer.init.selector));
+        console.log("deployed at : ", address(diamond));
     }
 }

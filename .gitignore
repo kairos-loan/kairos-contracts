@@ -8,3 +8,4 @@ artifacts
 Secrets.sol
 foundry.toml
 broadcast
+commands.txt
