@@ -3,4 +3,3 @@ src = 'contracts'
 out = 'out'
 etherscan-api-key = ''
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
-fs_permissions = [{ access = "read-write", path = "./"}]
