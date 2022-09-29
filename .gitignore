@@ -9,3 +9,4 @@ Secrets.sol
 foundry.toml
 broadcast
 commands.txt
+generated/deployment.js

@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import "../SupplyPositionLogic/SafeMint.sol";
 import "../interface/IDCHelperFacet.sol";
 import "./TestConstructor.sol";
+import "contracts/interface/IKairos.sol";
 
 contract TestCommons is TestConstructor, SafeMint {
     function publicStoreLoan(Loan memory loan, uint256 loanId) public {
@@ -37,16 +38,22 @@ contract TestCommons is TestConstructor, SafeMint {
         tokenId = abi.decode(data, (uint256));
     }
 
-    function getSignature(Root memory root) internal returns(bytes memory signature){
-        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
+    function getSignatureFromKey(
+        Root memory root, 
+        uint256 pKey, 
+        IKairos kairos
+    ) internal returns(bytes memory signature){
+        bytes32 digest = kairos.rootDigest(root);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(pKey, digest);
         signature = bytes.concat(r, s, bytes1(v));
     }
 
-    function getSignature2(Root memory root) internal returns(bytes memory signature){    
-        bytes32 digest = IBorrowFacet(address(nftaclp)).rootDigest(root);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY2, digest);
-        signature = bytes.concat(r, s, bytes1(v));
+    function getSignature(Root memory root) internal returns(bytes memory signature){
+        return getSignatureFromKey(root, KEY, IKairos(address(nftaclp)));
+    }
+
+    function getSignature2(Root memory root) internal returns(bytes memory signature){
+        return getSignatureFromKey(root, KEY2, IKairos(address(nftaclp)));
     }
 
     function getOfferArgs(Offer memory offer) internal returns(OfferArgs[] memory){

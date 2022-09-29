@@ -4,13 +4,16 @@ pragma solidity 0.8.17;
 import "forge-std/Script.sol";
 
 import "../DataStructure/Global.sol";
-import "contracts/interface/Ikairos.sol";
+import "contracts/interface/IKairos.sol";
 
 /// @dev use for quick tests
 
 contract ContractScript is Script {
     function run() public {
-        IKairos(0xBEe6FFc1E8627F51CcDF0b4399a1e1abc5165f15).rootDigest(
-            Root({root:0xb83980c5f9ef4ebbcb02e750e44dd4efed90da6a90ad1902116de9f141fb9d79}));
+        uint256 KEY = 0xA11CE;
+        bytes32 digest = 0x68510e5f9f8e078fa1ee17dfcbfdf780f1ead4d1f97b48e031d30d6d992df6b3;
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(KEY, digest);
+        bytes memory signature = bytes.concat(r, s, bytes1(v));
+        console.log(vm.addr(KEY));
     }
 }

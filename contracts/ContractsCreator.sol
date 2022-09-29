@@ -44,51 +44,51 @@ contract ContractsCreator {
     function getFacetCuts() internal view returns(IDiamondCut.FacetCut[] memory) {
         IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](8);
 
-        facetCuts[0] = IDiamondCut.FacetCut({
+        facetCuts[0] = IDiamond.FacetCut({
             facetAddress: address(loupe),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: loupeFS()
         });
 
-        facetCuts[1] = IDiamondCut.FacetCut({
+        facetCuts[1] = IDiamond.FacetCut({
             facetAddress: address(ownership),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: ownershipFS()
         });
 
-        facetCuts[2] = IDiamondCut.FacetCut({
+        facetCuts[2] = IDiamond.FacetCut({
             facetAddress: address(borrow),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: borrowFS()
         });
 
-        facetCuts[3] = IDiamondCut.FacetCut({
+        facetCuts[3] = IDiamond.FacetCut({
             facetAddress: address(supplyPosition),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: supplyPositionFS()
         });
 
-        facetCuts[4] = IDiamondCut.FacetCut({
+        facetCuts[4] = IDiamond.FacetCut({
             facetAddress: address(protocol),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: protoFS()
         });
 
-        facetCuts[5] = IDiamondCut.FacetCut({
+        facetCuts[5] = IDiamond.FacetCut({
             facetAddress: address(repay),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: repayFS()
         });
 
-        facetCuts[6] = IDiamondCut.FacetCut({
+        facetCuts[6] = IDiamond.FacetCut({
             facetAddress: address(auction),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: auctionFS()
         });
 
-        facetCuts[7] = IDiamondCut.FacetCut({
+        facetCuts[7] = IDiamond.FacetCut({
             facetAddress: address(claim),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: claimFS()
         });
 
