@@ -1,4 +1,6 @@
 {
+  "name": "kairos-loan-contracts",
+  "version": "0.1.0",
   "scripts": {
     "test": ". script/test.sh",
     "build": "forge build"

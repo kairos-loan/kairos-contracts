@@ -1,6 +1,6 @@
 # KAIROS LOAN
 
-NFT as collateral lending protocol. Real name TBD.
+NFT as collateral lending protocol. Contracts repository
 
 ## test
 
@@ -33,7 +33,7 @@ No abreviation if the abreviated word is the whole name
 - "ret" is "returned"
 - "prod" is "production"
 
-respect solhint warnings and errors
+respect solhint warnings and errors  
 No file longer than 150 lines  
 use singular for mapping names, plural for arrays
 
