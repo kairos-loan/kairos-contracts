@@ -7,15 +7,16 @@ import "./TestCommons.sol";
 import "../interface/IKairos.sol";
 
 contract SetUp is TestCommons, ERC721Holder {
-    IKairos internal kairos;
-
     function setUp() public {
         bytes memory emptyBytes;
-        nftaclp = new Diamond(address(this), address(cut));
-        IDiamondCut(address(nftaclp)).diamondCut(
+        DiamondArgs memory args = DiamondArgs({
+            owner: address(this),
+            init: address(initializer),
+            initCalldata: abi.encodeWithSelector(initializer.init.selector)
+        });
+        kairos = IKairos(address(new Diamond(getFacetCuts(), args)));
+        kairos.diamondCut(
             testFacetCuts(), address(0), emptyBytes);
-        IDiamondCut(address(nftaclp)).diamondCut(
-            getFacetCuts(), address(initializer), abi.encodeWithSelector(initializer.init.selector));
         nft = new NFT("Test NFT", "TNFT");
         vm.label(address(nft), "nft");
         nft2 = new NFT("Test NFT2", "TNFT2");
@@ -25,15 +26,14 @@ contract SetUp is TestCommons, ERC721Holder {
         money2 = new Money();
         vm.label(address(money2), "money2");
         vm.warp(2 * 365 days);
-        kairos = IKairos(address(nftaclp));
     }
 
-    function testFacetCuts() internal view returns(IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](1);
+    function testFacetCuts() internal view returns(IDiamond.FacetCut[] memory) {
+        IDiamond.FacetCut[] memory facetCuts = new IDiamond.FacetCut[](1);
                 
-        facetCuts[0] = IDiamondCut.FacetCut({
+        facetCuts[0] = IDiamond.FacetCut({
             facetAddress: address(helper),
-            action: IDiamondCut.FacetCutAction.Add,
+            action: IDiamond.FacetCutAction.Add,
             functionSelectors: helperFS()
         });
 

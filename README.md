@@ -1,4 +1,4 @@
-# NFTACLP
+# KAIROS LOAN
 
 NFT as collateral lending protocol. Real name TBD.
 

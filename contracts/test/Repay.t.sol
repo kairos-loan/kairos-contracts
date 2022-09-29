@@ -12,7 +12,7 @@ contract TestRepay is SetUp {
         vm.warp(365 days);
         uint256[] memory uint256Array = new uint256[](1);
         uint256Array[0] = 1;
-        nft.transferFrom(address(this), address(nftaclp), 1);
+        nft.transferFrom(address(this), address(kairos), 1);
         Loan memory loan = getDefaultLoan();
         loan.borrower = address(this);
         store(loan, 1);

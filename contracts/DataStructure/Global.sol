@@ -5,8 +5,8 @@ import "./Errors.sol";
 
 bytes32 constant ROOT_TYPEHASH = keccak256("Root(bytes32 root)");
 
-bytes32 constant PROTOCOL_SP = keccak256("eth.nftaclp.protocol");
-bytes32 constant SUPPLY_SP = keccak256("eth.nftaclp.supply-position");
+bytes32 constant PROTOCOL_SP = keccak256("eth.kairos.protocol");
+bytes32 constant SUPPLY_SP = keccak256("eth.kairos.supply-position");
 
 uint256 constant RAY = 1e27;
 Ray constant ONE = Ray.wrap(RAY);

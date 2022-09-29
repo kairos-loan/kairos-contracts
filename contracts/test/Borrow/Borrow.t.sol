@@ -14,7 +14,7 @@ contract TestBorrow is SetUp {
 
         bytes memory data = abi.encode(getOfferArgs(getOffer()));
 
-        nft.safeTransferFrom(signer, address(nftaclp), tokenId, data);
+        nft.safeTransferFrom(signer, address(kairos), tokenId, data);
     }
 
     function testWrongNFTAddress() public {
@@ -40,7 +40,7 @@ contract TestBorrow is SetUp {
             nft,
             wrongNFT
         ));
-        nft.safeTransferFrom(signer, address(nftaclp), tokenId, data);
+        nft.safeTransferFrom(signer, address(kairos), tokenId, data);
     }
 
     // todo : test unknown collat spec type

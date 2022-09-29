@@ -32,12 +32,12 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         batchbargs[0] = d.bargs1;
         batchbargs[1] = d.bargs2;
 
-        IBorrowFacet(address(nftaclp)).borrow(batchbargs);
-        assertEq(IERC721(address(nftaclp)).balanceOf(signer), 2);
-        assertEq(IERC721(address(nftaclp)).balanceOf(signer2), 1);
-        Provision memory supp1pos1 = ISupplyPositionFacet(address(nftaclp)).position(1);
-        Provision memory supp2pos = ISupplyPositionFacet(address(nftaclp)).position(2);
-        Provision memory supp1pos2 = ISupplyPositionFacet(address(nftaclp)).position(3);
+        kairos.borrow(batchbargs);
+        assertEq(kairos.balanceOf(signer), 2);
+        assertEq(kairos.balanceOf(signer2), 1);
+        Provision memory supp1pos1 = kairos.position(1);
+        Provision memory supp2pos = kairos.position(2);
+        Provision memory supp1pos2 = kairos.position(3);
         assertEq(supp1pos1.amount, 1 ether / 2);
         assertEq(supp2pos.amount, 3 ether / 4);
         assertEq(supp1pos2.amount, 1 ether);
@@ -59,14 +59,14 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         // nft balances
         assertEq(nft.balanceOf(address(this)), 0);
         assertEq(nft2.balanceOf(address(this)), 0);
-        assertEq(nft.balanceOf(address(nftaclp)), 1);
-        assertEq(nft.balanceOf(address(nftaclp)), 1);
+        assertEq(nft.balanceOf(address(kairos)), 1);
+        assertEq(nft.balanceOf(address(kairos)), 1);
     }
 
     function checkLoans() private view {
         uint256[] memory supplyPositionIds2 = new uint256[](1);
         supplyPositionIds2[0] = 3;
-        Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
+        Ray tranche0Rate = kairos.getRateOfTranche(0);
         Payment memory payment;
         Loan memory loan2 = Loan({
             assetLent: money2,
@@ -84,12 +84,12 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             supplyPositionIndex: 3,
             nbOfPositions: 1
         });
-        assertEq(loan1(), IProtocolFacet(address(nftaclp)).getLoan(1));
-        assertEq(loan2, IProtocolFacet(address(nftaclp)).getLoan(2));
+        assertEq(loan1(), kairos.getLoan(1));
+        assertEq(loan2, kairos.getLoan(2));
     }
 
     function loan1() private view returns(Loan memory) {
-        Ray tranche0Rate = IProtocolFacet(address(nftaclp)).getRateOfTranche(0);
+        Ray tranche0Rate = kairos.getRateOfTranche(0);
         Payment memory payment;
         uint256[] memory supplyPositionIds1 = new uint256[](2);
         supplyPositionIds1[0] = 1;

@@ -16,9 +16,13 @@ contract DeployLocal is Script, ContractsCreator, TestCommons {
 
         vm.startBroadcast(pKey);
         createContracts();
-        kairos = IKairos(address(new Diamond(testAddress, address(cut))));
-        IDiamondCut(address(kairos)).diamondCut(
-            getFacetCuts(), address(initializer), abi.encodeWithSelector(initializer.init.selector));
+        DiamondArgs memory args = DiamondArgs({
+            owner: testAddress,
+            init: address(initializer),
+            initCalldata: abi.encodeWithSelector(initializer.init.selector)
+        });
+        kairos = IKairos(address(new Diamond(getFacetCuts(), args)));
+
         money = new Money();
         nft = new NFT("Test NFTs", "TNFT");
         money.approve(address(kairos), 100 ether);

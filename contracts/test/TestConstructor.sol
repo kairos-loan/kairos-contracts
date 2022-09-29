@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "diamond/Diamond.sol";
 import "../BorrowLogic/BorrowCheckers.sol";
 import "../interface/ISupplyPositionFacet.sol";
+import "../interface/IKairos.sol";
 import "../ContractsCreator.sol";
 import "../utils/FuncSelectors.h.sol";
 import "../interface/IProtocolFacet.sol";
@@ -27,7 +28,7 @@ contract TestConstructor is Test, ContractsCreator {
     address internal immutable signer2;
     bytes4 immutable internal erc721SafeTransferFromSelector;
     bytes4 immutable internal erc721SafeTransferFromDataSelector;
-    Diamond internal nftaclp;
+    IKairos internal kairos;
     Money internal money;
     Money internal money2;
     NFT internal nft;

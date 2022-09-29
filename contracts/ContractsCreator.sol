@@ -42,7 +42,7 @@ contract ContractsCreator {
 
     /* solhint-disable-next-line function-max-lines */
     function getFacetCuts() internal view returns(IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](8);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](9);
 
         facetCuts[0] = IDiamond.FacetCut({
             facetAddress: address(loupe),
@@ -57,36 +57,42 @@ contract ContractsCreator {
         });
 
         facetCuts[2] = IDiamond.FacetCut({
+            facetAddress: address(cut),
+            action: IDiamond.FacetCutAction.Add,
+            functionSelectors: cutFS()
+        });
+
+        facetCuts[3] = IDiamond.FacetCut({
             facetAddress: address(borrow),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: borrowFS()
         });
 
-        facetCuts[3] = IDiamond.FacetCut({
+        facetCuts[4] = IDiamond.FacetCut({
             facetAddress: address(supplyPosition),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: supplyPositionFS()
         });
 
-        facetCuts[4] = IDiamond.FacetCut({
+        facetCuts[5] = IDiamond.FacetCut({
             facetAddress: address(protocol),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: protoFS()
         });
 
-        facetCuts[5] = IDiamond.FacetCut({
+        facetCuts[6] = IDiamond.FacetCut({
             facetAddress: address(repay),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: repayFS()
         });
 
-        facetCuts[6] = IDiamond.FacetCut({
+        facetCuts[7] = IDiamond.FacetCut({
             facetAddress: address(auction),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: auctionFS()
         });
 
-        facetCuts[7] = IDiamond.FacetCut({
+        facetCuts[8] = IDiamond.FacetCut({
             facetAddress: address(claim),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: claimFS()

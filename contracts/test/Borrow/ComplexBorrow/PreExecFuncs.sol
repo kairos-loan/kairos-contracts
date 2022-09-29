@@ -22,25 +22,25 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
 
     function prepareSigners() internal {
         vm.prank(signer2);
-        IProtocolFacet(address(nftaclp)).updateOffers();
+        kairos.updateOffers();
 
         vm.prank(signer);
         money.mint(2 ether);
         vm.prank(signer);
-        money.approve(address(nftaclp), 2 ether);
+        money.approve(address(kairos), 2 ether);
 
         vm.prank(signer2);
         money.mint(2 ether);
         vm.prank(signer2);
-        money.approve(address(nftaclp), 2 ether);
+        money.approve(address(kairos), 2 ether);
 
         vm.prank(signer);
         money2.mint(2 ether);
         vm.prank(signer);
-        money2.approve(address(nftaclp), 2 ether);
+        money2.approve(address(kairos), 2 ether);
 
-        nft.approve(address(nftaclp), 1);
-        nft2.approve(address(nftaclp), 1);
+        nft.approve(address(kairos), 1);
+        nft2.approve(address(kairos), 1);
     }
 
     function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {

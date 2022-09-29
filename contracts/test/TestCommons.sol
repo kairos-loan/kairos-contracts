@@ -20,19 +20,19 @@ contract TestCommons is TestConstructor, SafeMint {
     }
 
     function store(Loan memory loan, uint256 loanId) internal {
-        IDCHelperFacet(address(nftaclp)).delegateCall(
+        IDCHelperFacet(address(kairos)).delegateCall(
             address(this), 
             abi.encodeWithSelector(this.publicStoreLoan.selector, loan, loanId));
     }
 
     function store(Provision memory provision, uint256 positionId) internal {
-        IDCHelperFacet(address(nftaclp)).delegateCall(
+        IDCHelperFacet(address(kairos)).delegateCall(
             address(this), 
             abi.encodeWithSelector(this.publicStoreProvision.selector, provision, positionId));
     }
 
     function mintPosition(address to, Provision memory provision) internal returns(uint256 tokenId) {
-        bytes memory data = IDCHelperFacet(address(nftaclp)).delegateCall(
+        bytes memory data = IDCHelperFacet(address(kairos)).delegateCall(
             address(this), 
             abi.encodeWithSelector(this.publicMintPosition.selector, to, provision));
         tokenId = abi.decode(data, (uint256));
@@ -49,11 +49,11 @@ contract TestCommons is TestConstructor, SafeMint {
     }
 
     function getSignature(Root memory root) internal returns(bytes memory signature){
-        return getSignatureFromKey(root, KEY, IKairos(address(nftaclp)));
+        return getSignatureFromKey(root, KEY, kairos);
     }
 
     function getSignature2(Root memory root) internal returns(bytes memory signature){
-        return getSignatureFromKey(root, KEY2, IKairos(address(nftaclp)));
+        return getSignatureFromKey(root, KEY2, kairos);
     }
 
     function getOfferArgs(Offer memory offer) internal returns(OfferArgs[] memory){
@@ -75,7 +75,7 @@ contract TestCommons is TestConstructor, SafeMint {
 
         tokenId = nft.mintOne();
         money.mint(100 ether);
-        money.approve(address(nftaclp), 100 ether);
+        money.approve(address(kairos), 100 ether);
 
         vm.stopPrank();   
     }

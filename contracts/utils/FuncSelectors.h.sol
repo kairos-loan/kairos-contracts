@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 import "diamond/interfaces/IDiamondLoupe.sol";
+import "diamond/interfaces/IDiamondCut.sol";
 import "diamond/facets/OwnershipFacet.sol";
 import "diamond/interfaces/IERC165.sol";
 
@@ -35,6 +36,14 @@ function ownershipFS() pure returns(bytes4[] memory) {
     
     functionSelectors[0] = OwnershipFacet.transferOwnership.selector;
     functionSelectors[1] = OwnershipFacet.owner.selector;
+
+    return functionSelectors;
+}
+
+function cutFS() pure returns(bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](1);
+    
+    functionSelectors[0] = IDiamondCut.diamondCut.selector;
 
     return functionSelectors;
 }

@@ -10,6 +10,7 @@ import "./IOwnershipFacet.sol";
 import "./IProtocolFacet.sol";
 import "./IRepayFacet.sol";
 import "./ISupplyPositionFacet.sol";
+import "diamond/interfaces/IDiamondCut.sol";
 
 /* solhint-disable-next-line no-empty-blocks */
 interface IKairos is 
@@ -20,4 +21,5 @@ interface IKairos is
     IOwnershipFacet,
     IProtocolFacet,
     IRepayFacet,
-    ISupplyPositionFacet {}
+    ISupplyPositionFacet,
+    IDiamondCut {}
