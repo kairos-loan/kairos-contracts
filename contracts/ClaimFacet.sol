@@ -10,8 +10,15 @@ contract ClaimFacet is NFTUtils {
     using RayMath for Ray;
     using RayMath for uint256;
 
+    /// @notice some liquidity has been claimed as principal plus interests or share of liquidation
+    /// @param claimant who received the liquidity
+    /// @param claimed amount sent
+    /// @param loanId loan identifier where the claim rights come from
     event Claim(address indexed claimant, uint256 indexed claimed, uint256 indexed loanId);
 
+    /// @notice claims principal plus interests or liquidation share due as a supplier
+    /// @param positionIds identifiers of one or multiple supply position to burn
+    /// @return sent amount sent
     function claim(uint256[] calldata positionIds) external returns(uint256 sent) {
         Protocol storage proto = protocolStorage();
         SupplyPosition storage sp = supplyPositionStorage();
@@ -34,6 +41,9 @@ contract ClaimFacet is NFTUtils {
         }
     }
 
+    /// @notice claims share of liquidation due to a borrower who's collateral has been sold
+    /// @param loanIds loan identifiers of one or multiple loans where the borrower wants to claim liquidation share
+    /// @return sent amount sent
     function claimAsBorrower(uint256[] calldata loanIds) external returns(uint256 sent) {
         Protocol storage proto = protocolStorage();
         Loan storage loan;
@@ -56,11 +66,18 @@ contract ClaimFacet is NFTUtils {
     }
 
     /// @notice sends principal plus interests of the loan to `msg.sender`
+    /// @param loan - to calculate amount from
+    /// @param provision liquidity provision for this loan
+    /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) private returns(uint256 sent) {
         sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
         loan.assetLent.transfer(msg.sender, sent);
     }
 
+    /// @notice sends liquidation share due to `msg.sender` as a supplier
+    /// @param loan - from which the collateral were liquidated
+    /// @param provision liquidity provisioned by this loan by the supplier
+    /// @return sent amount sent
     function sendShareOfSaleAsSupplier(Loan storage loan, Provision storage provision) private returns(uint256 sent) {
         sent = loan.payment.borrowerBought
             ? loan.payment.paid.mul(provision.share.div(loan.shareLent))

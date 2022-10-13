@@ -4,6 +4,8 @@ pragma solidity 0.8.17;
 import "../interface/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+/// @notice file for type definitions not used in storage
+
 /// @notice type ids for collateral specification
 /// @member Floor any NFT in a collection is accepted
 enum CollatSpecType { Floor, Single }

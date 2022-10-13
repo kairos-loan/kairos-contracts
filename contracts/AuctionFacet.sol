@@ -5,23 +5,28 @@ import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
 import "./SupplyPositionLogic/NFTUtils.sol";
 
-// todo : docs
-
+/// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is NFTUtils {
     using RayMath for Ray;
     using RayMath for uint256;
 
+    /// @notice a NFT collateral has beem sold as part of a liquidation
+    /// @param loanId identifier of the loan previously backed by the sold collateral
+    /// @param nft sold collateral
     event Buy(uint256 indexed loanId, NFToken indexed nft);
 
+    /// @notice buy one or multiple NFTs in liquidation
+    /// @param args arguments on what and how to buy
     function buy(BuyArgs[] memory args) external {
         for (uint8 i; i < args.length; i++) {
             useLoan(args[i]);
         }
     }
 
-    // todo : implement use of startId + number
-    // todo : implement internal lib for supplyPositionFacet manipulation as opti
-    // todo : update to approvedOrOwner
+    // todo: add a public facing price method
+
+    /// @notice handles buying one NFT
+    /// @param args arguments on what and how to buy
     function useLoan(BuyArgs memory args) internal {
         Protocol storage proto = protocolStorage();
         SupplyPosition storage sp = supplyPositionStorage();
@@ -55,6 +60,9 @@ contract AuctionFacet is NFTUtils {
     }
 
     /// @notice gets price calculated following a linear dutch auction
+    /// @param lent amount lent in the loan
+    /// @param shareLent share of the loan lent by the caller
+    /// @param timeElapsed time elapsed since the collateral is liquidable
     function price(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns(uint256) {
         Protocol storage proto = protocolStorage();
 

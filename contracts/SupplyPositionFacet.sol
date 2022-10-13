@@ -8,6 +8,7 @@ contract SupplyPositionFacet is DiamondERC721 {
 
     // constructor equivalent is in the Initializer contract
 
+    /// @notice get metadata on provision linked to the supply position
     function position(uint256 tokenId) external view returns(Provision memory) {
         SupplyPosition storage sp = supplyPositionStorage();
 

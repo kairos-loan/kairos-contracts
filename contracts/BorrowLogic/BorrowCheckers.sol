@@ -6,11 +6,13 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "../DataStructure/Global.sol";
 import "../Signature.sol";
 
-// todo : docs
-
+/// @notice handles checks to verify validity of a loan request
 abstract contract BorrowCheckers is Signature {
     using MerkleProof for bytes32[];
 
+    /// @notice computes EIP-712 compliant digest of a merkle root meant to be used by kairos
+    /// @dev the corresponding merkle tree should have keccak256-hashed abi-encoded Offer(s) as leafs
+    /// @param _root the root hash of the merkle tree
     function rootDigest(Root memory _root) public view returns(bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(
             ROOT_TYPEHASH,
@@ -18,6 +20,8 @@ abstract contract BorrowCheckers is Signature {
         )));
     }
 
+    /// @notice checks arguments validity for usage of one Offer
+    /// @param args arguments for the Offer
     function checkOfferArgs(OfferArgs memory args) internal view returns (address){
         Protocol storage proto = protocolStorage();
         address signer = ECDSA.recover(rootDigest(args.root), args.signature);
@@ -35,6 +39,10 @@ abstract contract BorrowCheckers is Signature {
         return signer;
     }
 
+    /// @notice checks collateral specifications validity regarding provided collateral
+    /// @param collateral implementation address of the NFT collection provided
+    /// @param tokenId token identifier of the provided NFT collateral
+    /// @param offer loan offer which validity should be checked for the provided collateral 
     function checkCollatSpecs(IERC721 collateral, uint256 tokenId, Offer memory offer) internal pure {
         CollatSpecType collatSpecType = offer.collatSpecType;
 

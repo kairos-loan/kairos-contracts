@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import "./Objects.sol";
 
-// todo : docs 
+/// @notice type definitions of data permanently stored
 
 /// @notice General protocol
 /// @member tranche interest rate of tranche of provided id, in multiplier per second
@@ -44,6 +44,11 @@ struct Loan {
     uint8 nbOfPositions;
 }
 
+/// @notice tracking of the payment state of a loan
+/// @member paid amount sent on the tx closing the loan, non-zero value means loan's lifecycle is over
+/// @member liquidated this loan has been closed at the liquidation stage, the collateral has been sold
+/// @member borrowerClaimed borrower claimed his rights on this loan (either collateral or share of liquidation)
+/// @member borrowerBought borrower is the one who bought the collateral during the auction
 struct Payment {
     uint256 paid;
     bool liquidated;
@@ -51,6 +56,15 @@ struct Payment {
     bool borrowerBought;
 }
 
+/// @notice storage for the ERC721 compliant supply position facets. Related NFTs represent supplier positions
+/// @member name - of the NFT collection
+/// @member symbol - of the NFT collection
+/// @member totalSupply number of supply position ever issued - not decreased on burn
+/// @member owner - of nft of id -
+/// @member balance number of positions owned by -
+/// @member tokenApproval address approved to transfer position of id - on behalf of its owner
+/// @member operatorApproval address is approved to transfer all positions of - on his behalf
+/// @member provision supply position metadata
 struct SupplyPosition {
     string name;
     string symbol;

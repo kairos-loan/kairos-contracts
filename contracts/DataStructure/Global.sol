@@ -14,6 +14,8 @@ Ray constant ZERO = Ray.wrap(0);
 
 /* solhint-disable func-visibility */
 
+/// @dev getters of storage regions of the contract for specified usage 
+
 function protocolStorage() pure returns (Protocol storage protocol) {
     bytes32 position = PROTOCOL_SP;
     /* solhint-disable-next-line no-inline-assembly */

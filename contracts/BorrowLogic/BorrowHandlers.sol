@@ -6,12 +6,14 @@ import "../utils/RayMath.sol";
 import "../SupplyPositionFacet.sol";
 import "../SupplyPositionLogic/SafeMint.sol";
 
-// todo : docs
-
+/// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 
+    /// @notice handles usage of a loan offer to borrow from
+    /// @param args arguments for the usage of this offer
+    /// @param collatState tracked state of the matching of the collateral
     function useOffer(
         OfferArgs memory args,
         CollateralState memory collatState
@@ -46,6 +48,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         return(collatState);
     }
 
+    /// @notice handles usage of one collateral to back a loan request
+    /// @param args arguments for usage of one or multiple loan offers
+    /// @param from borrower for this loan
+    /// @param nft collateral to use
     function useCollateral(
         OfferArgs[] memory args, 
         address from, 

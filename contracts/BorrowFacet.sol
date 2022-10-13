@@ -5,11 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./BorrowLogic/BorrowHandlers.sol";
 
-// todo : docs
-
-/// @notice public facing methods for borrowers
+/// @notice public facing methods for borrowing
+/// @dev contract handles all borrowing logic through inheritance
 contract BorrowFacet is IERC721Receiver, BorrowHandlers {
-    event Borrow(Loan[] loans);
+
+    /// @notice one or multiple loans have been initiated
+    /// @param loans loans initiated
+    event Borrow(Loan[] loans); // todo : use loan ids instead
 
     // todo : add reentrency check
     // todo : process supplier coins
@@ -18,6 +20,11 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     // todo : check and implement protocol rules
     // todo : allow receive money then hook to get the NFT
     // todo : enforce minimal offer duration // useful ? if minimal interest // maybe max also
+    /// @notice borrow using sent NFT as collateral without needing approval through transfer callback
+    /// @param from owner of the NFT sent according to the NFT implementation contract
+    /// @param tokenId token identifier of the NFT sent according to the NFT implementation contract
+    /// @param data abi encoded arguments for the loan
+    /// @dev param data must be of format OfferArgs[]
     /// @inheritdoc IERC721Receiver
     function onERC721Received(
         address,
@@ -39,6 +46,8 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     }
 
     // todo : should return loan ids ?
+    /// @notice take loans, take ownership of NFTs specified as collateral, sends borrowed money to caller
+    /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArgs[] calldata args) external {
         Loan[] memory loans = new Loan[](args.length);
 
