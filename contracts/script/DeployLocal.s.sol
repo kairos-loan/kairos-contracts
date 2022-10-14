@@ -14,7 +14,7 @@ contract DeployLocal is Script, ContractsCreator, TestCommons {
         vm.startBroadcast();
         createContracts();
         DiamondArgs memory args = DiamondArgs({
-            owner: testAddress,
+            owner: address(this),
             init: address(initializer),
             initCalldata: abi.encodeWithSelector(initializer.init.selector)
         });
