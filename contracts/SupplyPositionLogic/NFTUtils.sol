@@ -5,6 +5,7 @@ import "../DataStructure/Global.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
+/// @notice internal logic for DiamondERC721 adapted fo usage with diamond storage
 contract NFTUtils is IERC721Events {
     using Address for address;
 

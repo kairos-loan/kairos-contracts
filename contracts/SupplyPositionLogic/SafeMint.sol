@@ -3,7 +3,13 @@ pragma solidity 0.8.17;
 
 import "./NFTUtils.sol";
 
+/// @notice safeMint internal method added to base ERC721 implementation for supply position minting
+/// @dev inherit this to make an ERC721-compliant facet with added feature internal safeMint
 contract SafeMint is NFTUtils {
+    /// @notice mints a new supply position to `to`
+    /// @param to receiver of the position
+    /// @param provision metadata of the supply position
+    /// @return tokenId identifier of the supply position
     function safeMint(address to, Provision memory provision) internal returns(uint256 tokenId) {
         SupplyPosition storage sp = supplyPositionStorage();
 

@@ -6,9 +6,12 @@ import "./Objects.sol";
 /// @notice type definitions of data permanently stored
 
 /// @notice General protocol
-/// @member tranche interest rate of tranche of provided id, in multiplier per second
-/// @member auctionDuration number of seconds after the auction start when the price hits 0 
+/// @member auctionDuration number of seconds after the auction start when the price hits 0
+/// @member nbOfLoans total number of loans ever issued (active and ended)
 /// @member auctionPriceFactor multiplier of the mean tvl used as start price for the auction
+/// @member tranche interest rate of tranche of provided id, in multiplier per second
+/// @member loan - of id -
+/// @member supplierNonce nonce of supplier - nonce identifies current valid batch of offers of a supplier
 struct Protocol {
     uint256 auctionDuration;
     uint256 nbOfLoans;

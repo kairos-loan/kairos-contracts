@@ -15,6 +15,9 @@ import "./AuctionFacet.sol";
 import "./RepayFacet.sol";
 import "./utils/FuncSelectors.h.sol";
 
+/// @notice handles uinitialized deployment of all contracts of the protocol and exposes facet cuts
+/// @dev for production, the 3 contracts imported from diamonds don't have to be redeployed as they are already
+///      existing on most chain, modify deploy script accordingly
 contract ContractsCreator {
     Initializer internal initializer;
     DiamondCutFacet internal cut;
@@ -27,6 +30,7 @@ contract ContractsCreator {
     AuctionFacet internal auction;
     ClaimFacet internal claim;
 
+    /// @notice deploys all contracts uninitialized
     function createContracts() internal {
         cut = new DiamondCutFacet();
         loupe = new DiamondLoupeFacet();
@@ -40,6 +44,8 @@ contract ContractsCreator {
         claim = new ClaimFacet();
     }
 
+    /// @notice get all facet cuts to add to add to a diamond to create kairos
+    /// @return facetCuts the list of facet cuts
     /* solhint-disable-next-line function-max-lines */
     function getFacetCuts() internal view returns(IDiamondCut.FacetCut[] memory) {
         IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](9);

@@ -24,6 +24,7 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @param from owner of the NFT sent according to the NFT implementation contract
     /// @param tokenId token identifier of the NFT sent according to the NFT implementation contract
     /// @param data abi encoded arguments for the loan
+    /// @return selector `this.onERC721Received.selector` ERC721-compliant response, signaling compatibility
     /// @dev param data must be of format OfferArgs[]
     /// @inheritdoc IERC721Receiver
     function onERC721Received(

@@ -14,6 +14,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     /// @notice handles usage of a loan offer to borrow from
     /// @param args arguments for the usage of this offer
     /// @param collatState tracked state of the matching of the collateral
+    /// @return collateralState updated `collatState` after usage of the offer
     function useOffer(
         OfferArgs memory args,
         CollateralState memory collatState
@@ -52,6 +53,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     /// @param args arguments for usage of one or multiple loan offers
     /// @param from borrower for this loan
     /// @param nft collateral to use
+    /// @return loan the loan created backed by provided collateral
     function useCollateral(
         OfferArgs[] memory args, 
         address from, 

@@ -63,6 +63,7 @@ contract AuctionFacet is NFTUtils {
     /// @param lent amount lent in the loan
     /// @param shareLent share of the loan lent by the caller
     /// @param timeElapsed time elapsed since the collateral is liquidable
+    /// @return price computed price
     function price(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns(uint256) {
         Protocol storage proto = protocolStorage();
 

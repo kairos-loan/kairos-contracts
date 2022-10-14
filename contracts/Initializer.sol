@@ -12,9 +12,12 @@ import { IERC165 } from "diamond/interfaces/IERC165.sol";
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
 
+/// @notice initilizes the kairos protocol
 contract Initializer {
     using RayMath for Ray;
 
+    /// @notice initilizes the kairos protocol
+    /// @dev specify this method in diamond constructor
     function init() external {
         // adding ERC165 data
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
