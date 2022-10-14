@@ -14,6 +14,7 @@ contract ProtocolFacet {
     /// @notice gets the rate of tranche `id`
     /// @param id rate identifier
     /// @return rate the rate of the tranche, as a Ray, multiplier per second of the amount to repay (non compounding)
+    ///         I.e lent * time since loan start * tranche = interests to repay
     function getRateOfTranche(uint256 id) external view returns(Ray rate){
         return protocolStorage().tranche[id];
     }

@@ -10,6 +10,7 @@ import "./Objects.sol";
 /// @member nbOfLoans total number of loans ever issued (active and ended)
 /// @member auctionPriceFactor multiplier of the mean tvl used as start price for the auction
 /// @member tranche interest rate of tranche of provided id, in multiplier per second
+///         I.e lent * time since loan start * tranche = interests to repay
 /// @member loan - of id -
 /// @member supplierNonce nonce of supplier - nonce identifies current valid batch of offers of a supplier
 struct Protocol {
