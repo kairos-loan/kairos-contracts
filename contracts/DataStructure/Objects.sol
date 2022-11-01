@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+
 pragma solidity 0.8.17;
 
 import "../interface/IERC721.sol";
@@ -73,6 +74,7 @@ struct CollateralState {
 /// @member collateralSpecType identifies logic to establish validity of an asset
 /// @member tranche identifies the interest rate tranche
 /// @member collateralSpecs abi-encoded arguments for the validity checker
+
 struct Offer {
     IERC20 assetToLend;
     uint256 loanToValue;
@@ -82,6 +84,7 @@ struct Offer {
     uint256 tranche;
     bytes collatSpecs;
 }
+
 
 /// @dev Add "Spec" as suffix to structs meant for describing collaterals
 

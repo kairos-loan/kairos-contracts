@@ -99,6 +99,10 @@ contract TestCommons is TestConstructor, SafeMint {
         });
     }
 
+    function getFuzzingLoan() internal view returns(Loan memory){
+
+    }
+
     function assertEq(Loan memory actual, Loan memory expected) internal view {
         if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
             logLoan(expected, "expected");
@@ -140,4 +144,6 @@ contract TestCommons is TestConstructor, SafeMint {
             ? keccak256(abi.encode(hashOne, hashTwo)) 
             : keccak256(abi.encode(hashTwo, hashOne));
     }
+
+
 }
