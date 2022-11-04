@@ -79,7 +79,7 @@ struct Offer {
     IERC20 assetToLend;
     uint256 loanToValue;
     uint256 duration;
-    uint256 nonce;
+    uint256 expirationDate; //Batch Id
     CollatSpecType collatSpecType;
     uint256 tranche;
     bytes collatSpecs;

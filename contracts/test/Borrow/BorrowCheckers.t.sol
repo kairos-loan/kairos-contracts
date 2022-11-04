@@ -43,10 +43,10 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         this.checkOfferArgsExternal(args);
     }
 
-    function testNonce() public {
+    function testExpirationDate() public {
         OfferArgs memory args;
         Offer memory offer;
-        offer.nonce = 1;
+        offer.expirationDate = 1;
         // stored supplier nonce is implicitely 0
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.root = root;

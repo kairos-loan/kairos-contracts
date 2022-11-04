@@ -16,7 +16,7 @@ contract Verify is Test {
             assetToLend: IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F),
             loanToValue: 12,
             duration: 12,
-            nonce: 0,
+            expirationDate: 0,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({

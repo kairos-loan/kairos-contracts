@@ -11,7 +11,7 @@ contract RayMathTest is TestCommons, SetUp {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    function testRayMathAdd(uint a, uint b) public {
+    function testRayMathAdd(uint a, uint b) public  {
 
         Ray aRay = RayMath.add( Ray.wrap(a),Ray.wrap(1));
         Ray bRay = RayMath.add(Ray.wrap(b),Ray.wrap(1));

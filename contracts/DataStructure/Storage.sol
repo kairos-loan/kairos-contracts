@@ -19,7 +19,7 @@ struct Protocol {
     Ray auctionPriceFactor;
     mapping(uint256 => Ray) tranche;
     mapping(uint256 => Loan) loan;
-    mapping(address => uint256) supplierNonce;
+    mapping(address => uint256) supplierExpirationDate;
 }
 
 /// @notice Issued Loan (corresponding to one collateral)

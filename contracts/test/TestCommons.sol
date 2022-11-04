@@ -69,6 +69,8 @@ contract TestCommons is TestConstructor, SafeMint {
         return offerArgs;
     }
 
+
+
     function getTokens(address receiver) internal returns(uint256 tokenId){
         vm.startPrank(receiver);
 
@@ -99,9 +101,34 @@ contract TestCommons is TestConstructor, SafeMint {
         });
     }
 
-    function getFuzzingLoan() internal view returns(Loan memory){
+    function getMultipleLoan(uint  x) internal view returns(Loan[] memory){
+        Payment memory payment;
+
+    Loan[] memory loans = new Loan[](x-1);
+
+        for(uint  i; i < x-1; i++){
+            loans[i]=
+                Loan({
+                    assetLent: money,
+                    lent: 1 ether,
+                    shareLent: ONE,
+                    startDate: block.timestamp - 2 weeks,
+                    endDate: block.timestamp + 2 weeks,
+                    interestPerSecond: protocolStorage().tranche[0],
+                    borrower: signer,
+                    collateral: NFToken({
+                        implem: nft,
+                        id: i
+                    }),
+                    supplyPositionIndex: i,
+                    payment: payment,
+                    nbOfPositions: uint8(x)
+                });
+        }
+        return loans;
 
     }
+
 
     function assertEq(Loan memory actual, Loan memory expected) internal view {
         if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
@@ -116,13 +143,23 @@ contract TestCommons is TestConstructor, SafeMint {
                 assetToLend: money,
                 loanToValue: 10 ether,
                 duration: 2 weeks,
-                nonce: 0,
+                expirationDate: 0,
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({
                     implem: nft
                 }))
             });
+    }
+
+    function getMulptipleNft(uint x) internal returns(uint[] memory){
+        uint[] memory nftsId = new uint[](x);
+        for (uint i = 0; i<x; i++){
+            uint nftId = nft.mintOne();
+            nftsId[i]= nftId;
+        }
+
+        return nftsId;
     }
 
     function assertEq(Ray actual, Ray expected) internal pure {
