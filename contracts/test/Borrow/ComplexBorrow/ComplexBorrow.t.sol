@@ -18,10 +18,12 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         d.m1InitialBalance = money.balanceOf(address(this));
         d.m2InitialBalance = money2.balanceOf(address(this));
 
+
         prepareSigners();
         d = initOffers(d);
         d = initOfferArgs(d);
         d = initBorrowArgs(d);
+        vm.prank(signer);
         execBorrowAndCheckSupplyPos(d);
         checkBalances(d);
         checkLoans();
@@ -111,5 +113,45 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             supplyPositionIndex: 1,
             nbOfPositions: 2
         });
+    }
+
+
+
+    // todo : test multiple offers used for one NFT
+    function testMultipleOffersForOneNft()public{
+
+
+        ComplexBorrowData memory complexBorrowData;
+
+        initMinting();
+        prepareSigners();
+
+        complexBorrowData = initOffers(complexBorrowData);
+        complexBorrowData = initOfferArgs(complexBorrowData);
+
+
+        OfferArgs[] memory offerArgs = new OfferArgs[](2);
+        offerArgs[0] = complexBorrowData.oargs1;
+        offerArgs[1]= complexBorrowData.oargs2;
+
+
+        complexBorrowData.bargs1 = BorrowArgs({
+        nft: NFToken({
+        implem:nft,
+        id:1
+        }),
+        args: offerArgs
+        });
+
+        BorrowArgs[] memory batchbargs = new BorrowArgs[](1);
+        batchbargs[0]= complexBorrowData.bargs1;
+
+        kairos.borrow(batchbargs);
+        assertEq(kairos.balanceOf(signer2), 1);
+        Provision memory supp1pos1 = kairos.position(1);
+        assertEq(supp1pos1.amount, 1 ether / 2);
+        assertEq(supp1pos1.share, ONE.div(4));
+
+
     }
 }

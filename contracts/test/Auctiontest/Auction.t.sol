@@ -27,33 +27,8 @@ contract TestAuction is SetUp {
         assertEq(kairos.ownerOf(1), address(0));
     }
 
-    function testSimpleAuction2() public{
-        uint x = 3;
 
-
-        BuyArgs[] memory args = new BuyArgs[](3);
-        uint256[] memory positionIds = new uint256[](3);
-
-        Loan[] memory loans = getMultipleLoan(x);
-        for(uint i =0; i<x-1; i++){
-            positionIds[i] = i++;
-            args[i] = BuyArgs({
-            loanId: i,
-            to: signer2,
-            positionIds: positionIds
-            }); // price should be the same as lent amount
-            store(loans[i], i);
-
-        }
-
-
-        mintPosition(signer, getDefaultProvision());
-        nft.transferFrom(address(this), address(kairos), 1);
-        vm.prank(signer);
-        kairos.buy(args);
-        assertEq(nft.ownerOf(1), signer2);
-        vm.expectRevert(ERC721InvalidTokenId.selector);
-        assertEq(kairos.ownerOf(1), address(0));
+    function testMultipleAuction() public{
 
     }
 }

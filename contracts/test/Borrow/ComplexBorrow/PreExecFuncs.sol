@@ -2,8 +2,10 @@
 pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
+import "../../../DataStructure/Objects.sol";
+import "../../SetUp.sol";
 
-struct ComplexBorrowData {
+    struct ComplexBorrowData {
     BorrowArgs bargs1;
     BorrowArgs bargs2;
     OfferArgs oargs1;
@@ -12,13 +14,12 @@ struct ComplexBorrowData {
     Offer signer1Offer1;
     Offer signer1Offer2;
     Offer signer2Offer;
-    uint256 m1InitialBalance; 
+    uint256 m1InitialBalance;
     uint256 m2InitialBalance;
 }
 
-contract ComplexBorrowPreExecFuncs is TestBorrow {
-    using RayMath for Ray;
-    using RayMath for uint256;
+contract ComplexBorrowPreExecFuncs is SetUp{
+
 
     function prepareSigners() internal {
         vm.prank(signer2);
@@ -41,6 +42,16 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
 
         nft.approve(address(kairos), 1);
         nft2.approve(address(kairos), 1);
+    }
+
+    function initMinting() internal {
+        kairos.updateOffers();
+
+        money.mint(2 ether);
+        money.approve(address(kairos), 2 ether);
+        nft.mintOne();
+        nft.approve(address (kairos),1);
+
     }
 
     function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
@@ -75,7 +86,6 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             amount: 1 ether, // 50%
             offer: d.signer1Offer2
         });
-
         return d;
     }
 
@@ -84,7 +94,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             assetToLend: money,
             loanToValue: 2 ether,
             duration: 2 weeks,
-            expirationDate: 0,
+            nonce:0,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({
@@ -94,7 +104,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             assetToLend: money2,
             loanToValue: 2 ether,
             duration: 4 weeks,
-            expirationDate: 0,
+            nonce:0,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({
@@ -105,7 +115,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             assetToLend: money,
             loanToValue: 1 ether,
             duration: 1 weeks,
-            expirationDate: 1,
+            nonce:0,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({
@@ -131,7 +141,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
         
         d.bargs2 = BorrowArgs({
             nft: NFToken({
-                implem: nft2,
+                implem: nft,
                 id: 1
             }),
             args: offerArgs2

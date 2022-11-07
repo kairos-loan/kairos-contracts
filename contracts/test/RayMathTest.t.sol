@@ -11,7 +11,9 @@ contract RayMathTest is TestCommons, SetUp {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    function testRayMathAdd(uint a, uint b) public  {
+    function testRayMathAdd() public  {
+        uint a = 2030303;
+        uint b = 2304084;
 
         Ray aRay = RayMath.add( Ray.wrap(a),Ray.wrap(1));
         Ray bRay = RayMath.add(Ray.wrap(b),Ray.wrap(1));
@@ -22,25 +24,25 @@ contract RayMathTest is TestCommons, SetUp {
         assertEq(TotRay,totUint);
     }
 
-    function testRayMathMul(Ray a) public {
+    function testRayMathMul() public {
+        Ray a = Ray.wrap(2030303);
         Ray a1 = RayMath.mul(a, 2);
         Ray a2 = RayMath.add(a,a);
         assertEq(a1,a2);
     }
 
-    function testRayDivSub(Ray a) public {
-        Ray a1 = RayMath.div(a, 2);
-        Ray a2 = RayMath.sub(a,a1);
-        assertEq(a1,a2);
-    }
 
-    function testRayGt(uint a, uint b) public {
+    function testRayGt() public {
+        uint a = 2030303;
+        uint b = 2304084;
         if(a>b){
             bool r =RayMath.gt(Ray.wrap(a), Ray.wrap(b));
             assertEq(r, true);
         }
     }
-    function testRayGte(uint a, uint b) public {
+    function testRayGte() public {
+        uint a = 2030303;
+        uint b = 2304084;
         if(a>b || a==b){
             bool r =RayMath.gte(Ray.wrap(a), Ray.wrap(b));
             assertEq(r, true);

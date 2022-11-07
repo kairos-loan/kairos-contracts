@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "forge-std/Test.sol"; //Erase
 
 import "./BorrowLogic/BorrowHandlers.sol";
 
@@ -51,12 +52,10 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArgs[] calldata args) external {
         Loan[] memory loans = new Loan[](args.length);
-
         for(uint8 i; i < args.length; i++){
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             loans[i] = useCollateral(args[i].args, msg.sender, args[i].nft);
         }
-
         emit Borrow(loans);
     }
 }

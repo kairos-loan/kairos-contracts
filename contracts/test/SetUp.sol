@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "./TestCommons.sol";
 import "../interface/IKairos.sol";
 
-contract SetUp is TestCommons, ERC721Holder {
+contract SetUp is TestCommons, ERC721Holder{
     function setUp() public {
         bytes memory emptyBytes;
         DiamondArgs memory args = DiamondArgs({

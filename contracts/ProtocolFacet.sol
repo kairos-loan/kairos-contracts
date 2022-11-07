@@ -5,10 +5,10 @@ import "./DataStructure/Global.sol";
 
 /// @notice external loupe functions exposing protocol storage and supplier nonce incrementer
 contract ProtocolFacet {
-    /// @notice increment supplier nonce, effectively making all offers signed with previous nonce unusable
-    /// @return newExpirationDate value of the new supplier nonce
+    /// @notice increment supplier Expiration date, effectively making all offers signed with previous expiration date unusable
+    /// @return newExpirationDate value of the new supplier ExpirationDate
     function updateOffers() external returns(uint256 newExpirationDate) {
-        newExpirationDate = ++protocolStorage().supplierExpirationDate[msg.sender];
+        newExpirationDate = ++protocolStorage().supplierNonce[msg.sender];
     }
 
     /// @notice gets the rate of tranche `id`
@@ -46,6 +46,6 @@ contract ProtocolFacet {
     /// @param supplier - to get nonce rom
     /// @return expirationDate - of the supplier
     function getSupplierExpirationDate(address supplier) external view returns(uint256) {
-        return protocolStorage().supplierExpirationDate[supplier];
+        return protocolStorage().supplierNonce[supplier];
     }
 }
