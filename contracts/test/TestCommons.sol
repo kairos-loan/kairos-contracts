@@ -20,7 +20,7 @@ contract TestCommons is TestConstructor, SafeMint {
 
     function store(Loan memory loan, uint256 loanId) internal {
         IDCHelperFacet(address(kairos)).delegateCall(
-            address(this), 
+            address(this),
             abi.encodeWithSelector(this.publicStoreLoan.selector, loan, loanId));
     }
 

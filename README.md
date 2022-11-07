@@ -2,19 +2,6 @@
 
 NFT as collateral lending protocol. Contracts repository
 
-## test
-
-`forge test`
-
-## deploy locally
-
-`forge script contracts/script/Deploy.s.sol -f http://localhost:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`  
-(default private key of anvil/hardhat)
-
-## Dependencies
-
-Use yarn.
-
 # Design & architecture
 
 The Kairos protocol is accessible behind a single address despite consisting of multiple upgradable smart-contracts thanks to being a [diamond](https://eips.ethereum.org/EIPS/eip-2535).
@@ -58,6 +45,21 @@ Call [`claim()`](contracts/ClaimFacet.sol) as a supplier to get back principal +
 ## Fees
 
 No DAO fee is taken yet, but please note that it will be the case in the future. They may be taken on one or multiple of the following sources : borrow, interests, liquidation or elsewhere. This is needed for retro-active and future funding of the protocol development and other DAO expenses. All decisions regarding fee collection and treasury usage will be taken in public.
+
+# Dev
+
+## test
+
+`forge test`
+
+## deploy locally
+
+`forge script contracts/script/Deploy.s.sol -f http://localhost:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`  
+(default private key of anvil/hardhat)
+
+## Dependencies
+
+Use yarn.
 
 ## Code style policies
 
