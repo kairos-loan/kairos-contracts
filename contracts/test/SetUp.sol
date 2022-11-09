@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "./TestCommons.sol";
 import "../interface/IKairos.sol";
 
-contract SetUp is TestCommons, ERC721Holder{
+contract SetUp is TestCommons, ERC721Holder {
     function setUp() public {
         bytes memory emptyBytes;
         DiamondArgs memory args = DiamondArgs({
@@ -15,8 +15,7 @@ contract SetUp is TestCommons, ERC721Holder{
             initCalldata: abi.encodeWithSelector(initializer.init.selector)
         });
         kairos = IKairos(address(new Diamond(getFacetCuts(), args)));
-        kairos.diamondCut(
-            testFacetCuts(), address(0), emptyBytes);
+        kairos.diamondCut(testFacetCuts(), address(0), emptyBytes);
         nft = new NFT("Test NFT", "TNFT");
         vm.label(address(nft), "nft");
         nft2 = new NFT("Test NFT2", "TNFT2");
@@ -28,9 +27,9 @@ contract SetUp is TestCommons, ERC721Holder{
         vm.warp(2 * 365 days);
     }
 
-    function testFacetCuts() internal view returns(IDiamond.FacetCut[] memory) {
+    function testFacetCuts() internal view returns (IDiamond.FacetCut[] memory) {
         IDiamond.FacetCut[] memory facetCuts = new IDiamond.FacetCut[](1);
-                
+
         facetCuts[0] = IDiamond.FacetCut({
             facetAddress: address(helper),
             action: IDiamond.FacetCutAction.Add,
@@ -40,7 +39,7 @@ contract SetUp is TestCommons, ERC721Holder{
         return facetCuts;
     }
 
-    function helperFS() private pure returns(bytes4[] memory) {
+    function helperFS() private pure returns (bytes4[] memory) {
         bytes4[] memory functionSelectors = new bytes4[](1);
 
         functionSelectors[0] = DCHelperFacet.delegateCall.selector;

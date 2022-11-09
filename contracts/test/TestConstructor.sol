@@ -26,8 +26,8 @@ contract TestConstructor is Test, ContractsCreator {
     uint256 internal constant KEY2 = 0xB0B;
     address internal immutable signer;
     address internal immutable signer2;
-    bytes4 immutable internal erc721SafeTransferFromSelector;
-    bytes4 immutable internal erc721SafeTransferFromDataSelector;
+    bytes4 internal immutable erc721SafeTransferFromSelector;
+    bytes4 internal immutable erc721SafeTransferFromDataSelector;
     IKairos internal kairos;
     Money internal money;
     Money internal money2;

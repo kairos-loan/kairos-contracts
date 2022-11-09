@@ -5,14 +5,12 @@ import "../SetUp.sol";
 import "../../DataStructure/Objects.sol";
 import "./ComplexBorrow/PreExecFuncs.sol";
 
-contract TestBorrow is SetUp{
+contract TestBorrow is SetUp {
     using RayMath for Ray;
     using RayMath for uint256;
 
     function testSimpleNFTonReceived() public {
-
-        uint tokenId =  getTokens();
-
+        uint tokenId = getTokens();
 
         bytes memory data = abi.encode(getOfferArgs(getOffer()));
 
@@ -24,84 +22,61 @@ contract TestBorrow is SetUp{
         IERC721 wrongNFT = IERC721(address(1));
 
         Offer memory offer = Offer({
-        assetToLend: money,
-        loanToValue: 10 ether,
-        duration: 2 weeks,
-        nonce: 0,
-        collatSpecType: CollatSpecType.Floor,
-        tranche: 0,
-        collatSpecs: abi.encode(FloorSpec({
-        implem: wrongNFT
-        }))
+            assetToLend: money,
+            loanToValue: 10 ether,
+            duration: 2 weeks,
+            nonce: 0,
+            collatSpecType: CollatSpecType.Floor,
+            tranche: 0,
+            collatSpecs: abi.encode(FloorSpec({implem: wrongNFT}))
         });
         bytes memory data = abi.encode(getOfferArgs(offer));
         uint256 tokenId = getTokens();
 
         vm.startPrank(signer);
-        vm.expectRevert(abi.encodeWithSelector(
-                NFTContractDoesntMatchOfferSpecs.selector,
-                nft,
-                wrongNFT
-            ));
+        vm.expectRevert(abi.encodeWithSelector(NFTContractDoesntMatchOfferSpecs.selector, nft, wrongNFT));
         nft.safeTransferFrom(signer, address(kairos), tokenId, data);
     }
-
-
 
     // todo : test unknown collat spec type
     function testUnkownCollatSpec0() public {
-
-
         uint256 tokenId = getTokens();
-
 
         bytes memory data = abi.encode(
             getOfferArgs(
                 Offer({
-            assetToLend: money,
-            loanToValue: 10 ether,
-            duration: 2 weeks,
-            nonce: 0,
-            collatSpecType: CollatSpecType(0),
-            tranche: 0,
-            collatSpecs: abi.encode(FloorSpec({
-            implem: nft
-            }))
-        }))
+                    assetToLend: money,
+                    loanToValue: 10 ether,
+                    duration: 2 weeks,
+                    nonce: 0,
+                    collatSpecType: CollatSpecType(0),
+                    tranche: 0,
+                    collatSpecs: abi.encode(FloorSpec({implem: nft}))
+                })
+            )
         );
         vm.prank(signer);
         nft.safeTransferFrom(signer, address(kairos), tokenId, data);
-
     }
 
-//Uint 8 -> Coll
+    //Uint 8 -> Coll
     function testUnkownCollatSpec1() public {
-
-
         uint256 tokenId = getTokens();
-
 
         bytes memory data = abi.encode(
             getOfferArgs(
                 Offer({
-            assetToLend: money,
-            loanToValue: 10 ether,
-            duration: 2 weeks,
-            nonce: 0,
-            collatSpecType: CollatSpecType(1),
-            tranche: 0,
-            collatSpecs: abi.encode(
-                    NFToken(
-                    {implem: nft,
-                    id:2}
-                    )
-                )
-            }))
+                    assetToLend: money,
+                    loanToValue: 10 ether,
+                    duration: 2 weeks,
+                    nonce: 0,
+                    collatSpecType: CollatSpecType(1),
+                    tranche: 0,
+                    collatSpecs: abi.encode(NFToken({implem: nft, id: 2}))
+                })
+            )
         );
         vm.prank(signer);
         nft.safeTransferFrom(signer, address(kairos), tokenId, data);
     }
-
-
-
 }

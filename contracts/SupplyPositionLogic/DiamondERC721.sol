@@ -29,7 +29,9 @@ abstract contract DiamondERC721 is IERC721, NFTUtils {
     function balanceOf(address owner) public view virtual returns (uint256) {
         SupplyPosition storage sp = supplyPositionStorage();
 
-        if (owner == address(0)) { revert ERC721AddressZeroIsNotAValidOwner(); }
+        if (owner == address(0)) {
+            revert ERC721AddressZeroIsNotAValidOwner();
+        }
         return sp.balance[owner];
     }
 
@@ -51,9 +53,11 @@ abstract contract DiamondERC721 is IERC721, NFTUtils {
 
     function approve(address to, uint256 tokenId) public virtual {
         address owner = ownerOf(tokenId);
-        if (to == owner) { revert ERC721ApprovalToCurrentOwner(); }
+        if (to == owner) {
+            revert ERC721ApprovalToCurrentOwner();
+        }
         if (msg.sender != owner && !isApprovedForAll(owner, msg.sender)) {
-            revert ERC721CallerIsNotOwnerNorApprovedForAll(); 
+            revert ERC721CallerIsNotOwnerNorApprovedForAll();
         }
 
         _approve(to, tokenId);
@@ -71,31 +75,22 @@ abstract contract DiamondERC721 is IERC721, NFTUtils {
         return _isApprovedForAll(owner, operator);
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual {
-        if (!_isApprovedOrOwner(msg.sender, tokenId)) { revert ERC721CallerIsNotOwnerNorApproved(); }
+    function transferFrom(address from, address to, uint256 tokenId) public virtual {
+        if (!_isApprovedOrOwner(msg.sender, tokenId)) {
+            revert ERC721CallerIsNotOwnerNorApproved();
+        }
 
         _transfer(from, to, tokenId);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual {
+    function safeTransferFrom(address from, address to, uint256 tokenId) public virtual {
         safeTransferFrom(from, to, tokenId, "");
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public virtual {
-        if (!_isApprovedOrOwner(msg.sender, tokenId)) { revert ERC721CallerIsNotOwnerNorApproved(); }
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual {
+        if (!_isApprovedOrOwner(msg.sender, tokenId)) {
+            revert ERC721CallerIsNotOwnerNorApproved();
+        }
         _safeTransfer(from, to, tokenId, data);
     }
 }

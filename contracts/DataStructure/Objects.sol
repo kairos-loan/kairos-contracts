@@ -9,7 +9,10 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @notice type ids for collateral specification
 /// @member Floor any NFT in a collection is accepted
-enum CollatSpecType { Floor, Single }
+enum CollatSpecType {
+    Floor,
+    Single
+}
 
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
@@ -84,7 +87,6 @@ struct Offer {
     uint256 tranche;
     bytes collatSpecs;
 }
-
 
 /// @dev Add "Spec" as suffix to structs meant for describing collaterals
 
