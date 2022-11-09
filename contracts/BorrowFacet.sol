@@ -9,7 +9,6 @@ import "./BorrowLogic/BorrowHandlers.sol";
 /// @notice public facing methods for borrowing
 /// @dev contract handles all borrowing logic through inheritance
 contract BorrowFacet is IERC721Receiver, BorrowHandlers {
-
     /// @notice one or multiple loans have been initiated
     /// @param loans loans initiated
     event Borrow(Loan[] loans); // todo : use loan ids instead
@@ -28,22 +27,14 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @return selector `this.onERC721Received.selector` ERC721-compliant response, signaling compatibility
     /// @dev param data must be of format OfferArgs[]
     /// @inheritdoc IERC721Receiver
-    function onERC721Received(
-        address,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external returns(bytes4) {
+    function onERC721Received(address, address from, uint256 tokenId, bytes calldata data) external returns (bytes4) {
         OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
         Loan[] memory loans = new Loan[](1);
 
-        loans[0] = useCollateral(args, from, 
-            NFToken({
-                implem: IERC721(msg.sender),
-                id: tokenId}));
+        loans[0] = useCollateral(args, from, NFToken({implem: IERC721(msg.sender), id: tokenId}));
 
         emit Borrow(loans);
-        
+
         return this.onERC721Received.selector;
     }
 
@@ -52,7 +43,7 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArgs[] calldata args) external {
         Loan[] memory loans = new Loan[](args.length);
-        for(uint8 i; i < args.length; i++){
+        for (uint8 i; i < args.length; i++) {
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             loans[i] = useCollateral(args[i].args, msg.sender, args[i].nft);
         }

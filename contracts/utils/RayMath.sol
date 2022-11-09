@@ -10,20 +10,20 @@ library RayMath {
 
     /// @notice `a` plus `b`
     /// @return result
-    function add(Ray a, Ray b) internal pure returns(Ray) {
+    function add(Ray a, Ray b) internal pure returns (Ray) {
         return Ray.wrap(Ray.unwrap(a) + Ray.unwrap(b));
     }
 
     /// @notice `a` minus `b`
     /// @return result
-    function sub(Ray a, Ray b) internal pure returns(Ray) {
+    function sub(Ray a, Ray b) internal pure returns (Ray) {
         return Ray.wrap(Ray.unwrap(a) - Ray.unwrap(b));
     }
 
     /// @notice `a` times `b`
     /// @return result
     function mul(Ray a, Ray b) internal pure returns (Ray) {
-        return Ray.wrap(Ray.unwrap(a) * Ray.unwrap(b) / RAY);
+        return Ray.wrap((Ray.unwrap(a) * Ray.unwrap(b)) / RAY);
     }
 
     /// @notice `a` times `b`
@@ -34,8 +34,8 @@ library RayMath {
 
     /// @notice `a` times `b`
     /// @return result
-    function mul(uint256 a, Ray b) internal pure returns(uint256) {
-        return a * Ray.unwrap(b) / RAY;
+    function mul(uint256 a, Ray b) internal pure returns (uint256) {
+        return (a * Ray.unwrap(b)) / RAY;
     }
 
     /// @notice `a` divided by `b`
@@ -53,7 +53,7 @@ library RayMath {
     /// @notice `a` divided by `b`
     /// @return result
     function div(uint256 a, Ray b) internal pure returns (uint256) {
-        return a * RAY / Ray.unwrap(b);
+        return (a * RAY) / Ray.unwrap(b);
     }
 
     /// @notice `a` divided by `b`
@@ -84,7 +84,7 @@ library RayMath {
 
     /// @notice is `a` equal to `b`
     /// @return result
-    function eq(Ray a, Ray b) internal pure returns(bool) {
+    function eq(Ray a, Ray b) internal pure returns (bool) {
         return Ray.unwrap(a) == Ray.unwrap(b);
     }
 }

@@ -7,7 +7,7 @@ import "./DataStructure/Global.sol";
 contract ProtocolFacet {
     /// @notice increment supplier Expiration date, effectively making all offers signed with previous expiration date unusable
     /// @return newExpirationDate value of the new supplier ExpirationDate
-    function updateOffers() external returns(uint256 newExpirationDate) {
+    function updateOffers() external returns (uint256 newExpirationDate) {
         newExpirationDate = ++protocolStorage().supplierNonce[msg.sender];
     }
 
@@ -15,7 +15,7 @@ contract ProtocolFacet {
     /// @param id rate identifier
     /// @return rate the rate of the tranche, as a Ray, multiplier per second of the amount to repay (non compounding)
     ///         I.e lent * time since loan start * tranche = interests to repay
-    function getRateOfTranche(uint256 id) external view returns(Ray rate){
+    function getRateOfTranche(uint256 id) external view returns (Ray rate) {
         return protocolStorage().tranche[id];
     }
 
@@ -24,11 +24,11 @@ contract ProtocolFacet {
     ///         of a collateral on sale
     /// @return auctionDuration number of seconds after the auction start when the price hits 0
     /// @return nbOfLoans total number of loans ever issued (active and ended)
-    function getParameters() external view returns(
-        Ray auctionPriceFactor,
-        uint256 auctionDuration,
-        uint256 nbOfLoans
-    ) {
+    function getParameters()
+        external
+        view
+        returns (Ray auctionPriceFactor, uint256 auctionDuration, uint256 nbOfLoans)
+    {
         Protocol storage proto = protocolStorage();
         auctionPriceFactor = proto.auctionPriceFactor;
         auctionDuration = proto.auctionDuration;
@@ -38,14 +38,14 @@ contract ProtocolFacet {
     /// @notice get loan metadata
     /// @param id loan identifier
     /// @return loan the corresponding loan
-    function getLoan(uint256 id) external view returns(Loan memory){
+    function getLoan(uint256 id) external view returns (Loan memory) {
         return protocolStorage().loan[id];
     }
 
     /// @notice gets nonce of `supplier`
     /// @param supplier - to get nonce rom
     /// @return expirationDate - of the supplier
-    function getSupplierExpirationDate(address supplier) external view returns(uint256) {
+    function getSupplierExpirationDate(address supplier) external view returns (uint256) {
         return protocolStorage().supplierNonce[supplier];
     }
 }

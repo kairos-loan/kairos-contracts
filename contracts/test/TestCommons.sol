@@ -14,48 +14,51 @@ contract TestCommons is TestConstructor, SafeMint {
         supplyPositionStorage().provision[positionId] = provision;
     }
 
-    function publicMintPosition(address to, Provision memory provision) public returns(uint256 tokenId) {
+    function publicMintPosition(address to, Provision memory provision) public returns (uint256 tokenId) {
         tokenId = safeMint(to, provision);
     }
 
     function store(Loan memory loan, uint256 loanId) internal {
         IDCHelperFacet(address(kairos)).delegateCall(
-            address(this), 
-            abi.encodeWithSelector(this.publicStoreLoan.selector, loan, loanId));
+            address(this),
+            abi.encodeWithSelector(this.publicStoreLoan.selector, loan, loanId)
+        );
     }
 
     function store(Provision memory provision, uint256 positionId) internal {
         IDCHelperFacet(address(kairos)).delegateCall(
-            address(this), 
-            abi.encodeWithSelector(this.publicStoreProvision.selector, provision, positionId));
+            address(this),
+            abi.encodeWithSelector(this.publicStoreProvision.selector, provision, positionId)
+        );
     }
 
-    function mintPosition(address to, Provision memory provision) internal returns(uint256 tokenId) {
+    function mintPosition(address to, Provision memory provision) internal returns (uint256 tokenId) {
         bytes memory data = IDCHelperFacet(address(kairos)).delegateCall(
-            address(this), 
-            abi.encodeWithSelector(this.publicMintPosition.selector, to, provision));
+            address(this),
+            abi.encodeWithSelector(this.publicMintPosition.selector, to, provision)
+        );
         tokenId = abi.decode(data, (uint256));
     }
 
     function getSignatureFromKey(
-        Root memory root, 
-        uint256 pKey, 
+        Root memory root,
+        uint256 pKey,
         IKairos kairos
-    ) internal returns(bytes memory signature){
+    ) internal returns (bytes memory signature) {
         bytes32 digest = kairos.rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(pKey, digest);
         signature = bytes.concat(r, s, bytes1(v));
     }
 
-    function getSignature(Root memory root) internal returns(bytes memory signature){
+    function getSignature(Root memory root) internal returns (bytes memory signature) {
         return getSignatureFromKey(root, KEY, kairos);
     }
 
-    function getSignature2(Root memory root) internal returns(bytes memory signature){
+    function getSignature2(Root memory root) internal returns (bytes memory signature) {
         return getSignatureFromKey(root, KEY2, kairos);
     }
 
-    function getOfferArgs(Offer memory offer) internal returns(OfferArgs[] memory){
+    function getOfferArgs(Offer memory offer) internal returns (OfferArgs[] memory) {
         OfferArgs[] memory offerArgs = new OfferArgs[](1);
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         bytes32[] memory emptyArray;
@@ -69,11 +72,7 @@ contract TestCommons is TestConstructor, SafeMint {
         return offerArgs;
     }
 
-
-
-    function getTokens() internal returns(uint256 tokenId){
-
-
+    function getTokens() internal returns (uint256 tokenId) {
         vm.prank(signer);
         uint tokenId = nft.mintOne();
         vm.prank(signer);
@@ -81,15 +80,10 @@ contract TestCommons is TestConstructor, SafeMint {
         vm.prank(signer);
         money.approve(address(kairos), 100 ether);
 
-
         return tokenId;
-
-
-
     }
-    function getTokens2() internal returns(uint256 tokenId){
 
-
+    function getTokens2() internal returns (uint256 tokenId) {
         vm.prank(signer2);
         uint tokenId = nft2.mintOne();
         console.log(tokenId);
@@ -98,113 +92,94 @@ contract TestCommons is TestConstructor, SafeMint {
         vm.prank(signer2);
         money.approve(address(kairos), 100 ether);
 
-
         return tokenId;
-
-
-
     }
 
-    function getDefaultLoan() internal view returns(Loan memory) {
+    function getDefaultLoan() internal view returns (Loan memory) {
         Payment memory payment;
-        return Loan({
-            assetLent: money,
-            lent: 1 ether,
-            shareLent: ONE,
-            startDate: block.timestamp - 2 weeks,
-            endDate: block.timestamp + 2 weeks,
-            interestPerSecond: protocolStorage().tranche[0],
-            borrower: signer,
-            collateral: NFToken({
-                implem: nft,
-                id: 1
-            }),
-            supplyPositionIndex: 1,
-            payment: payment,
-            nbOfPositions: 1
-        });
+        return
+            Loan({
+                assetLent: money,
+                lent: 1 ether,
+                shareLent: ONE,
+                startDate: block.timestamp - 2 weeks,
+                endDate: block.timestamp + 2 weeks,
+                interestPerSecond: protocolStorage().tranche[0],
+                borrower: signer,
+                collateral: NFToken({implem: nft, id: 1}),
+                supplyPositionIndex: 1,
+                payment: payment,
+                nbOfPositions: 1
+            });
     }
 
-    function  getMultipleLoan(uint  x) internal view returns(Loan[] memory){
+    function getMultipleLoan(uint x) internal view returns (Loan[] memory) {
         Payment memory payment;
 
-    Loan[] memory loans = new Loan[](x-1);
+        Loan[] memory loans = new Loan[](x - 1);
 
-        for(uint  i; i < x-1; i++){
-            loans[i]=
-                Loan({
-                    assetLent: money,
-                    lent: 1 ether,
-                    shareLent: ONE,
-                    startDate: block.timestamp - 2 weeks,
-                    endDate: block.timestamp + 2 weeks,
-                    interestPerSecond: protocolStorage().tranche[0],
-                    borrower: signer,
-                    collateral: NFToken({
-                        implem: nft,
-                        id: i
-                    }),
-                    supplyPositionIndex: i,
-                    payment: payment,
-                    nbOfPositions: uint8(x)
-                });
+        for (uint i; i < x - 1; i++) {
+            loans[i] = Loan({
+                assetLent: money,
+                lent: 1 ether,
+                shareLent: ONE,
+                startDate: block.timestamp - 2 weeks,
+                endDate: block.timestamp + 2 weeks,
+                interestPerSecond: protocolStorage().tranche[0],
+                borrower: signer,
+                collateral: NFToken({implem: nft, id: i}),
+                supplyPositionIndex: i,
+                payment: payment,
+                nbOfPositions: uint8(x)
+            });
         }
         return loans;
-
     }
 
-
     function assertEq(Loan memory actual, Loan memory expected) internal view {
-        if(keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
+        if (keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
             logLoan(expected, "expected");
             logLoan(actual, "actual  ");
             revert AssertionFailedLoanDontMatch();
         }
     }
 
-    function getOffer() internal view returns(Offer memory){
-        return Offer({
+    function getOffer() internal view returns (Offer memory) {
+        return
+            Offer({
                 assetToLend: money,
                 loanToValue: 10 ether,
                 duration: 2 weeks,
                 nonce: 0,
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
-                collatSpecs: abi.encode(FloorSpec({
-                    implem: nft
-                }))
+                collatSpecs: abi.encode(FloorSpec({implem: nft}))
             });
     }
 
-    function getMulptipleNft(uint x) internal returns(uint[] memory){
+    function getMulptipleNft(uint x) internal returns (uint[] memory) {
         uint[] memory nftsId = new uint[](x);
-        for (uint i = 0; i<x; i++){
+        for (uint i = 0; i < x; i++) {
             uint nftId = nft.mintOne();
-            nftsId[i]= nftId;
+            nftsId[i] = nftId;
         }
 
         return nftsId;
     }
 
     function assertEq(Ray actual, Ray expected) internal pure {
-        if(Ray.unwrap(actual) != Ray.unwrap(expected)){
+        if (Ray.unwrap(actual) != Ray.unwrap(expected)) {
             revert AssertionFailedRayDontMatch(expected, actual);
         }
     }
 
-    function getDefaultProvision() internal pure returns(Provision memory) {
-        return Provision({
-            amount: 1 ether,
-            share: ONE,
-            loanId: 1
-        });
+    function getDefaultProvision() internal pure returns (Provision memory) {
+        return Provision({amount: 1 ether, share: ONE, loanId: 1});
     }
 
-    function getRootOfTwoHashes(bytes32 hashOne, bytes32 hashTwo) internal pure returns(Root memory ret){
-        ret.root = hashOne < hashTwo 
-            ? keccak256(abi.encode(hashOne, hashTwo)) 
+    function getRootOfTwoHashes(bytes32 hashOne, bytes32 hashTwo) internal pure returns (Root memory ret) {
+        ret.root = hashOne < hashTwo
+            ? keccak256(abi.encode(hashOne, hashTwo))
             : keccak256(abi.encode(hashTwo, hashOne));
     }
-
-
 }
