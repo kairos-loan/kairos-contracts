@@ -12,7 +12,7 @@ struct ComplexBorrowData {
     Offer signer1Offer1;
     Offer signer1Offer2;
     Offer signer2Offer;
-    uint256 m1InitialBalance; 
+    uint256 m1InitialBalance;
     uint256 m2InitialBalance;
 }
 
@@ -87,9 +87,8 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             nonce: 0,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
-            collatSpecs: abi.encode(NFToken({
-                implem: nft,
-                id: 1}))});
+            collatSpecs: abi.encode(NFToken({implem: nft, id: 1}))
+        });
         d.signer1Offer2 = Offer({
             assetToLend: money2,
             loanToValue: 2 ether,
@@ -97,9 +96,8 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             nonce: 0,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
-            collatSpecs: abi.encode(NFToken({
-                implem: nft2,
-                id: 1}))});
+            collatSpecs: abi.encode(NFToken({implem: nft2, id: 1}))
+        });
 
         d.signer2Offer = Offer({
             assetToLend: money,
@@ -108,8 +106,8 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             nonce: 1,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
-            collatSpecs: abi.encode(FloorSpec({
-                implem: nft}))});
+            collatSpecs: abi.encode(FloorSpec({implem: nft}))
+        });
 
         return d;
     }
@@ -121,21 +119,9 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
         OfferArgs[] memory offerArgs2 = new OfferArgs[](1);
         offerArgs2[0] = d.oargs3;
 
-        d.bargs1 = BorrowArgs({
-            nft: NFToken({
-                implem: nft,
-                id: 1
-            }),
-            args: offerArgs1
-        });
-        
-        d.bargs2 = BorrowArgs({
-            nft: NFToken({
-                implem: nft2,
-                id: 1
-            }),
-            args: offerArgs2
-        });
+        d.bargs1 = BorrowArgs({nft: NFToken({implem: nft, id: 1}), args: offerArgs1});
+
+        d.bargs2 = BorrowArgs({nft: NFToken({implem: nft2, id: 1}), args: offerArgs2});
 
         return d;
     }

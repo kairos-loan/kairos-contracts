@@ -21,25 +21,19 @@ contract TestBorrow is SetUp {
         IERC721 wrongNFT = IERC721(address(1));
 
         Offer memory offer = Offer({
-                assetToLend: money,
-                loanToValue: 10 ether,
-                duration: 2 weeks,
-                nonce: 0,
-                collatSpecType: CollatSpecType.Floor,
-                tranche: 0,
-                collatSpecs: abi.encode(FloorSpec({
-                    implem: wrongNFT
-                }))
-            });
+            assetToLend: money,
+            loanToValue: 10 ether,
+            duration: 2 weeks,
+            nonce: 0,
+            collatSpecType: CollatSpecType.Floor,
+            tranche: 0,
+            collatSpecs: abi.encode(FloorSpec({implem: wrongNFT}))
+        });
         bytes memory data = abi.encode(getOfferArgs(offer));
         uint256 tokenId = getTokens(signer);
 
         vm.startPrank(signer);
-        vm.expectRevert(abi.encodeWithSelector(
-            NFTContractDoesntMatchOfferSpecs.selector,
-            nft,
-            wrongNFT
-        ));
+        vm.expectRevert(abi.encodeWithSelector(NFTContractDoesntMatchOfferSpecs.selector, nft, wrongNFT));
         nft.safeTransferFrom(signer, address(kairos), tokenId, data);
     }
 

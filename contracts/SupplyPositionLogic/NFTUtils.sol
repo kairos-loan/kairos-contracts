@@ -9,15 +9,10 @@ import "@openzeppelin/contracts/utils/Address.sol";
 contract NFTUtils is IERC721Events {
     using Address for address;
 
-    function _safeTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal {
+    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal {
         _transfer(from, to, tokenId);
-        if (!_checkOnERC721Received(from, to, tokenId, data)) { 
-            revert ERC721TransferToNonERC721ReceiverImplementer(); 
+        if (!_checkOnERC721Received(from, to, tokenId, data)) {
+            revert ERC721TransferToNonERC721ReceiverImplementer();
         }
     }
 
@@ -25,22 +20,22 @@ contract NFTUtils is IERC721Events {
         _safeMint(to, tokenId, "");
     }
 
-    function _safeMint(
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal {
+    function _safeMint(address to, uint256 tokenId, bytes memory data) internal {
         _mint(to, tokenId);
-        if (!_checkOnERC721Received(address(0), to, tokenId, data)) { 
-            revert ERC721TransferToNonERC721ReceiverImplementer(); 
+        if (!_checkOnERC721Received(address(0), to, tokenId, data)) {
+            revert ERC721TransferToNonERC721ReceiverImplementer();
         }
     }
 
     function _mint(address to, uint256 tokenId) internal {
         SupplyPosition storage sp = supplyPositionStorage();
 
-        if (to == address(0)) { revert ERC721MintToTheZeroAddress(); }
-        if (_exists(tokenId)) { revert ERC721TokenAlreadyMinted(); }
+        if (to == address(0)) {
+            revert ERC721MintToTheZeroAddress();
+        }
+        if (_exists(tokenId)) {
+            revert ERC721TokenAlreadyMinted();
+        }
 
         sp.balance[to] += 1;
         sp.owner[tokenId] = to;
@@ -62,15 +57,15 @@ contract NFTUtils is IERC721Events {
         emit Transfer(owner, address(0), tokenId);
     }
 
-    function _transfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal {
+    function _transfer(address from, address to, uint256 tokenId) internal {
         SupplyPosition storage sp = supplyPositionStorage();
 
-        if (_ownerOf(tokenId) != from) { revert ERC721TransferToIncorrectOwner(); }
-        if (to == address(0)) { revert ERC721TransferToTheZeroAddress(); }
+        if (_ownerOf(tokenId) != from) {
+            revert ERC721TransferToIncorrectOwner();
+        }
+        if (to == address(0)) {
+            revert ERC721TransferToTheZeroAddress();
+        }
 
         // Clear approvals from the previous owner
         _approve(address(0), tokenId);
@@ -89,14 +84,12 @@ contract NFTUtils is IERC721Events {
         emit Approval(_ownerOf(tokenId), to, tokenId);
     }
 
-    function _setApprovalForAll(
-        address owner,
-        address operator,
-        bool approved
-    ) internal {
+    function _setApprovalForAll(address owner, address operator, bool approved) internal {
         SupplyPosition storage sp = supplyPositionStorage();
 
-        if (owner == operator) { revert ERC721ApproveToCaller(); }
+        if (owner == operator) {
+            revert ERC721ApproveToCaller();
+        }
         sp.operatorApproval[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
     }
@@ -135,7 +128,9 @@ contract NFTUtils is IERC721Events {
         SupplyPosition storage sp = supplyPositionStorage();
 
         address owner = sp.owner[tokenId];
-        if (owner == address(0)) { revert ERC721InvalidTokenId(); }
+        if (owner == address(0)) {
+            revert ERC721InvalidTokenId();
+        }
         return owner;
     }
 
@@ -145,11 +140,13 @@ contract NFTUtils is IERC721Events {
     }
 
     function _getApproved(uint256 tokenId) internal view returns (address) {
-        if (!_exists(tokenId)) { revert ERC721InvalidTokenId(); }
+        if (!_exists(tokenId)) {
+            revert ERC721InvalidTokenId();
+        }
 
         return supplyPositionStorage().tokenApproval[tokenId];
     }
-    
+
     function _isApprovedForAll(address owner, address operator) internal view returns (bool) {
         return supplyPositionStorage().operatorApproval[owner][operator];
     }

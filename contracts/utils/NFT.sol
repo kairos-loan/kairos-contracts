@@ -45,7 +45,6 @@ abstract contract ERC165 is IERC165 {
  * {ERC721Enumerable}.
  */
 contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
-
     using Address for address;
     using Strings for uint256;
 
@@ -78,7 +77,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
         mintOne();
     }
 
-    function mintOne() public returns(uint256) {
+    function mintOne() public returns (uint256) {
         totalSupply++;
         _safeMint(msg.sender, totalSupply);
         return totalSupply;
@@ -87,7 +86,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     /**
      * @dev See {IERC721-balanceOf}.
      */
-    function balanceOf(address owner) public view virtual  returns (uint256) {
+    function balanceOf(address owner) public view virtual returns (uint256) {
         require(owner != address(0), "ERC721: address zero is not a valid owner");
         return _balances[owner];
     }
@@ -95,7 +94,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     /**
      * @dev See {IERC721-ownerOf}.
      */
-    function ownerOf(uint256 tokenId) public view virtual  returns (address) {
+    function ownerOf(uint256 tokenId) public view virtual returns (address) {
         address owner = _owners[tokenId];
         require(owner != address(0), "ERC721: invalid token ID");
         return owner;
@@ -137,7 +136,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     /**
      * @dev See {IERC721-approve}.
      */
-    function approve(address to, uint256 tokenId) public virtual  {
+    function approve(address to, uint256 tokenId) public virtual {
         address owner = NFT.ownerOf(tokenId);
         require(to != owner, "ERC721: approval to current owner");
 
@@ -152,7 +151,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     /**
      * @dev See {IERC721-getApproved}.
      */
-    function getApproved(uint256 tokenId) public view virtual  returns (address) {
+    function getApproved(uint256 tokenId) public view virtual returns (address) {
         _requireMinted(tokenId);
 
         return _tokenApprovals[tokenId];
@@ -161,25 +160,21 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual  {
+    function setApprovalForAll(address operator, bool approved) public virtual {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual  returns (bool) {
+    function isApprovedForAll(address owner, address operator) public view virtual returns (bool) {
         return _operatorApprovals[owner][operator];
     }
 
     /**
      * @dev See {IERC721-transferFrom}.
      */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual  {
+    function transferFrom(address from, address to, uint256 tokenId) public virtual {
         //solhint-disable-next-line max-line-length
         require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner nor approved");
 
@@ -189,23 +184,14 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     /**
      * @dev See {IERC721-safeTransferFrom}.
      */
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual  {
+    function safeTransferFrom(address from, address to, uint256 tokenId) public virtual {
         safeTransferFrom(from, to, tokenId, "");
     }
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
      */
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public virtual  {
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual {
         require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner nor approved");
         _safeTransfer(from, to, tokenId, data);
     }
@@ -228,12 +214,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
      *
      * Emits a {Transfer} event.
      */
-    function _safeTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal virtual {
+    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal virtual {
         _transfer(from, to, tokenId);
         require(_checkOnERC721Received(from, to, tokenId, data), "ERC721: transfer to non ERC721Receiver implementer");
     }
@@ -280,11 +261,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
      * @dev Same as {xref-ERC721-_safeMint-address-uint256-}[`_safeMint`], with an additional `data` parameter which is
      * forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
      */
-    function _safeMint(
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal virtual {
+    function _safeMint(address to, uint256 tokenId, bytes memory data) internal virtual {
         _mint(to, tokenId);
         require(
             _checkOnERC721Received(address(0), to, tokenId, data),
@@ -355,11 +332,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
      *
      * Emits a {Transfer} event.
      */
-    function _transfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal virtual {
+    function _transfer(address from, address to, uint256 tokenId) internal virtual {
         require(NFT.ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
         require(to != address(0), "ERC721: transfer to the zero address");
 
@@ -392,11 +365,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
      *
      * Emits an {ApprovalForAll} event.
      */
-    function _setApprovalForAll(
-        address owner,
-        address operator,
-        bool approved
-    ) internal virtual {
+    function _setApprovalForAll(address owner, address operator, bool approved) internal virtual {
         require(owner != operator, "ERC721: approve to caller");
         _operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
@@ -457,11 +426,7 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal virtual {}
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual {}
 
     /**
      * @dev Hook that is called after any transfer of tokens. This includes
@@ -474,9 +439,5 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _afterTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal virtual {}
+    function _afterTokenTransfer(address from, address to, uint256 tokenId) internal virtual {}
 }

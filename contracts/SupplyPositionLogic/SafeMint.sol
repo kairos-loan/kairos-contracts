@@ -10,7 +10,7 @@ contract SafeMint is NFTUtils {
     /// @param to receiver of the position
     /// @param provision metadata of the supply position
     /// @return tokenId identifier of the supply position
-    function safeMint(address to, Provision memory provision) internal returns(uint256 tokenId) {
+    function safeMint(address to, Provision memory provision) internal returns (uint256 tokenId) {
         SupplyPosition storage sp = supplyPositionStorage();
 
         tokenId = ++sp.totalSupply;
