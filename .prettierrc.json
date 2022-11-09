@@ -1,10 +1,13 @@
 {
   "overrides": [
     {
-      "files": "*.sol",
+      "files": "./contracts/**/*.sol",
       "options": {
         "printWidth": 120
       }
     }
+  ],
+  "plugins": [
+    "prettier-plugin-solidity"
   ]
 }
