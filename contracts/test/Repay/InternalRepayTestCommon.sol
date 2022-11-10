@@ -42,4 +42,44 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs{
 
 
     }
+
+    function getLoan1() internal view returns(Loan memory) {
+        Payment memory payment;
+        return Loan({
+        assetLent: money,
+        lent: 1 ether,
+        shareLent: ONE,
+        startDate: block.timestamp - 2 weeks,
+        endDate: block.timestamp + 2 weeks,
+        interestPerSecond: protocolStorage().tranche[0],
+        borrower: signer,
+        collateral: NFToken({
+        implem: nft,
+        id: 1
+        }),
+        supplyPositionIndex: 1,
+        payment: payment,
+        nbOfPositions: 1
+        });
+    }
+
+    function getLoan2() internal view returns(Loan memory) {
+        Payment memory payment;
+        return Loan({
+        assetLent: money,
+        lent: 1 ether,
+        shareLent: ONE,
+        startDate: block.timestamp - 2 weeks,
+        endDate: block.timestamp + 2 weeks,
+        interestPerSecond: protocolStorage().tranche[0],
+        borrower: signer,
+        collateral: NFToken({
+        implem: nft,
+        id: 2
+        }),
+        supplyPositionIndex: 1,
+        payment: payment,
+        nbOfPositions: 1
+        });
+    }
 }

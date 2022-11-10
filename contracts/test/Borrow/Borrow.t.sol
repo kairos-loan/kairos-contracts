@@ -27,7 +27,7 @@ contract TestBorrow is SetUp{
         assetToLend: money,
         loanToValue: 10 ether,
         duration: 2 weeks,
-        nonce: 0,
+        expirationDate: 0,
         collatSpecType: CollatSpecType.Floor,
         tranche: 0,
         collatSpecs: abi.encode(FloorSpec({
@@ -61,7 +61,7 @@ contract TestBorrow is SetUp{
             assetToLend: money,
             loanToValue: 10 ether,
             duration: 2 weeks,
-            nonce: 0,
+            expirationDate: 0,
             collatSpecType: CollatSpecType(0),
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({
@@ -87,14 +87,14 @@ contract TestBorrow is SetUp{
             assetToLend: money,
             loanToValue: 10 ether,
             duration: 2 weeks,
-            nonce: 0,
+            expirationDate: 0,
             collatSpecType: CollatSpecType(1),
             tranche: 0,
             collatSpecs: abi.encode(
-                    NFToken(
-                    {implem: nft,
-                    id:2}
-                    )
+                    NFToken({
+                        implem: nft,
+                        id:2
+                    })
                 )
             }))
         );

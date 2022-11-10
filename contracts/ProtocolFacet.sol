@@ -8,7 +8,7 @@ contract ProtocolFacet {
     /// @notice increment supplier Expiration date, effectively making all offers signed with previous expiration date unusable
     /// @return newExpirationDate value of the new supplier ExpirationDate
     function updateOffers() external returns(uint256 newExpirationDate) {
-        newExpirationDate = ++protocolStorage().supplierNonce[msg.sender];
+        newExpirationDate = ++protocolStorage().supplierExpiration[msg.sender];
     }
 
     /// @notice gets the rate of tranche `id`
@@ -46,6 +46,6 @@ contract ProtocolFacet {
     /// @param supplier - to get nonce rom
     /// @return expirationDate - of the supplier
     function getSupplierExpirationDate(address supplier) external view returns(uint256) {
-        return protocolStorage().supplierNonce[supplier];
+        return protocolStorage().supplierExpiration[supplier];
     }
 }

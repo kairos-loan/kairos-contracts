@@ -94,7 +94,7 @@ contract ComplexBorrowPreExecFuncs is SetUp{
             assetToLend: money,
             loanToValue: 2 ether,
             duration: 2 weeks,
-            nonce:0,
+        expirationDate:0,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({
@@ -104,7 +104,7 @@ contract ComplexBorrowPreExecFuncs is SetUp{
             assetToLend: money2,
             loanToValue: 2 ether,
             duration: 4 weeks,
-            nonce:0,
+        expirationDate:0,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({
@@ -115,7 +115,7 @@ contract ComplexBorrowPreExecFuncs is SetUp{
             assetToLend: money,
             loanToValue: 1 ether,
             duration: 1 weeks,
-            nonce:0,
+        expirationDate:0,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({

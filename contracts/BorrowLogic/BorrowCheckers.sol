@@ -31,11 +31,11 @@ abstract contract BorrowCheckers is Signature {
         if (!args.proof.verify(args.root.root, keccak256(abi.encode(args.offer)))) {
             revert OfferNotFound(args.offer, args.root);
         }
-        /*
-        if (proto.supplierNonce[msg.sender] != args.offer.nonce) {
-            revert OfferHasBeenDeleted(args.offer, proto.supplierNonce[signer]);
+
+        if (block.timestamp <= proto.supplierExpiration[msg.sender]) {
+            revert OfferHasBeenDeleted(args.offer, proto.supplierExpiration[signer]);
         }
-        */
+
         if (args.amount > args.offer.loanToValue) {
             revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);
         }

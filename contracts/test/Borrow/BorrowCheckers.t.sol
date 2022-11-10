@@ -43,21 +43,43 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         this.checkOfferArgsExternal(args);
     }
 
-    /*
-    TODO: Implement expirationdate first
+
     function testExpirationDate() public {
-        OfferArgs memory args;
-        Offer memory offer;
-        offer.nonce = 1;
-        // stored supplier nonce is implicitely 0
-        Root memory root = Root({root: keccak256(abi.encode(offer))});
-        args.root = root;
-        args.offer = offer;
-        args.signature = getSignatureInternal(root);
-        vm.expectRevert(abi.encodeWithSelector(OfferHasBeenDeleted.selector, offer, uint256(0)));
-        this.checkOfferArgsExternal(args);
+        bytes memory data = abi.encode(
+            getOfferArgs(
+                Offer({
+                    assetToLend: money,
+                    loanToValue: 10 ether,
+                    duration: 2 weeks,
+                    expirationDate: 0,
+                    collatSpecType: CollatSpecType.Floor,
+                    tranche: 0,
+                    collatSpecs: abi.encode(
+                        NFToken({
+                            implem: nft,
+                            id:2
+                        })
+                    )
+                })
+            )
+        );
+        uint tokenId = getTokens();
+        vm.prank(signer);
+        nft.safeTransferFrom(signer, address(kairos), tokenId, data);
+
+        uint time = block.timestamp + 3 weeks;
+        vm.warp(time);
+
+        //Root memory root = Root({root: keccak256(abi.encode(offer))});
+        //args.root = root;
+        //args.offer = offer;
+        //args.signature = getSignatureInternal(root);
+        //vm.expectRevert(abi.encodeWithSelector(OfferHasBeenDeleted.selector, offer, uint256(0)));
+        //this.checkOfferArgsExternal(args);
     }
-    */
+
+
+
 
     function testAmount() public {
         OfferArgs memory args;
