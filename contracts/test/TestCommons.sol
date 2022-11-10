@@ -198,6 +198,13 @@ contract TestCommons is TestConstructor, SafeMint {
             share: ONE,
             loanId: 1
         });
+    }  function getCustomProvision(uint _amount) internal pure returns(Provision memory) {
+
+        return Provision({
+            amount: 1 ether * _amount,
+            share: ONE,
+            loanId: 1
+        });
     }
 
     function getRootOfTwoHashes(bytes32 hashOne, bytes32 hashTwo) internal pure returns(Root memory ret){

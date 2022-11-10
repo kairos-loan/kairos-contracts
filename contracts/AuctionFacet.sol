@@ -25,6 +25,8 @@ contract AuctionFacet is NFTUtils {
 
     // todo: add a public facing price method
 
+
+
     /// @notice handles buying one NFT
     /// @param args arguments on what and how to buy
     function useLoan(BuyArgs memory args) internal {

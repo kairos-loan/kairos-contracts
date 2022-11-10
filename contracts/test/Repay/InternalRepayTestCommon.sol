@@ -77,9 +77,9 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs{
         implem: nft,
         id: 2
         }),
-        supplyPositionIndex: 1,
+        supplyPositionIndex: 2,
         payment: payment,
-        nbOfPositions: 1
+        nbOfPositions: 2
         });
     }
 }
