@@ -72,18 +72,17 @@ contract TestCommons is TestConstructor, SafeMint {
         return offerArgs;
     }
 
-    function getTokens() internal returns (uint256 tokenId) {
-        vm.prank(signer);
-        uint tokenId = nft.mintOne();
-        vm.prank(signer);
+    function getTokens(address receiver) internal returns (uint256 tokenId) {
+        vm.startPrank(receiver);
+
+        tokenId = nft.mintOne();
         money.mint(100 ether);
-        vm.prank(signer);
         money.approve(address(kairos), 100 ether);
 
-        return tokenId;
+        vm.stopPrank();
     }
 
-    function getTokens2() internal returns (uint256 tokenId) {
+        function getTokens2() internal returns (uint256 tokenId) {
         vm.prank(signer2);
         uint tokenId = nft2.mintOne();
         console.log(tokenId);
@@ -92,6 +91,11 @@ contract TestCommons is TestConstructor, SafeMint {
         vm.prank(signer2);
         money.approve(address(kairos), 100 ether);
 
+        return tokenId;
+    }
+
+
+<<<<<<< HEAD
         return tokenId;
     }
 

@@ -128,7 +128,7 @@ contract ComplexBorrowPreExecFuncs is SetUp {
 
         d.bargs1 = BorrowArgs({nft: NFToken({implem: nft, id: 1}), args: offerArgs1});
 
-        d.bargs2 = BorrowArgs({nft: NFToken({implem: nft, id: 1}), args: offerArgs2});
+        d.bargs2 = BorrowArgs({nft: NFToken({implem: nft2, id: 1}), args: offerArgs2});
 
         return d;
     }
