@@ -3,6 +3,7 @@ pragma solidity 0.8.17;
 
 import "./InternalBorrowTestCommons.sol";
 
+
 contract TestBorrowCheckers is InternalBorrowTestCommons {
     using MerkleProof for bytes32[];
 
@@ -43,32 +44,41 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         this.checkOfferArgsExternal(args);
     }
 
-
     function testExpirationDate() public {
-        bytes memory data = abi.encode(
-            getOfferArgs(
-                Offer({
-                    assetToLend: money,
-                    loanToValue: 10 ether,
-                    duration: 2 weeks,
-                    expirationDate: block.timestamp + 3 weeks,
-                    collatSpecType: CollatSpecType.Floor,
-                    tranche: 0,
-                    collatSpecs: abi.encode(
-                        NFToken({
-                            implem: nft,
-                            id:1
-                        })
-                    )
-                })
-            )
-        );
-        uint tokenId = getTokens();
-        //vm.prank(signer);
-        nft.safeTransferFrom(signer, address(kairos), tokenId, data);
 
-        uint time = block.timestamp + 1 weeks;
-        vm.warp(time);
+        Offer memory _offer =  Offer({
+        assetToLend: money,
+        loanToValue: 10 ether,
+        duration: 2 weeks,
+        expirationDate: 3 weeks,
+        collatSpecType: CollatSpecType.Floor,
+        tranche: 0,
+        collatSpecs: abi.encode(FloorSpec({implem: nft}))
+        });
+
+
+
+        OfferArgs[] memory offerArgs = new OfferArgs[](1);
+        Root memory root = Root({root: keccak256(abi.encode(_offer))});
+
+       bytes32[] memory emptyArray;
+
+        offerArgs[0] = OfferArgs({
+            proof: emptyArray,
+            root: root,
+            signature: getSignatureInternal(root),
+            amount: 1 ether,
+            offer: _offer
+        });
+
+        vm.warp(2 weeks);
+
+
+
+
+        checkOfferArgs(offerArgs[0]);
+        //vm.expectRevert(OfferHasBeenDeleted);
+
 
         //Root memory root = Root({root: keccak256(abi.encode(offer))});
         //args.root = root;
@@ -77,9 +87,6 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         //vm.expectRevert(abi.encodeWithSelector(OfferHasBeenDeleted.selector, offer, uint256(0)));
         //this.checkOfferArgsExternal(args);
     }
-
-
-
 
     function testAmount() public {
         OfferArgs memory args;

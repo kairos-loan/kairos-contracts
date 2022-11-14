@@ -7,7 +7,7 @@ import "./Repay/InternalRepayTestCommon.sol";
 contract TestClaim is SetUp, InternalRepayTestCommon {
     using RayMath for Ray;
 
-    function testSimpleClaim() public  {
+    function testSimpleClaim() public {
         uint256[] memory positionIds = new uint256[](1);
         positionIds[0] = 1;
         Loan memory loan = getDefaultLoan();
@@ -39,7 +39,7 @@ contract TestClaim is SetUp, InternalRepayTestCommon {
     }
 
     //Issue ERC721InvalidTokenId()
-    function testMultipleClaim() public{
+    function testMultipleClaim() public {
         uint256[] memory positionIds = new uint256[](2);
         positionIds[0] = 1;
         positionIds[1] = 2;
@@ -47,10 +47,10 @@ contract TestClaim is SetUp, InternalRepayTestCommon {
         Loan memory loan2 = getLoan2(2);
 
         loan1.payment.paid = 1 ether;
-        store(loan1,1);
+        store(loan1, 1);
 
         loan2.payment.paid = 1 ether;
-        store(loan2,2);
+        store(loan2, 2);
 
         mintPosition(signer, getCustomProvision(2));
         mintPosition(signer, getCustomProvision(2));
@@ -86,12 +86,6 @@ contract TestClaim is SetUp, InternalRepayTestCommon {
         vm.prank(signer);
         kairos.claimAsBorrower(loanIds);
         assertEq(money.balanceOf(address(kairos)), 0);
-        assertEq(money.balanceOf(address(signer)), 1 ether );
+        assertEq(money.balanceOf(address(signer)), 1 ether);
     }
-
-
-
-
-
-
 }

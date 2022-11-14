@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 import "../SetUp.sol";
 import "./InternalRepayTestCommon.sol";
 
-
 contract TestRepay is SetUp, InternalRepayTestCommon {
     using RayMath for Ray;
     using RayMath for uint256;
@@ -37,12 +36,12 @@ contract TestRepay is SetUp, InternalRepayTestCommon {
         uint256Array[0] = 1;
         uint256Array[1] = 2;
 
-        uint tokenId1 =nft.mintOne();
+        uint tokenId1 = nft.mintOne();
         nft.transferFrom(signer, address(kairos), tokenId1);
         console.log(tokenId1);
         Loan memory loan1 = getLoan1(tokenId1);
 
-        uint tokenId2 =nft2.mintOne();
+        uint tokenId2 = nft2.mintOne();
         console.log(tokenId2);
 
         nft2.transferFrom(signer, address(kairos), tokenId2);
@@ -54,7 +53,7 @@ contract TestRepay is SetUp, InternalRepayTestCommon {
         store(loan1, 1);
         store(loan2, 2);
 
-        uint256 toRepay = (uint256(1 ether * 2 weeks).mul(proto.tranche[0]) + 1 ether)*2;
+        uint256 toRepay = (uint256(1 ether * 2 weeks).mul(proto.tranche[0]) + 1 ether) * 2;
 
         money.mint(toRepay);
         money.approve(address(kairos), toRepay);

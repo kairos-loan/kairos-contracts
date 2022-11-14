@@ -5,13 +5,11 @@ import "./DataStructure/Global.sol";
 
 /// @notice external loupe functions exposing protocol storage and supplier nonce incrementer
 contract ProtocolFacet {
-
-
     /// @notice gets the rate of tranche `id`
     /// @param id rate identifier
     /// @return rate the rate of the tranche, as a Ray, multiplier per second of the amount to repay (non compounding)
     ///         I.e lent * time since loan start * tranche = interests to repay
-    function getRateOfTranche(uint256 id) external view returns(Ray rate){
+    function getRateOfTranche(uint256 id) external view returns (Ray rate) {
         return protocolStorage().tranche[id];
     }
 
@@ -20,11 +18,11 @@ contract ProtocolFacet {
     ///         of a collateral on sale
     /// @return auctionDuration number of seconds after the auction start when the price hits 0
     /// @return nbOfLoans total number of loans ever issued (active and ended)
-    function getParameters() external view returns(
-        Ray auctionPriceFactor,
-        uint256 auctionDuration,
-        uint256 nbOfLoans
-    ) {
+    function getParameters()
+        external
+        view
+        returns (Ray auctionPriceFactor, uint256 auctionDuration, uint256 nbOfLoans)
+    {
         Protocol storage proto = protocolStorage();
         auctionPriceFactor = proto.auctionPriceFactor;
         auctionDuration = proto.auctionDuration;
@@ -34,9 +32,7 @@ contract ProtocolFacet {
     /// @notice get loan metadata
     /// @param id loan identifier
     /// @return loan the corresponding loan
-    function getLoan(uint256 id) external view returns(Loan memory){
+    function getLoan(uint256 id) external view returns (Loan memory) {
         return protocolStorage().loan[id];
     }
-
-
 }
