@@ -43,8 +43,8 @@ contract TestClaim is SetUp, InternalRepayTestCommon {
         uint256[] memory positionIds = new uint256[](2);
         positionIds[0] = 1;
         positionIds[1] = 2;
-        Loan memory loan1 = getLoan1();
-        Loan memory loan2 = getLoan2();
+        Loan memory loan1 = getLoan1(1);
+        Loan memory loan2 = getLoan2(2);
 
         loan1.payment.paid = 1 ether;
         store(loan1,1);
@@ -70,13 +70,13 @@ contract TestClaim is SetUp, InternalRepayTestCommon {
         loanIds[0] = 1;
         loanIds[1] = 2;
 
-        Loan memory loan1 = getLoan1();
+        Loan memory loan1 = getLoan1(1);
         loan1.payment.paid = 1 ether;
         loan1.shareLent = ONE.div(2);
         loan1.payment.liquidated = true;
         store(loan1, 1);
 
-        Loan memory loan2 = getLoan2();
+        Loan memory loan2 = getLoan2(2);
         loan2.payment.paid = 1 ether;
         loan2.shareLent = ONE.div(2);
         loan2.payment.liquidated = true;

@@ -39,19 +39,22 @@ contract TestRepay is SetUp, InternalRepayTestCommon {
 
         uint tokenId1 =nft.mintOne();
         nft.transferFrom(signer, address(kairos), tokenId1);
+        console.log(tokenId1);
+        Loan memory loan1 = getLoan1(tokenId1);
 
-        uint tokenId2 =nft.mintOne();
+        uint tokenId2 =nft2.mintOne();
+        console.log(tokenId2);
 
-        nft.transferFrom(signer, address(kairos), tokenId2);
-        Loan memory loan1 = getLoan1();
-        Loan memory loan2 = getLoan2();
+        nft2.transferFrom(signer, address(kairos), tokenId2);
+
+        Loan memory loan2 = getLoan2(tokenId2);
 
         loan1.borrower = signer;
         loan2.borrower = signer;
         store(loan1, 1);
         store(loan2, 2);
 
-        uint256 toRepay = uint256(1 ether * 2 weeks).mul(proto.tranche[0]) + 1 ether;
+        uint256 toRepay = (uint256(1 ether * 2 weeks).mul(proto.tranche[0]) + 1 ether)*2;
 
         money.mint(toRepay);
         money.approve(address(kairos), toRepay);
@@ -59,7 +62,8 @@ contract TestRepay is SetUp, InternalRepayTestCommon {
         kairos.repay(uint256Array);
         console.log(signer);
 
-        assertEq(nft.balanceOf(address(this)), 2);
-        assertEq(money.balanceOf(address (this)),   100000000000000000000);
+        assertEq(nft.balanceOf(signer), 1);
+        assertEq(nft2.balanceOf(signer), 1);
+        //assertEq(money.balanceOf(address (this)),   100000000000000000000);
     }
 }

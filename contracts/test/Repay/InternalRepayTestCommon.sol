@@ -43,7 +43,7 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs{
 
     }
 
-    function getLoan1() internal view returns(Loan memory) {
+    function getLoan1(uint tokenId) internal view returns(Loan memory) {
         Payment memory payment;
         return Loan({
         assetLent: money,
@@ -55,7 +55,7 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs{
         borrower: signer,
         collateral: NFToken({
         implem: nft,
-        id: 1
+        id: tokenId
         }),
         supplyPositionIndex: 1,
         payment: payment,
@@ -63,7 +63,7 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs{
         });
     }
 
-    function getLoan2() internal view returns(Loan memory) {
+    function getLoan2(uint tokenId) internal view returns(Loan memory) {
         Payment memory payment;
         return Loan({
         assetLent: money,
@@ -75,7 +75,7 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs{
         borrower: signer,
         collateral: NFToken({
         implem: nft2,
-        id: 2
+        id: tokenId
         }),
         supplyPositionIndex: 2,
         payment: payment,
