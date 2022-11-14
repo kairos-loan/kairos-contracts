@@ -16,13 +16,13 @@ function logLoan(Loan memory loan, string memory name) view {
     console.log("borrower            ", loan.borrower);
     console.log("collat implem       ", address(loan.collateral.implem));
     console.log("collat id           ", loan.collateral.id);
-    console.log("paid                ", loan.payment.paid);
+    console.log("paid                ",   loan.payment.paid);
     console.log("liquidated          ", loan.payment.liquidated);
     console.log("borrowerClaimed     ", loan.payment.borrowerClaimed);
     console.log("borrowerBought      ", loan.payment.borrowerBought);
     console.log("supplyPositionIndex:");
     if (loan.nbOfPositions >= 2) {
-        console.log("from %s to %s", loan.supplyPositionIndex, loan.supplyPositionIndex + loan.nbOfPositions - 1);
+        console.log("from %s to %s", loan.supplyPositionIndex, loan.supplyPositionIndex + loan.nbOfPositions -1 );
     } else {
         console.log("position ", loan.supplyPositionIndex);
     }

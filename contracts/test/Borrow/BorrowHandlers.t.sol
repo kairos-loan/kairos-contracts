@@ -9,21 +9,24 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
 
     function testConsistentAssetRequests() public {
         CollateralState memory collatState;
-
+        
         vm.mockCall(
-            address(MOCK_TOKEN),
-            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
-            abi.encode(true)
-        );
-        vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN));
+            address(MOCK_TOKEN), 
+            abi.encodeWithSelector(
+                IERC20.transferFrom.selector,
+                signer, address(0), uint256(0)),
+            abi.encode(true));
+        vm.expectRevert(abi.encodeWithSelector(
+            InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN));
         this.useOfferExternal(getOfferArgs(), collatState);
 
         collatState.assetLent = MOCK_TOKEN;
         vm.mockCall(
-            address(MOCK_TOKEN),
-            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
-            abi.encode(true)
-        );
+            address(MOCK_TOKEN), 
+            abi.encodeWithSelector(
+                IERC20.transferFrom.selector,
+                signer, address(0), uint256(0)),
+            abi.encode(true));
         this.useOfferExternal(getOfferArgs(), collatState);
         assertEq(supplyPositionStorage().totalSupply, 1);
     }
@@ -41,11 +44,11 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
     function useOfferExternal(
         OfferArgs memory args,
         CollateralState memory collatState
-    ) public returns (CollateralState memory) {
+    ) public returns(CollateralState memory) {
         return useOffer(args, collatState);
     }
 
-    function getOfferArgs() private returns (OfferArgs memory ret) {
+    function getOfferArgs() private returns(OfferArgs memory ret) {
         Offer memory offer;
         FloorSpec memory specs;
         offer.assetToLend = MOCK_TOKEN;
@@ -57,3 +60,4 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         ret.signature = getSignatureInternal(root);
     }
 }
+

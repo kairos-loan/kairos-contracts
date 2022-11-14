@@ -19,9 +19,9 @@ import "../interface/IClaimFacet.sol";
 /// @dev create a new function for each new facet and update them
 ///     according to their interface
 
-function loupeFS() pure returns (bytes4[] memory) {
+function loupeFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](5);
-
+    
     functionSelectors[0] = IDiamondLoupe.facets.selector;
     functionSelectors[1] = IDiamondLoupe.facetFunctionSelectors.selector;
     functionSelectors[2] = IDiamondLoupe.facetAddresses.selector;
@@ -31,24 +31,24 @@ function loupeFS() pure returns (bytes4[] memory) {
     return functionSelectors;
 }
 
-function ownershipFS() pure returns (bytes4[] memory) {
+function ownershipFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](2);
-
+    
     functionSelectors[0] = OwnershipFacet.transferOwnership.selector;
     functionSelectors[1] = OwnershipFacet.owner.selector;
 
     return functionSelectors;
 }
 
-function cutFS() pure returns (bytes4[] memory) {
+function cutFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
-
+    
     functionSelectors[0] = IDiamondCut.diamondCut.selector;
 
     return functionSelectors;
 }
 
-function borrowFS() pure returns (bytes4[] memory) {
+function borrowFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](3);
 
     functionSelectors[0] = IBorrowFacet.onERC721Received.selector;
@@ -58,7 +58,7 @@ function borrowFS() pure returns (bytes4[] memory) {
     return functionSelectors;
 }
 
-function supplyPositionFS() pure returns (bytes4[] memory) {
+function supplyPositionFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](13);
 
     functionSelectors[0] = IERC721.balanceOf.selector;
@@ -78,8 +78,8 @@ function supplyPositionFS() pure returns (bytes4[] memory) {
     return functionSelectors;
 }
 
-/// @notice protocol facet function selectors
-function protoFS() pure returns (bytes4[] memory) {
+/// @notice protocol facet function selectors 
+function protoFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](5);
 
     functionSelectors[0] = IProtocolFacet.updateOffers.selector;
@@ -91,7 +91,7 @@ function protoFS() pure returns (bytes4[] memory) {
     return functionSelectors;
 }
 
-function repayFS() pure returns (bytes4[] memory) {
+function repayFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
 
     functionSelectors[0] = IRepayFacet.repay.selector;
@@ -99,7 +99,7 @@ function repayFS() pure returns (bytes4[] memory) {
     return functionSelectors;
 }
 
-function auctionFS() pure returns (bytes4[] memory) {
+function auctionFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](1);
 
     functionSelectors[0] = IAuctionFacet.buy.selector;
@@ -107,7 +107,7 @@ function auctionFS() pure returns (bytes4[] memory) {
     return functionSelectors;
 }
 
-function claimFS() pure returns (bytes4[] memory) {
+function claimFS() pure returns(bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](2);
 
     functionSelectors[0] = IClaimFacet.claim.selector;

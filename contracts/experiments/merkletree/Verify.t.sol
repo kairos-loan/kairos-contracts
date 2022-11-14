@@ -16,10 +16,12 @@ contract Verify is Test {
             assetToLend: IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F),
             loanToValue: 12,
             duration: 12,
-            nonce: 0,
+            expirationDate: 0,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
-            collatSpecs: abi.encode(FloorSpec({implem: IERC721(0x1A92f7381B9F03921564a437210bB9396471050C)}))
+            collatSpecs: abi.encode(FloorSpec({
+                implem: IERC721(0x1A92f7381B9F03921564a437210bB9396471050C)
+            }))
         });
         require(proof.verify(ROOT, keccak256(abi.encode(offer))), "");
     }

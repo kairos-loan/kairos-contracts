@@ -18,7 +18,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     function useOffer(
         OfferArgs memory args,
         CollateralState memory collatState
-    ) internal returns (CollateralState memory) {
+    ) internal returns(CollateralState memory) {
         address signer = checkOfferArgs(args);
         Ray shareMatched;
 
@@ -27,23 +27,27 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
         }
 
+
         checkCollatSpecs(collatState.nft.implem, collatState.nft.id, args.offer);
         shareMatched = args.amount.div(args.offer.loanToValue);
         collatState.matched = collatState.matched.add(shareMatched);
 
         if (collatState.matched.gt(ONE)) {
             revert RequestedAmountTooHigh(
-                args.amount,
-                args.offer.loanToValue - args.offer.loanToValue.mul(collatState.matched)
-            );
+                args.amount, 
+                args.offer.loanToValue - args.offer.loanToValue.mul(collatState.matched));
         }
-        if (args.offer.duration < collatState.minOfferDuration) {
-            collatState.minOfferDuration = args.offer.duration;
-        }
+        if (args.offer.duration < collatState.minOfferDuration) {collatState.minOfferDuration = args.offer.duration;}
 
         collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
-        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
-        return (collatState);
+        safeMint(signer, 
+            Provision({
+                amount: args.amount,
+                share: shareMatched,
+                loanId: collatState.loanId
+            })
+        );
+        return(collatState);
     }
 
     /// @notice handles usage of one collateral to back a loan request
@@ -52,10 +56,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     /// @param nft collateral to use
     /// @return loan the loan created backed by provided collateral
     function useCollateral(
-        OfferArgs[] memory args,
-        address from,
+        OfferArgs[] memory args, 
+        address from, 
         NFToken memory nft
-    ) internal returns (Loan memory loan) {
+    ) internal returns(Loan memory loan) {
         Protocol storage proto = protocolStorage();
         uint256 lent;
         uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
@@ -67,7 +71,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             nft: nft,
             loanId: ++proto.nbOfLoans
         });
-        for (uint8 i; i < args.length; i++) {
+        for(uint8 i; i < args.length; i++) {
             collatState = useOffer(args[i], collatState);
             lent += args[i].amount;
         }

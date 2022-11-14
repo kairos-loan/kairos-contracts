@@ -47,7 +47,7 @@ contract ContractsCreator {
     /// @notice get all facet cuts to add to add to a diamond to create kairos
     /// @return facetCuts the list of facet cuts
     /* solhint-disable-next-line function-max-lines */
-    function getFacetCuts() internal view returns (IDiamondCut.FacetCut[] memory) {
+    function getFacetCuts() internal view returns(IDiamondCut.FacetCut[] memory) {
         IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](9);
 
         facetCuts[0] = IDiamond.FacetCut({

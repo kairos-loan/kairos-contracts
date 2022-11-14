@@ -25,6 +25,8 @@ contract AuctionFacet is NFTUtils {
 
     // todo: add a public facing price method
 
+
+
     /// @notice handles buying one NFT
     /// @param args arguments on what and how to buy
     function useLoan(BuyArgs memory args) internal {
@@ -34,22 +36,18 @@ contract AuctionFacet is NFTUtils {
         Ray shareToPay = ONE;
         if (args.to == loan.borrower) {
             loan.payment.borrowerBought = true;
-            shareToPay = loan.shareLent;
+            shareToPay = loan.shareLent;    
         }
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
 
         loan.payment.liquidated = true;
-        if (loan.payment.paid != 0) {
-            revert LoanAlreadyRepaid(args.loanId);
-        }
+        if (loan.payment.paid != 0) { revert LoanAlreadyRepaid(args.loanId); }
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
-            if (!_isApprovedOrOwner(msg.sender, args.positionIds[i])) {
-                revert ERC721CallerIsNotOwnerNorApproved();
-            }
+            if (!_isApprovedOrOwner(msg.sender, args.positionIds[i])) { revert ERC721CallerIsNotOwnerNorApproved(); }
             if (provision.loanId != args.loanId) {
                 revert SupplyPositionDoesntBelongToTheLoan(args.positionIds[i], args.loanId);
             }
@@ -68,7 +66,7 @@ contract AuctionFacet is NFTUtils {
     /// @param shareLent share of the loan lent by the caller
     /// @param timeElapsed time elapsed since the collateral is liquidable
     /// @return price computed price
-    function price(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns (uint256) {
+    function price(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns(uint256) {
         Protocol storage proto = protocolStorage();
 
         // todo : explore attack vectors based on small values messing with calculus

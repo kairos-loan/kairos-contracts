@@ -9,7 +9,11 @@ contract TestAuction is SetUp {
         BuyArgs[] memory args = new BuyArgs[](1);
         uint256[] memory positionIds = new uint256[](1);
         positionIds[0] = 1;
-        args[0] = BuyArgs({loanId: 1, to: signer2, positionIds: positionIds});
+        args[0] = BuyArgs({
+            loanId: 1,
+            to: signer2,
+            positionIds: positionIds
+        });
         Loan memory loan = getDefaultLoan();
         loan.startDate = block.timestamp - 1 weeks;
         loan.endDate = block.timestamp - 2 days; // price should be the same as lent amount
@@ -23,5 +27,8 @@ contract TestAuction is SetUp {
         assertEq(kairos.ownerOf(1), address(0));
     }
 
-    function testMultipleAuction() public {}
+
+    function testMultipleAuction() public{
+
+    }
 }

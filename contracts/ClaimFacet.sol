@@ -19,7 +19,7 @@ contract ClaimFacet is NFTUtils {
     /// @notice claims principal plus interests or liquidation share due as a supplier
     /// @param positionIds identifiers of one or multiple supply position to burn
     /// @return sent amount sent
-    function claim(uint256[] calldata positionIds) external returns (uint256 sent) {
+    function claim(uint256[] calldata positionIds) external returns(uint256 sent) {
         Protocol storage proto = protocolStorage();
         SupplyPosition storage sp = supplyPositionStorage();
         Loan storage loan;
@@ -28,9 +28,7 @@ contract ClaimFacet is NFTUtils {
         uint256 sentTemp;
 
         for (uint8 i; i < positionIds.length; i++) {
-            if (!_isApprovedOrOwner(msg.sender, positionIds[i])) {
-                revert ERC721CallerIsNotOwnerNorApproved();
-            }
+            if (!_isApprovedOrOwner(msg.sender, positionIds[i])) { revert ERC721CallerIsNotOwnerNorApproved(); }
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
@@ -46,25 +44,23 @@ contract ClaimFacet is NFTUtils {
     /// @notice claims share of liquidation due to a borrower who's collateral has been sold
     /// @param loanIds loan identifiers of one or multiple loans where the borrower wants to claim liquidation share
     /// @return sent amount sent
-    function claimAsBorrower(uint256[] calldata loanIds) external returns (uint256 sent) {
+    function claimAsBorrower(uint256[] calldata loanIds) external returns(uint256 sent) {
         Protocol storage proto = protocolStorage();
         Loan storage loan;
         uint256 sentTemp;
 
         for (uint8 i; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
-            if (loan.borrower != msg.sender) {
-                revert NotBorrowerOfTheLoan(loanIds[i]);
-            }
-            if (loan.payment.borrowerClaimed || loan.payment.borrowerBought) {
+            if (loan.borrower != msg.sender) { revert NotBorrowerOfTheLoan(loanIds[i]); }
+            if (loan.payment.borrowerClaimed || loan.payment.borrowerBought) { 
                 revert BorrowerAlreadyClaimed(loanIds[i]);
             }
             loan.payment.borrowerClaimed = true;
-            sentTemp = loan.payment.liquidated ? loan.payment.paid.mul(ONE.sub(loan.shareLent)) : 0;
+            sentTemp = loan.payment.liquidated
+                ? loan.payment.paid.mul(ONE.sub(loan.shareLent))
+                : 0;
             loan.assetLent.transfer(msg.sender, sentTemp);
-            if (sentTemp > 0) {
-                emit Claim(msg.sender, sentTemp, loanIds[i]);
-            }
+            if (sentTemp > 0) { emit Claim(msg.sender, sentTemp, loanIds[i]); }
             sent += sentTemp;
         }
     }
@@ -73,7 +69,7 @@ contract ClaimFacet is NFTUtils {
     /// @param loan - to calculate amount from
     /// @param provision liquidity provision for this loan
     /// @return sent amount sent
-    function sendInterests(Loan storage loan, Provision storage provision) private returns (uint256 sent) {
+    function sendInterests(Loan storage loan, Provision storage provision) private returns(uint256 sent) {
         sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
         loan.assetLent.transfer(msg.sender, sent);
     }
@@ -82,7 +78,7 @@ contract ClaimFacet is NFTUtils {
     /// @param loan - from which the collateral were liquidated
     /// @param provision liquidity provisioned by this loan by the supplier
     /// @return sent amount sent
-    function sendShareOfSaleAsSupplier(Loan storage loan, Provision storage provision) private returns (uint256 sent) {
+    function sendShareOfSaleAsSupplier(Loan storage loan, Provision storage provision) private returns(uint256 sent) {
         sent = loan.payment.borrowerBought
             ? loan.payment.paid.mul(provision.share.div(loan.shareLent))
             : loan.payment.paid.mul(provision.share);
