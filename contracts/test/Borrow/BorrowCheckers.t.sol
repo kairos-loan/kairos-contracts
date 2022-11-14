@@ -2,9 +2,11 @@
 pragma solidity 0.8.17;
 
 import "./InternalBorrowTestCommons.sol";
+import "../../DataStructure/Objects.sol";
+import "../SetUp.sol";
 
 
-contract TestBorrowCheckers is InternalBorrowTestCommons {
+contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
     using MerkleProof for bytes32[];
 
     // function setUp() public {
@@ -49,34 +51,30 @@ contract TestBorrowCheckers is InternalBorrowTestCommons {
         Offer memory _offer =  Offer({
         assetToLend: money,
         loanToValue: 10 ether,
-        duration: 2 weeks,
-        expirationDate: 3 weeks,
+        duration: 1 weeks,
+        expirationDate: 2 weeks,
         collatSpecType: CollatSpecType.Floor,
         tranche: 0,
         collatSpecs: abi.encode(FloorSpec({implem: nft}))
         });
 
+        //Modify this value to test
+        vm.warp(13 days + 23 hours + 59 minutes + 59 seconds);
 
-
-        OfferArgs[] memory offerArgs = new OfferArgs[](1);
         Root memory root = Root({root: keccak256(abi.encode(_offer))});
+        bytes32[] memory emptyArray;
 
-       bytes32[] memory emptyArray;
-
-        offerArgs[0] = OfferArgs({
-            proof: emptyArray,
-            root: root,
-            signature: getSignatureInternal(root),
-            amount: 1 ether,
-            offer: _offer
-        });
-
-        vm.warp(2 weeks);
+        checkOfferArgs(OfferArgs({
+        proof: emptyArray,
+        root: root,
+        signature: getSignatureInternal(root),
+        amount: 1 ether,
+        offer: _offer
+        }));
 
 
 
-
-        checkOfferArgs(offerArgs[0]);
+        //checkOfferArgs(offerArgs[0]);
         //vm.expectRevert(OfferHasBeenDeleted);
 
 

@@ -29,7 +29,7 @@ abstract contract BorrowCheckers is Signature {
             revert OfferNotFound(args.offer, args.root);
         }
 
-        if (block.timestamp > proto.supplierExpiration[msg.sender]) {
+        if (block.timestamp >= args.offer.expirationDate) {
             revert OfferHasBeenDeleted(args.offer, proto.supplierExpiration[signer]);
         }
 
