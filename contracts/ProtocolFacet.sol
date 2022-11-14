@@ -42,9 +42,9 @@ contract ProtocolFacet {
         return protocolStorage().loan[id];
     }
 
-    /// @notice gets nonce of `supplier`
-    /// @param supplier - to get nonce rom
-    /// @return expirationDate - of the supplier
+    /// @notice gets expiration date of `supplier`
+    /// @param supplier - to get expiration date rom
+    /// @return expiration date - of the supplier
     function getSupplierExpirationDate(address supplier) external view returns(uint256) {
         return protocolStorage().supplierExpiration[supplier];
     }
