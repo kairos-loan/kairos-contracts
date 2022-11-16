@@ -115,9 +115,9 @@ contract TestCommons is TestConstructor, SafeMint {
     function getMultipleLoan(uint x) internal view returns (Loan[] memory) {
         Payment memory payment;
 
-        Loan[] memory loans = new Loan[](x - 1);
+        Loan[] memory loans = new Loan[](x);
 
-        for (uint i; i < x - 1; i++) {
+        for (uint i; i < x; i++) {
             loans[i] = Loan({
                 assetLent: money,
                 lent: 1 ether,
@@ -149,7 +149,7 @@ contract TestCommons is TestConstructor, SafeMint {
                 assetToLend: money,
                 loanToValue: 10 ether,
                 duration: 2 weeks,
-                expirationDate: 0,
+                expirationDate:block.timestamp + 5 weeks,
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({implem: nft}))
@@ -176,8 +176,8 @@ contract TestCommons is TestConstructor, SafeMint {
         return Provision({amount: 1 ether, share: ONE, loanId: 1});
     }
 
-    function getCustomProvision(uint _amount) internal pure returns (Provision memory) {
-        return Provision({amount: 1 ether * _amount, share: ONE, loanId: 1});
+    function getCustomProvision(uint _id) internal pure returns (Provision memory) {
+        return Provision({amount: 1 ether, share: ONE, loanId: _id});
     }
 
     function getRootOfTwoHashes(bytes32 hashOne, bytes32 hashTwo) internal pure returns (Root memory ret) {

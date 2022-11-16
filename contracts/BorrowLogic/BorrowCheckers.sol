@@ -2,7 +2,6 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-
 import "../DataStructure/Global.sol";
 import "../Signature.sol";
 
@@ -29,8 +28,8 @@ abstract contract BorrowCheckers is Signature {
             revert OfferNotFound(args.offer, args.root);
         }
 
-        if (block.timestamp >= args.offer.expirationDate) {
-            revert OfferHasBeenDeleted(args.offer, proto.supplierExpiration[signer]);
+        if (block.timestamp > args.offer.expirationDate) {
+            revert OfferHasExpired(args.offer, args.offer.expirationDate);
         }
 
         if (args.amount > args.offer.loanToValue) {

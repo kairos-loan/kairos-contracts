@@ -12,14 +12,12 @@ import "./Objects.sol";
 /// @member tranche interest rate of tranche of provided id, in multiplier per second
 ///         I.e lent * time since loan start * tranche = interests to repay
 /// @member loan - of id -
-/// @member supplierNonce nonce of supplier - nonce identifies current valid batch of offers of a supplier
 struct Protocol {
     uint256 auctionDuration;
     uint256 nbOfLoans;
     Ray auctionPriceFactor;
     mapping(uint256 => Ray) tranche;
     mapping(uint256 => Loan) loan;
-    mapping(address => uint256) supplierExpiration;
 }
 
 /// @notice Issued Loan (corresponding to one collateral)

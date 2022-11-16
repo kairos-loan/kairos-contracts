@@ -73,7 +73,7 @@ struct CollateralState {
 /// @member assetToLend address of the ERC-20 to lend
 /// @member loanToValue amount to lend per collateral unit
 /// @member duration in seconds, time before mandatory repayment after loan start
-/// @member nonce used to determine if the offer is still valid
+/// @member expirationDate used to set a end for an offer
 /// @member collateralSpecType identifies logic to establish validity of an asset
 /// @member tranche identifies the interest rate tranche
 /// @member collateralSpecs abi-encoded arguments for the validity checker

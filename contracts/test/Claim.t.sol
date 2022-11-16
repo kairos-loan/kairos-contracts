@@ -52,7 +52,11 @@ contract TestClaim is SetUp, InternalRepayTestCommon {
         loan2.payment.paid = 1 ether;
         store(loan2, 2);
 
-        mintPosition(signer, getCustomProvision(2));
+
+
+
+
+        mintPosition(signer, getCustomProvision(1));
         mintPosition(signer, getCustomProvision(2));
         money.transfer(address(kairos), 2 ether);
 
