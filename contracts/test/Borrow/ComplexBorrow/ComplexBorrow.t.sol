@@ -23,6 +23,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         d = initBorrowArgs(d);
         //vm.prank(signer2);
         execBorrowAndCheckSupplyPos(d);
+        console.log("chac");
         checkBalances(d);
         checkLoans();
     }

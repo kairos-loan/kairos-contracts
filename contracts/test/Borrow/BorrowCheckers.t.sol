@@ -72,15 +72,15 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
             amount: 1 ether,
             offer: _offer
         });
-        testExpirationDateRevert(_offerArgs);
         testExpirationDateAccept(_offerArgs);
+        testExpirationDateRevert(_offerArgs);
+
 
     }
 
     function testAmount() public {
         OfferArgs memory args;
         Offer memory offer;
-        offer.expirationDate =
         args.offer.expirationDate = block.timestamp + 2 weeks;
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.amount = 1 ether;
@@ -104,8 +104,11 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         checkOfferArgs(args);
     }
     function testExpirationDateRevert(OfferArgs memory args)internal{
-        vm.warp(args.offer.expirationDate + 1 days);
+        uint256 expirationDate = args.offer.expirationDate + 2 seconds;
+        vm.warp(expirationDate);
+        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args.offer, args.offer.expirationDate));
         checkOfferArgs(args);
-        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args, block.timestamp + 1 weeks));
+
+        //vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args,));
     }
 }
