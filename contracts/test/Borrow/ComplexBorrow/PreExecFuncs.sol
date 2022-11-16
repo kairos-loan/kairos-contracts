@@ -21,27 +21,23 @@ struct ComplexBorrowData {
 contract ComplexBorrowPreExecFuncs is SetUp {
     function prepareSigners() internal {
 
+        //vm.prank(signer2);
+        //kairos.updateOffers();
 
         vm.prank(signer);
         money.mint(2 ether);
         vm.prank(signer);
         money.approve(address(kairos), 2 ether);
-        vm.prank(signer);
-        nft.mintOne();
 
         vm.prank(signer2);
         money.mint(2 ether);
         vm.prank(signer2);
         money.approve(address(kairos), 2 ether);
-        vm.prank(signer2);
-        nft.mintOne();
 
         vm.prank(signer);
         money2.mint(2 ether);
         vm.prank(signer);
         money2.approve(address(kairos), 2 ether);
-        vm.prank(signer);
-        nft2.mintOne();
 
         nft.approve(address(kairos), 1);
         nft2.approve(address(kairos), 1);

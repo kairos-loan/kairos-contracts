@@ -90,7 +90,6 @@ contract TestCommons is TestConstructor, SafeMint {
         money.mint(100 ether);
         vm.prank(signer2);
         money.approve(address(kairos), 100 ether);
-
         return tokenId;
     }
 
