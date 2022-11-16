@@ -22,6 +22,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         address signer = checkOfferArgs(args);
         Ray shareMatched;
 
+
         if (args.offer.assetToLend != collatState.assetLent) {
             // all offers used for a collateral must refer to the same erc20
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);

@@ -4,7 +4,6 @@ import "../utils/RayMath.sol";
 import "./TestCommons.sol";
 import "./SetUp.sol";
 import "forge-std/Test.sol";
-import "./SafeMath.sol";
 import "../DataStructure/Objects.sol";
 
 contract RayMathTest is TestCommons, SetUp {

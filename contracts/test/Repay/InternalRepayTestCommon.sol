@@ -8,7 +8,6 @@ contract InternalRepayTestCommon is ComplexBorrowPreExecFuncs {
     function multipleBorrow() public returns (ComplexBorrowData memory d) {
         ComplexBorrowData memory complexBorrowData;
 
-        initMinting();
         prepareSigners();
 
         complexBorrowData = initOffers(complexBorrowData);
