@@ -20,20 +20,12 @@ struct ComplexBorrowData {
 
 contract ComplexBorrowPreExecFuncs is SetUp {
     function prepareSigners() internal {
-        //vm.prank(signer2);
-        //kairos.updateOffers();
-
         vm.prank(signer);
         money.mint(2 ether);
         vm.prank(signer);
-        nft.mintOne();
-        vm.prank(signer);
         money.approve(address(kairos), 2 ether);
-        console.log(signer);
-        console.log(nft2.balanceOf(signer));
 
-
-    vm.prank(signer2);
+        vm.prank(signer2);
         money.mint(2 ether);
         vm.prank(signer2);
         money.approve(address(kairos), 2 ether);
@@ -44,7 +36,6 @@ contract ComplexBorrowPreExecFuncs is SetUp {
         money2.approve(address(kairos), 2 ether);
 
         nft.approve(address(kairos), 1);
-        //nft.approve(address(kairos), 2);
         nft2.approve(address(kairos), 1);
     }
 
@@ -88,7 +79,7 @@ contract ComplexBorrowPreExecFuncs is SetUp {
             assetToLend: money,
             loanToValue: 2 ether,
             duration: 2 weeks,
-            expirationDate: block.timestamp + 5 weeks,
+            expirationDate: block.timestamp + 1,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({implem: nft, id: 1}))
@@ -96,8 +87,8 @@ contract ComplexBorrowPreExecFuncs is SetUp {
         d.signer1Offer2 = Offer({
             assetToLend: money2,
             loanToValue: 2 ether,
-            duration: 2 weeks,
-            expirationDate: block.timestamp + 5 weeks,
+            duration: 4 weeks,
+            expirationDate: block.timestamp + 1 days,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({implem: nft2, id: 1}))
@@ -106,8 +97,8 @@ contract ComplexBorrowPreExecFuncs is SetUp {
         d.signer2Offer = Offer({
             assetToLend: money,
             loanToValue: 1 ether,
-            duration: 2 weeks,
-            expirationDate: block.timestamp + 5 weeks,
+            duration: 1 weeks,
+            expirationDate: block.timestamp + 5 hours,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({implem: nft}))
@@ -125,7 +116,7 @@ contract ComplexBorrowPreExecFuncs is SetUp {
 
         d.bargs1 = BorrowArgs({nft: NFToken({implem: nft, id: 1}), args: offerArgs1});
 
-        d.bargs2 = BorrowArgs({nft: NFToken({implem: nft, id: 1}), args: offerArgs2});
+        d.bargs2 = BorrowArgs({nft: NFToken({implem: nft2, id: 1}), args: offerArgs2});
 
         return d;
     }

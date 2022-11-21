@@ -2,5 +2,17 @@
   "editor.formatOnSave": true,
   "solidity.compileUsingRemoteVersion": "v0.8.17+commit.e14f2714",
   "solidity.formatter": "prettier",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "solidity-va.outline.enable": true,
+  "solidity-va.outline.decorations": true,
+  "solidity-va.outline.extras": true,
+  "solidity-va.debug.parser.showExceptions": true,
+  "solidity-va.codelens.parse.enable": false,
+  "solidity-va.codelens.unittestStub.enable": false,
+  "solidity-va.preview.markdown": true,
+  "solidity-va.preview.dot": true,
+  "solidity-va.codelens.inheritance.enable": true,
+  "solidity-va.deco.statevars": true,
+  "solidity-va.deco.warn.externalCalls": true,
+  "workbench.colorTheme": "Solidity Visual Developer Dark"
 }

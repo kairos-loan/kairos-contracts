@@ -32,7 +32,6 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         batchbargs[0] = d.bargs1;
         batchbargs[1] = d.bargs2;
 
-        vm.prank(signer);
         kairos.borrow(batchbargs);
         assertEq(kairos.balanceOf(signer), 2);
         assertEq(kairos.balanceOf(signer2), 1);

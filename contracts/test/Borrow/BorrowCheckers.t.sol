@@ -62,17 +62,14 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         vm.warp(args1.offer.expirationDate - 1 days);
         checkOfferArgs(args1);
 
-
-
         offer2.expirationDate = block.timestamp + 2 weeks;
         args2.offer = offer2;
         Root memory root2 = Root({root: keccak256(abi.encode(offer2))});
         args2.root = root2;
         args2.signature = getSignatureInternal(root2);
         vm.warp(args2.offer.expirationDate + 1 days);
-        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args2.offer,  args2.offer.expirationDate));
+        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args2.offer, args2.offer.expirationDate));
         this.checkOfferArgsExternal(args2);
-
     }
 
     function testAmount() public {
@@ -95,6 +92,4 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
     function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
         return checkOfferArgs(args);
     }
-
-
 }
