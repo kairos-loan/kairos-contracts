@@ -1,4 +1,5 @@
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.17;
 
 import "../utils/RayMath.sol";
 import "./TestCommons.sol";
@@ -17,10 +18,10 @@ contract RayMathTest is TestCommons, SetUp {
         Ray aRay = RayMath.add(Ray.wrap(a), Ray.wrap(1));
         Ray bRay = RayMath.add(Ray.wrap(b), Ray.wrap(1));
 
-        Ray TotRay = RayMath.add(bRay, aRay);
+        Ray totRay = RayMath.add(bRay, aRay);
         Ray totUint = Ray.wrap(a + b + Ray.unwrap(RayMath.mul(Ray.wrap(1), 2)));
 
-        assertEq(TotRay, totUint);
+        assertEq(totRay, totUint);
     }
 
     function testRayMathMul() public {

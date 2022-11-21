@@ -72,6 +72,15 @@ contract TestCommons is TestConstructor, SafeMint {
         return offerArgs;
     }
 
+    function getMulptipleNft(uint x) internal returns (uint[] memory) {
+        uint[] memory nftsId = new uint[](x);
+        for (uint i = 0; i < x; i++) {
+            uint nftId = nft.mintOne();
+            nftsId[i] = nftId;
+        }
+        return nftsId;
+    }
+
     function getTokens() internal returns (uint tokenId) {
         vm.prank(signer);
         tokenId = nft.mintOne();
@@ -109,24 +118,10 @@ contract TestCommons is TestConstructor, SafeMint {
     }
 
     function getMultipleLoan(uint x) internal view returns (Loan[] memory) {
-        Payment memory payment;
-
         Loan[] memory loans = new Loan[](x);
-
         for (uint i; i < x; i++) {
-            loans[i] = Loan({
-                assetLent: money,
-                lent: 1 ether,
-                shareLent: ONE,
-                startDate: block.timestamp - 2 weeks,
-                endDate: block.timestamp + 2 weeks,
-                interestPerSecond: protocolStorage().tranche[0],
-                borrower: signer,
-                collateral: NFToken({implem: nft, id: i}),
-                supplyPositionIndex: i,
-                payment: payment,
-                nbOfPositions: uint8(x)
-            });
+            Loan memory loan = getDefaultLoan();
+            loans[i] = loan;
         }
         return loans;
     }
@@ -150,16 +145,6 @@ contract TestCommons is TestConstructor, SafeMint {
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({implem: nft}))
             });
-    }
-
-    function getMulptipleNft(uint x) internal returns (uint[] memory) {
-        uint[] memory nftsId = new uint[](x);
-        for (uint i = 0; i < x; i++) {
-            uint nftId = nft.mintOne();
-            nftsId[i] = nftId;
-        }
-
-        return nftsId;
     }
 
     function assertEq(Ray actual, Ray expected) internal pure {

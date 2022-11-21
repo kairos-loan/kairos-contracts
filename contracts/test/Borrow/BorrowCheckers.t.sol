@@ -8,6 +8,10 @@ import "../../DataStructure/Objects.sol";
 contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
     using MerkleProof for bytes32[];
 
+    function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
+        return checkOfferArgs(args);
+    }
+
     function testAddressRecovery() public {
         Offer memory offer;
         OfferArgs memory args;
@@ -83,13 +87,5 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         args.signature = getSignatureInternal(root);
         vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, uint256(0)));
         this.checkOfferArgsExternal(args);
-    }
-
-    // todo : check collat specs tests
-
-    // helpers //
-
-    function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
-        return checkOfferArgs(args);
     }
 }
