@@ -36,7 +36,7 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         // not finished
     }
 
-    // helpers
+    // helpers todo #10 move helpers to dedicated file
 
     function useOfferExternal(
         OfferArgs memory args,

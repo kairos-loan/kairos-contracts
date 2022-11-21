@@ -2,8 +2,10 @@
   "name": "kairos-loan-contracts",
   "version": "0.1.0",
   "scripts": {
-    "test": ". script/test.sh",
-    "build": "forge build"
+    "test": "forge test",
+    "build": "forge build",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "prettify": "prettier --write 'contracts/**/*.sol'"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.6.0",
