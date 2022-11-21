@@ -6,7 +6,6 @@ import "./utils/RayMath.sol";
 import "./SupplyPositionLogic/NFTUtils.sol";
 import "forge-std/Test.sol";
 
-
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is NFTUtils {
     using RayMath for Ray;
@@ -23,7 +22,6 @@ contract AuctionFacet is NFTUtils {
         for (uint8 i; i < args.length; i++) {
             console.log(i);
             useLoan(args[i]);
-
         }
     }
 
@@ -58,8 +56,7 @@ contract AuctionFacet is NFTUtils {
             if (provision.loanId != args.loanId) {
                 revert SupplyPositionDoesntBelongToTheLoan(args.positionIds[i], args.loanId);
             }
-        _burn(args.positionIds[i]);
-
+            _burn(args.positionIds[i]);
         }
         toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
         loan.assetLent.transferFrom(msg.sender, address(this), toPay);

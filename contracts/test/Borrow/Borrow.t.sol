@@ -84,7 +84,6 @@ contract TestBorrow is SetUp, ComplexBorrowPreExecFuncs {
     function testMultipleOffersForOneNft() public {
         ComplexBorrowData memory complexBorrowData;
 
-
         prepareSigners();
 
         complexBorrowData = initOffers(complexBorrowData);

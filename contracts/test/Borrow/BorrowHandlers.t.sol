@@ -51,7 +51,7 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         offer.assetToLend = MOCK_TOKEN;
         offer.collatSpecs = abi.encode(specs);
         offer.loanToValue = 1 ether;
-        offer.expirationDate = block.timestamp +2 weeks;
+        offer.expirationDate = block.timestamp + 2 weeks;
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         ret.offer = offer;
         ret.root = root;

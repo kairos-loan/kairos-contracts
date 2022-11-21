@@ -21,9 +21,8 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         d = initOffers(d);
         d = initOfferArgs(d);
         d = initBorrowArgs(d);
-        //vm.prank(signer2);
+
         execBorrowAndCheckSupplyPos(d);
-        console.log("chac");
         checkBalances(d);
         checkLoans();
     }
@@ -109,6 +108,4 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
                 nbOfPositions: 2
             });
     }
-
-
 }

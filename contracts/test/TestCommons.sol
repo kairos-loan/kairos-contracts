@@ -79,18 +79,15 @@ contract TestCommons is TestConstructor, SafeMint {
         money.mint(100 ether);
         vm.prank(signer);
         money.approve(address(kairos), 100 ether);
-        return tokenId;
     }
 
     function getTokens2() internal returns (uint tokenId) {
         vm.prank(signer2);
         tokenId = nft2.mintOne();
-        console.log(tokenId);
         vm.prank(signer2);
         money.mint(100 ether);
         vm.prank(signer2);
         money.approve(address(kairos), 100 ether);
-        return tokenId;
     }
 
     function getDefaultLoan() internal view returns (Loan memory) {
@@ -148,7 +145,7 @@ contract TestCommons is TestConstructor, SafeMint {
                 assetToLend: money,
                 loanToValue: 10 ether,
                 duration: 2 weeks,
-                expirationDate:block.timestamp + 5 weeks,
+                expirationDate: block.timestamp + 5 weeks,
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({implem: nft}))
