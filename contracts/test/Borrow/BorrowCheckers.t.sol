@@ -13,6 +13,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         OfferArgs memory args;
 
         offer.expirationDate = block.timestamp + 2 weeks;
+        args.offer = offer;
 
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.root = root;
@@ -26,8 +27,8 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         Offer memory offer1;
         Offer memory offer2;
         offer2.loanToValue = 1;
-        offer1.expirationDate = 1 weeks;
-        offer2.expirationDate = 1 weeks;
+        offer1.expirationDate = block.timestamp + 2 weeks;
+        args.offer = offer1;
 
         bytes32 hashOne = keccak256(abi.encode(offer1));
         bytes32 hashTwo = keccak256(abi.encode(offer2));
@@ -37,6 +38,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         Root memory root = Root({root: keccak256(bytes.concat(hashOne, hashTwo))});
         args.root = root;
         args.proof = proof;
+
         args.signature = getSignatureInternal(root);
         // offer1 is implicitely included in args
         checkOfferArgs(args);
@@ -47,38 +49,42 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
     }
 
     function testExpirationDate() public {
-        Offer memory _offer = Offer({
-            assetToLend: money,
-            loanToValue: 10 ether,
-            duration: 1 weeks,
-            expirationDate: block.timestamp + 2 weeks,
-            collatSpecType: CollatSpecType.Floor,
-            tranche: 0,
-            collatSpecs: abi.encode(FloorSpec({implem: nft}))
-        });
+        Offer memory offer1;
+        Offer memory offer2;
+        OfferArgs memory args1;
+        OfferArgs memory args2;
 
-        Root memory root = Root({root: keccak256(abi.encode(_offer))});
-        bytes32[] memory emptyArray;
-        OfferArgs memory _offerArgs = OfferArgs({
-            proof: emptyArray,
-            root: root,
-            signature: getSignatureInternal(root),
-            amount: 1 ether,
-            offer: _offer
-        });
-        testExpirationDateAccept(_offerArgs);
-        testExpirationDateRevert(_offerArgs);
+        offer1.expirationDate = block.timestamp + 2 weeks;
+        args1.offer = offer1;
+        Root memory root1 = Root({root: keccak256(abi.encode(offer1))});
+        args1.root = root1;
+        args1.signature = getSignatureInternal(root1);
+        vm.warp(args1.offer.expirationDate - 1 days);
+        checkOfferArgs(args1);
+
+
+
+        offer2.expirationDate = block.timestamp + 2 weeks;
+        args2.offer = offer2;
+        Root memory root2 = Root({root: keccak256(abi.encode(offer2))});
+        args2.root = root2;
+        args2.signature = getSignatureInternal(root2);
+        vm.warp(args2.offer.expirationDate + 1 days);
+        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args2.offer,  args2.offer.expirationDate));
+        this.checkOfferArgsExternal(args2);
+
     }
 
     function testAmount() public {
         OfferArgs memory args;
         Offer memory offer;
         offer.expirationDate = block.timestamp + 2 weeks;
+        args.offer = offer;
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.amount = 1 ether;
         args.root = root;
         args.signature = getSignatureInternal(root);
-        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, uint256(1)));
+        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, uint256(0)));
         this.checkOfferArgsExternal(args);
     }
 
@@ -86,19 +92,9 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
 
     // helpers //
 
-    function checkOfferArgsExternal(OfferArgs memory args) public view returns (address) {
+    function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
         return checkOfferArgs(args);
     }
 
-    function testExpirationDateAccept(OfferArgs memory args) internal {
-        vm.warp(args.offer.expirationDate - 1 days);
-        checkOfferArgs(args);
-    }
 
-    function testExpirationDateRevert(OfferArgs memory args) internal {
-        uint256 expirationDate = args.offer.expirationDate + 2 seconds;
-        vm.warp(expirationDate);
-        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args.offer, args.offer.expirationDate));
-        checkOfferArgs(args);
-    }
 }

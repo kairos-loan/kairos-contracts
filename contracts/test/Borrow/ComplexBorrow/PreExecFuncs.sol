@@ -29,8 +29,11 @@ contract ComplexBorrowPreExecFuncs is SetUp {
         nft.mintOne();
         vm.prank(signer);
         money.approve(address(kairos), 2 ether);
+        console.log(signer);
+        console.log(nft2.balanceOf(signer));
 
-        vm.prank(signer2);
+
+    vm.prank(signer2);
         money.mint(2 ether);
         vm.prank(signer2);
         money.approve(address(kairos), 2 ether);
