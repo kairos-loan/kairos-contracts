@@ -22,4 +22,5 @@ contract TestAuction is SetUp {
         vm.expectRevert(ERC721InvalidTokenId.selector);
         assertEq(kairos.ownerOf(1), address(0));
     }
+    // todo #13 test multiple auctions
 }

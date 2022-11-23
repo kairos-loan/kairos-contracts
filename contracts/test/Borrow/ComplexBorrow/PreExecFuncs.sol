@@ -2,6 +2,8 @@
 pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
+import {SetUp} from "contracts/test/SetUp.sol";
+import "contracts/DataStructure/Global.sol";
 
 struct ComplexBorrowData {
     BorrowArgs bargs1;
@@ -16,14 +18,8 @@ struct ComplexBorrowData {
     uint256 m2InitialBalance;
 }
 
-contract ComplexBorrowPreExecFuncs is TestBorrow {
-    using RayMath for Ray;
-    using RayMath for uint256;
-
+contract ComplexBorrowPreExecFuncs is SetUp {
     function prepareSigners() internal {
-        vm.prank(signer2);
-        kairos.updateOffers();
-
         vm.prank(signer);
         money.mint(2 ether);
         vm.prank(signer);
@@ -84,7 +80,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             assetToLend: money,
             loanToValue: 2 ether,
             duration: 2 weeks,
-            nonce: 0,
+            expirationDate: block.timestamp + 1,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({implem: nft, id: 1}))
@@ -93,7 +89,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             assetToLend: money2,
             loanToValue: 2 ether,
             duration: 4 weeks,
-            nonce: 0,
+            expirationDate: block.timestamp + 1 days,
             collatSpecType: CollatSpecType.Single,
             tranche: 0,
             collatSpecs: abi.encode(NFToken({implem: nft2, id: 1}))
@@ -103,7 +99,7 @@ contract ComplexBorrowPreExecFuncs is TestBorrow {
             assetToLend: money,
             loanToValue: 1 ether,
             duration: 1 weeks,
-            nonce: 1,
+            expirationDate: block.timestamp + 5 hours,
             collatSpecType: CollatSpecType.Floor,
             tranche: 0,
             collatSpecs: abi.encode(FloorSpec({implem: nft}))

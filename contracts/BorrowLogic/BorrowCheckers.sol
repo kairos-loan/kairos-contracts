@@ -22,14 +22,13 @@ abstract contract BorrowCheckers is Signature {
     /// @param args arguments for the Offer
     /// @return signer computed signer of `args.signature` according to `args.offer`
     function checkOfferArgs(OfferArgs memory args) internal view returns (address) {
-        Protocol storage proto = protocolStorage();
         address signer = ECDSA.recover(rootDigest(args.root), args.signature);
 
         if (!args.proof.verify(args.root.root, keccak256(abi.encode(args.offer)))) {
             revert OfferNotFound(args.offer, args.root);
         }
-        if (proto.supplierNonce[signer] != args.offer.nonce) {
-            revert OfferHasBeenDeleted(args.offer, proto.supplierNonce[signer]);
+        if (block.timestamp > args.offer.expirationDate) {
+            revert OfferHasExpired(args.offer, args.offer.expirationDate);
         }
         if (args.amount > args.offer.loanToValue) {
             revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);

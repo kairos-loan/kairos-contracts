@@ -28,14 +28,17 @@ contract AuctionFacet is NFTUtils {
     /// @notice handles buying one NFT
     /// @param args arguments on what and how to buy
     function useLoan(BuyArgs memory args) internal {
+        // todo #14 cut in multiple functions
         Protocol storage proto = protocolStorage();
         SupplyPosition storage sp = supplyPositionStorage();
         Loan storage loan = proto.loan[args.loanId];
         Ray shareToPay = ONE;
+
         if (args.to == loan.borrower) {
             loan.payment.borrowerBought = true;
             shareToPay = loan.shareLent;
         }
+
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
@@ -44,6 +47,7 @@ contract AuctionFacet is NFTUtils {
         if (loan.payment.paid != 0) {
             revert LoanAlreadyRepaid(args.loanId);
         }
+
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
@@ -55,6 +59,7 @@ contract AuctionFacet is NFTUtils {
             }
             _burn(args.positionIds[i]);
         }
+
         toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
         loan.assetLent.transferFrom(msg.sender, address(this), toPay);
         loan.payment.paid = toPay;
@@ -74,7 +79,9 @@ contract AuctionFacet is NFTUtils {
         // todo : explore attack vectors based on small values messing with calculus
         uint256 loanToValue = lent.div(shareLent);
         uint256 initialPrice = loanToValue.mul(proto.auctionPriceFactor);
-        Ray decreasingFactor = timeElapsed >= proto.auctionDuration ? ZERO : timeElapsed.div(proto.auctionDuration);
+        Ray decreasingFactor = timeElapsed >= proto.auctionDuration
+            ? ZERO
+            : timeElapsed.div(proto.auctionDuration);
         return initialPrice.mul(decreasingFactor);
     }
 }

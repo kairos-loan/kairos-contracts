@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../interface/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import "../interface/IERC721.sol";
 
 /// @notice file for type definitions not used in storage
 
@@ -72,7 +73,7 @@ struct CollateralState {
 /// @member assetToLend address of the ERC-20 to lend
 /// @member loanToValue amount to lend per collateral unit
 /// @member duration in seconds, time before mandatory repayment after loan start
-/// @member nonce used to determine if the offer is still valid
+/// @member expirationDate date after which the offer can't be used
 /// @member collateralSpecType identifies logic to establish validity of an asset
 /// @member tranche identifies the interest rate tranche
 /// @member collateralSpecs abi-encoded arguments for the validity checker
@@ -80,7 +81,7 @@ struct Offer {
     IERC20 assetToLend;
     uint256 loanToValue;
     uint256 duration;
-    uint256 nonce;
+    uint256 expirationDate;
     CollatSpecType collatSpecType;
     uint256 tranche;
     bytes collatSpecs;

@@ -24,6 +24,7 @@ abstract contract DiamondERC721 is IERC721, NFTUtils {
     /// @dev don't use this method for inclusion in the facet function selectors
     ///     prefer the LibDiamond implementation for this method
     ///     it is included here for IERC721-compliance
+    /* solhint-disable-next-line no-empty-blocks */
     function supportsInterface(bytes4 interfaceId) public view returns (bool) {}
 
     function balanceOf(address owner) public view virtual returns (uint256) {

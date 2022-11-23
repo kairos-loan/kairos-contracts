@@ -2,11 +2,10 @@
 pragma solidity 0.8.17;
 
 import "../../BorrowLogic/BorrowHandlers.sol";
-import "./InternalBorrowTestCommons.sol";
+import "./BorrowTestCommons.sol";
 
-contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
+contract TestBorrowHandlers is BorrowTestCommons, BorrowHandlers {
     // useOffer tests
-
     function testConsistentAssetRequests() public {
         CollateralState memory collatState;
 
@@ -15,7 +14,9 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
             abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
             abi.encode(true)
         );
-        vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN));
+        vm.expectRevert(
+            abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN)
+        );
         this.useOfferExternal(getOfferArgs(), collatState);
 
         collatState.assetLent = MOCK_TOKEN;
@@ -36,7 +37,7 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         // not finished
     }
 
-    // helpers
+    // helpers todo #10 move helpers to dedicated file
 
     function useOfferExternal(
         OfferArgs memory args,
@@ -51,6 +52,7 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
         offer.assetToLend = MOCK_TOKEN;
         offer.collatSpecs = abi.encode(specs);
         offer.loanToValue = 1 ether;
+        offer.expirationDate = block.timestamp + 2 weeks;
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         ret.offer = offer;
         ret.root = root;

@@ -7,33 +7,66 @@ contract TestClaim is SetUp {
     using RayMath for Ray;
 
     function testSimpleClaim() public {
-        uint256[] memory positionIds = new uint256[](1);
-        positionIds[0] = 1;
-        Loan memory loan = getDefaultLoan();
-        loan.payment.paid = 1 ether;
-        store(loan, 1);
-        mintPosition(signer, getDefaultProvision());
-        money.transfer(address(kairos), 1 ether);
-        vm.prank(signer);
-        kairos.claim(positionIds);
-        assertEq(money.balanceOf(address(kairos)), 0);
-        assertEq(money.balanceOf(address(signer)), 1 ether);
-        vm.expectRevert(ERC721InvalidTokenId.selector);
-        assertEq(kairos.ownerOf(1), address(0));
+        claimN(1);
+    }
+
+    function testClaims() public {
+        claimN(12);
     }
 
     function testSimpleClaimAsBorrower() public {
-        uint256[] memory loanIds = new uint256[](1);
-        loanIds[0] = 1;
-        Loan memory loan = getDefaultLoan();
-        loan.payment.paid = 1 ether;
-        loan.shareLent = ONE.div(2);
-        loan.payment.liquidated = true;
-        store(loan, 1);
-        money.transfer(address(kairos), 1 ether / 2);
+        claimNAsBorrower(1);
+    }
+
+    function testClaimsAsBorrower() public {
+        claimNAsBorrower(12);
+    }
+
+    function claimN(uint8 nbOfClaims) internal {
+        uint256[] memory positionIds = new uint256[](nbOfClaims);
+
+        for (uint8 i; i < nbOfClaims; i++) {
+            positionIds[i] = i + 1;
+            Loan memory loan = getDefaultLoan();
+            loan.supplyPositionIndex = i + 1;
+            loan.payment.paid = 1 ether;
+            store(loan, i + 1);
+            Provision memory provision = getDefaultProvision();
+            provision.loanId = i + 1;
+            mintPosition(signer, provision);
+            money.transfer(address(kairos), 1 ether);
+        }
+
+        vm.prank(signer);
+        kairos.claim(positionIds);
+
+        assertEq(money.balanceOf(address(kairos)), 0);
+        assertEq(money.balanceOf(address(signer)), nbOfClaims * 1 ether);
+
+        for (uint8 i; i < nbOfClaims; i++) {
+            vm.expectRevert(ERC721InvalidTokenId.selector);
+            kairos.ownerOf(i);
+        }
+    }
+
+    function claimNAsBorrower(uint8 nbOfClaims) internal {
+        uint256[] memory loanIds = new uint256[](nbOfClaims);
+
+        for (uint8 i; i < nbOfClaims; i++) {
+            loanIds[i] = i + 1;
+            Loan memory loan = getDefaultLoan();
+            loan.payment.paid = 1 ether;
+            loan.shareLent = ONE.div(2);
+            loan.payment.liquidated = true;
+
+            store(loan, i + 1);
+            money.transfer(address(kairos), 1 ether / 2);
+        }
+
         vm.prank(signer);
         kairos.claimAsBorrower(loanIds);
+
         assertEq(money.balanceOf(address(kairos)), 0);
-        assertEq(money.balanceOf(address(signer)), 1 ether / 2);
+        assertEq(money.balanceOf(address(signer)), (nbOfClaims * 1 ether) / 2);
     }
 }

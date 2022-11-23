@@ -40,22 +40,18 @@ contract TestCommons is TestConstructor, SafeMint {
         tokenId = abi.decode(data, (uint256));
     }
 
-    function getSignatureFromKey(
-        Root memory root,
-        uint256 pKey,
-        IKairos kairos
-    ) internal returns (bytes memory signature) {
+    function getSignatureFromKey(Root memory root, uint256 pKey) internal returns (bytes memory signature) {
         bytes32 digest = kairos.rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(pKey, digest);
         signature = bytes.concat(r, s, bytes1(v));
     }
 
     function getSignature(Root memory root) internal returns (bytes memory signature) {
-        return getSignatureFromKey(root, KEY, kairos);
+        return getSignatureFromKey(root, KEY);
     }
 
     function getSignature2(Root memory root) internal returns (bytes memory signature) {
-        return getSignatureFromKey(root, KEY2, kairos);
+        return getSignatureFromKey(root, KEY2);
     }
 
     function getOfferArgs(Offer memory offer) internal returns (OfferArgs[] memory) {
@@ -70,16 +66,6 @@ contract TestCommons is TestConstructor, SafeMint {
             offer: offer
         });
         return offerArgs;
-    }
-
-    function getTokens(address receiver) internal returns (uint256 tokenId) {
-        vm.startPrank(receiver);
-
-        tokenId = nft.mintOne();
-        money.mint(100 ether);
-        money.approve(address(kairos), 100 ether);
-
-        vm.stopPrank();
     }
 
     function getDefaultLoan() internal view returns (Loan memory) {
@@ -114,7 +100,7 @@ contract TestCommons is TestConstructor, SafeMint {
                 assetToLend: money,
                 loanToValue: 10 ether,
                 duration: 2 weeks,
-                nonce: 0,
+                expirationDate: block.timestamp + 2 hours,
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({implem: nft}))

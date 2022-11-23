@@ -4,12 +4,16 @@ pragma solidity 0.8.17;
 import "../TestCommons.sol";
 import "../../BorrowLogic/BorrowCheckers.sol";
 
-contract InternalBorrowTestCommons is BorrowCheckers, TestCommons {
+contract BorrowTestCommons is BorrowCheckers, TestCommons {
     IERC20 internal constant MOCK_TOKEN = IERC20(address(bytes20(keccak256("mock token"))));
 
     constructor() {
         bytes memory randoCode = hex"01";
         vm.etch(address(MOCK_TOKEN), randoCode); // for mock calls to work, code needs to be not empty
+    }
+
+    function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
+        return checkOfferArgs(args);
     }
 
     function getSignatureInternal(Root memory root) internal returns (bytes memory signature) {
