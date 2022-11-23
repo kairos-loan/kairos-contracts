@@ -14,5 +14,6 @@
   "solidity-va.codelens.inheritance.enable": true,
   "solidity-va.deco.statevars": true,
   "solidity-va.deco.warn.externalCalls": true,
-  "workbench.colorTheme": "Solidity Visual Developer Dark"
+  "workbench.colorTheme": "Default Dark+",
+  "solidity-va.parser.parseImports": true
 }

@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./InternalBorrowTestCommons.sol";
+import "./BorrowTestCommons.sol";
 import "../SetUp.sol";
-import "../../DataStructure/Objects.sol";
 
-contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
+contract TestBorrowCheckers is BorrowTestCommons, SetUp {
     using MerkleProof for bytes32[];
-
-    function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
-        return checkOfferArgs(args);
-    }
 
     function testAddressRecovery() public {
         Offer memory offer;
@@ -63,7 +58,7 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         Root memory root1 = Root({root: keccak256(abi.encode(offer1))});
         args1.root = root1;
         args1.signature = getSignatureInternal(root1);
-        vm.warp(args1.offer.expirationDate - 1 days);
+        vm.warp(args1.offer.expirationDate - 1);
         checkOfferArgs(args1);
 
         offer2.expirationDate = block.timestamp + 2 weeks;
@@ -71,21 +66,24 @@ contract TestBorrowCheckers is InternalBorrowTestCommons, SetUp {
         Root memory root2 = Root({root: keccak256(abi.encode(offer2))});
         args2.root = root2;
         args2.signature = getSignatureInternal(root2);
-        vm.warp(args2.offer.expirationDate + 1 days);
-        vm.expectRevert(abi.encodeWithSelector(OfferHasExpired.selector, args2.offer, args2.offer.expirationDate));
+        vm.warp(args2.offer.expirationDate + 1);
+        vm.expectRevert(
+            abi.encodeWithSelector(OfferHasExpired.selector, args2.offer, args2.offer.expirationDate)
+        );
         this.checkOfferArgsExternal(args2);
     }
 
     function testAmount() public {
         OfferArgs memory args;
         Offer memory offer;
+        offer.loanToValue = 1 ether - 1;
         offer.expirationDate = block.timestamp + 2 weeks;
         args.offer = offer;
         Root memory root = Root({root: keccak256(abi.encode(offer))});
         args.amount = 1 ether;
         args.root = root;
         args.signature = getSignatureInternal(root);
-        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, uint256(0)));
+        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, 1 ether - 1));
         this.checkOfferArgsExternal(args);
     }
 }

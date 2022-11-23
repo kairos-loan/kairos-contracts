@@ -40,22 +40,18 @@ contract TestCommons is TestConstructor, SafeMint {
         tokenId = abi.decode(data, (uint256));
     }
 
-    function getSignatureFromKey(
-        Root memory root,
-        uint256 pKey,
-        IKairos kairos
-    ) internal returns (bytes memory signature) {
+    function getSignatureFromKey(Root memory root, uint256 pKey) internal returns (bytes memory signature) {
         bytes32 digest = kairos.rootDigest(root);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(pKey, digest);
         signature = bytes.concat(r, s, bytes1(v));
     }
 
     function getSignature(Root memory root) internal returns (bytes memory signature) {
-        return getSignatureFromKey(root, KEY, kairos);
+        return getSignatureFromKey(root, KEY);
     }
 
     function getSignature2(Root memory root) internal returns (bytes memory signature) {
-        return getSignatureFromKey(root, KEY2, kairos);
+        return getSignatureFromKey(root, KEY2);
     }
 
     function getOfferArgs(Offer memory offer) internal returns (OfferArgs[] memory) {
@@ -70,33 +66,6 @@ contract TestCommons is TestConstructor, SafeMint {
             offer: offer
         });
         return offerArgs;
-    }
-
-    function getMulptipleNft(uint x) internal returns (uint[] memory) {
-        uint[] memory nftsId = new uint[](x);
-        for (uint i = 0; i < x; i++) {
-            uint nftId = nft.mintOne();
-            nftsId[i] = nftId;
-        }
-        return nftsId;
-    }
-
-    function getTokens() internal returns (uint tokenId) {
-        vm.prank(signer);
-        tokenId = nft.mintOne();
-        vm.prank(signer);
-        money.mint(100 ether);
-        vm.prank(signer);
-        money.approve(address(kairos), 100 ether);
-    }
-
-    function getTokens2() internal returns (uint tokenId) {
-        vm.prank(signer2);
-        tokenId = nft2.mintOne();
-        vm.prank(signer2);
-        money.mint(100 ether);
-        vm.prank(signer2);
-        money.approve(address(kairos), 100 ether);
     }
 
     function getDefaultLoan() internal view returns (Loan memory) {
@@ -117,15 +86,6 @@ contract TestCommons is TestConstructor, SafeMint {
             });
     }
 
-    function getMultipleLoan(uint x) internal view returns (Loan[] memory) {
-        Loan[] memory loans = new Loan[](x);
-        for (uint i; i < x; i++) {
-            Loan memory loan = getDefaultLoan();
-            loans[i] = loan;
-        }
-        return loans;
-    }
-
     function assertEq(Loan memory actual, Loan memory expected) internal view {
         if (keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
             logLoan(expected, "expected");
@@ -140,7 +100,7 @@ contract TestCommons is TestConstructor, SafeMint {
                 assetToLend: money,
                 loanToValue: 10 ether,
                 duration: 2 weeks,
-                expirationDate: block.timestamp + 5 weeks,
+                expirationDate: block.timestamp + 2 hours,
                 collatSpecType: CollatSpecType.Floor,
                 tranche: 0,
                 collatSpecs: abi.encode(FloorSpec({implem: nft}))
@@ -155,10 +115,6 @@ contract TestCommons is TestConstructor, SafeMint {
 
     function getDefaultProvision() internal pure returns (Provision memory) {
         return Provision({amount: 1 ether, share: ONE, loanId: 1});
-    }
-
-    function getCustomProvision(uint _id) internal pure returns (Provision memory) {
-        return Provision({amount: 1 ether, share: ONE, loanId: _id});
     }
 
     function getRootOfTwoHashes(bytes32 hashOne, bytes32 hashTwo) internal pure returns (Root memory ret) {

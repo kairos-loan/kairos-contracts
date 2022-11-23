@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+
 import "../DataStructure/Global.sol";
 import "../Signature.sol";
 
@@ -22,6 +23,7 @@ abstract contract BorrowCheckers is Signature {
     /// @return signer computed signer of `args.signature` according to `args.offer`
     function checkOfferArgs(OfferArgs memory args) internal view returns (address) {
         address signer = ECDSA.recover(rootDigest(args.root), args.signature);
+
         if (!args.proof.verify(args.root.root, keccak256(abi.encode(args.offer)))) {
             revert OfferNotFound(args.offer, args.root);
         }
@@ -31,6 +33,7 @@ abstract contract BorrowCheckers is Signature {
         if (args.amount > args.offer.loanToValue) {
             revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);
         }
+
         return signer;
     }
 

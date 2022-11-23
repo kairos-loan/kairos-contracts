@@ -2,8 +2,8 @@
 pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
-import "../../../DataStructure/Objects.sol";
-import "../../SetUp.sol";
+import {SetUp} from "contracts/test/SetUp.sol";
+import "contracts/DataStructure/Global.sol";
 
 struct ComplexBorrowData {
     BorrowArgs bargs1;
@@ -71,6 +71,7 @@ contract ComplexBorrowPreExecFuncs is SetUp {
             amount: 1 ether, // 50%
             offer: d.signer1Offer2
         });
+
         return d;
     }
 

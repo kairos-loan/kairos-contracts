@@ -2,11 +2,10 @@
 pragma solidity 0.8.17;
 
 import "../../BorrowLogic/BorrowHandlers.sol";
-import "./InternalBorrowTestCommons.sol";
+import "./BorrowTestCommons.sol";
 
-contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
+contract TestBorrowHandlers is BorrowTestCommons, BorrowHandlers {
     // useOffer tests
-
     function testConsistentAssetRequests() public {
         CollateralState memory collatState;
 
@@ -15,7 +14,9 @@ contract TestBorrowHandlers is InternalBorrowTestCommons, BorrowHandlers {
             abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
             abi.encode(true)
         );
-        vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN));
+        vm.expectRevert(
+            abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN)
+        );
         this.useOfferExternal(getOfferArgs(), collatState);
 
         collatState.assetLent = MOCK_TOKEN;
