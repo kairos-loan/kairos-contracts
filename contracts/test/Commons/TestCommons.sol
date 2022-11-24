@@ -87,7 +87,7 @@ abstract contract TestCommons is Loggers {
                 startDate: block.timestamp - 2 weeks,
                 endDate: block.timestamp + 2 weeks,
                 interestPerSecond: getTranche(0),
-                borrower: signer,
+                borrower: BORROWER,
                 collateral: getOffer().collateral,
                 supplyPositionIndex: 1,
                 payment: payment,
