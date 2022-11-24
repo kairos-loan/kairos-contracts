@@ -44,9 +44,13 @@ contract SetUp is TestCommons, ContractsCreator {
     }
 
     function getFlooz(address to, Money moula) internal {
+        getFlooz(to, moula, 100 ether);
+    }
+
+    function getFlooz(address to, Money moula, uint256 amount) internal {
         vm.startPrank(to);
-        moula.mint(100 ether);
-        moula.approve(address(kairos), 100 ether);
+        moula.mint(amount);
+        moula.approve(address(kairos), amount);
         vm.stopPrank();
     }
 
