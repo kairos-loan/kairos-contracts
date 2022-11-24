@@ -3,10 +3,11 @@ pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-import "./TestCommons.sol";
-import "../interface/IKairos.sol";
+import "./External.sol";
+import "diamond/Diamond.sol";
+import "contracts/interface/IKairos.sol";
 
-contract SetUp is TestCommons, ERC721Holder {
+contract SetUp is External, ERC721Holder {
     function setUp() public {
         bytes memory emptyBytes;
         DiamondArgs memory args = DiamondArgs({

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./SetUp.sol";
+import "./Commons/SetUp.sol";
 
 contract TestClaim is SetUp {
     using RayMath for Ray;
@@ -27,11 +27,11 @@ contract TestClaim is SetUp {
 
         for (uint8 i; i < nbOfClaims; i++) {
             positionIds[i] = i + 1;
-            Loan memory loan = getDefaultLoan();
+            Loan memory loan = getLoan();
             loan.supplyPositionIndex = i + 1;
             loan.payment.paid = 1 ether;
             store(loan, i + 1);
-            Provision memory provision = getDefaultProvision();
+            Provision memory provision = getProvision();
             provision.loanId = i + 1;
             mintPosition(signer, provision);
             money.transfer(address(kairos), 1 ether);
@@ -54,7 +54,7 @@ contract TestClaim is SetUp {
 
         for (uint8 i; i < nbOfClaims; i++) {
             loanIds[i] = i + 1;
-            Loan memory loan = getDefaultLoan();
+            Loan memory loan = getLoan();
             loan.payment.paid = 1 ether;
             loan.shareLent = ONE.div(2);
             loan.payment.liquidated = true;

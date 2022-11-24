@@ -13,5 +13,5 @@ interface IBorrowFacet {
 
     function borrow(BorrowArgs[] calldata args) external;
 
-    function rootDigest(Root memory _root) external view returns (bytes32);
+    function offerDigest(Offer memory _offer) external view returns (bytes32);
 }

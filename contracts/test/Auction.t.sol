@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./SetUp.sol";
+import "./Commons/SetUp.sol";
 
 contract TestAuction is SetUp {
     // test simplest case of auction
@@ -10,11 +10,11 @@ contract TestAuction is SetUp {
         uint256[] memory positionIds = new uint256[](1);
         positionIds[0] = 1;
         args[0] = BuyArgs({loanId: 1, to: signer2, positionIds: positionIds});
-        Loan memory loan = getDefaultLoan();
+        Loan memory loan = getLoan();
         loan.startDate = block.timestamp - 1 weeks;
         loan.endDate = block.timestamp - 2 days; // price should be the same as lent amount
         store(loan, 1);
-        mintPosition(signer, getDefaultProvision());
+        mintPosition(signer, getProvision());
         nft.transferFrom(address(this), address(kairos), 1);
         vm.prank(signer);
         kairos.buy(args);

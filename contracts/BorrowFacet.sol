@@ -12,13 +12,13 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @param loans loans initiated
     event Borrow(Loan[] loans); // todo : use loan ids instead
 
-    // todo : add reentrency check
-    // todo : process supplier coins
-    // todo : support supplier signed approval
-    // todo : support contract signatures (erc1271)
-    // todo : check and implement protocol rules
-    // todo : allow receive money then hook to get the NFT
-    // todo : enforce minimal offer duration // useful ? if minimal interest // maybe max also
+    // todo #19 add reentrency check
+    // todo #20 process supplier coins
+    // todo #21 support supplier signed approval
+    // todo #22 support contract signatures (erc1271)
+    // todo #23 check and implement protocol rules
+    // todo #24 allow receive money then hook to get the NFT
+    // todo #25 enforce minimal offer duration // useful ? if minimal interest // maybe max also
     /// @notice borrow using sent NFT as collateral without needing approval through transfer callback
     /// @param from owner of the NFT sent according to the NFT implementation contract
     /// @param tokenId token identifier of the NFT sent according to the NFT implementation contract
@@ -26,7 +26,12 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @return selector `this.onERC721Received.selector` ERC721-compliant response, signaling compatibility
     /// @dev param data must be of format OfferArgs[]
     /// @inheritdoc IERC721Receiver
-    function onERC721Received(address, address from, uint256 tokenId, bytes calldata data) external returns (bytes4) {
+    function onERC721Received(
+        address,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4) {
         OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
         Loan[] memory loans = new Loan[](1);
 
@@ -37,7 +42,7 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
         return this.onERC721Received.selector;
     }
 
-    // todo : should return loan ids ?
+    // todo #26 should return loan ids ?
     /// @notice take loans, take ownership of NFTs specified as collateral, sends borrowed money to caller
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArgs[] calldata args) external {

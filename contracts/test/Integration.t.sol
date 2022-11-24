@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./SetUp.sol";
+import "./Commons/SetUp.sol";
 
 /// @notice tests of entire loan lifecycles
 contract TestIntegration is SetUp {
@@ -11,7 +11,8 @@ contract TestIntegration is SetUp {
     function testSimpleLoan() public {
         // signer is the supplier
         uint256 thisInitialBalance = money.balanceOf(address(this));
-        OfferArgs[] memory offerArgs = getOfferArgs(getOffer());
+        OfferArgs[] memory offerArgs = new OfferArgs[](1);
+        offerArgs[0] = getOfferArgs(getOffer());
         vm.prank(signer);
         money.mint(1 ether);
         vm.prank(signer);

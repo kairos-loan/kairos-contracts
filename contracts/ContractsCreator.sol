@@ -6,8 +6,6 @@ import "diamond/facets/DiamondCutFacet.sol";
 import "diamond/interfaces/IDiamondCut.sol";
 import "diamond/facets/DiamondLoupeFacet.sol";
 import "./Initializer.sol";
-import "./utils/NFT.sol";
-import "./utils/Money.sol";
 import "./BorrowFacet.sol";
 import "./ClaimFacet.sol";
 import "./ProtocolFacet.sol";

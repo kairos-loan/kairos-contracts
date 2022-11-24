@@ -13,9 +13,9 @@ contract RepayFacet {
     /// @param loanId loan identifier
     event Repay(uint256 indexed loanId);
 
-    // todo : propose erc777 onReceive hook for repayment ?
-    // todo : implement minimal repayment
-    // todo : analysis on possible reentrency
+    // todo #17 : propose erc777 onReceive hook for repayment ?
+    // todo #16 : implement minimal repayment
+    // todo #15 : analysis on possible reentrency
     /// @notice repay one or multiple loans, gives collaterals back
     /// @dev repay on behalf is activated, the collateral goes to the original borrower
     /// @param loanIds identifiers of loans to repay

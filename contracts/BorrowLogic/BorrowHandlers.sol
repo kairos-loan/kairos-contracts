@@ -27,7 +27,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
         }
 
-        checkCollatSpecs(collatState.nft.implem, collatState.nft.id, args.offer);
+        checkCollateral(collatState.nft.implem, collatState.nft.id, args.offer);
         shareMatched = args.amount.div(args.offer.loanToValue);
         collatState.matched = collatState.matched.add(shareMatched);
 
@@ -78,7 +78,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: block.timestamp + collatState.minOfferDuration,
-            interestPerSecond: proto.tranche[0], // todo : adapt rate to the offers
+            interestPerSecond: proto.tranche[0], // todo #27 adapt rate to the offers
             borrower: from,
             collateral: nft,
             supplyPositionIndex: supplyPositionIndex,

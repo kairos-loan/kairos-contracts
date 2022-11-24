@@ -23,7 +23,7 @@ contract AuctionFacet is NFTUtils {
         }
     }
 
-    // todo: add a public facing price method
+    // todo: #18 add a public facing price method
 
     /// @notice handles buying one NFT
     /// @param args arguments on what and how to buy

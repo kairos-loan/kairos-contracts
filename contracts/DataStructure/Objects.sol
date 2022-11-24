@@ -7,15 +7,10 @@ import "../interface/IERC721.sol";
 
 /// @notice file for type definitions not used in storage
 
-/// @notice type ids for collateral specification
-/// @member Floor any NFT in a collection is accepted
-enum CollatSpecType {
-    Floor,
-    Single
-}
-
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
+
+// todo #29 fix singular/plural forms of args
 
 /// @notice Arguments to buy the collateral of one loan
 /// @member loanId loan identifier
@@ -37,16 +32,10 @@ struct BorrowArgs {
 
 /// @notice Arguments for the borrow parameters of an offer
 /// @dev '-' means n^th
-///     possible opti is to use OZ's multiProofVerify func, not used here
-///     because it can mess with the ordering of the offer usage
-/// @member proof - of the offer inclusion in his tree
-/// @member root - of the supplier offer merkle tree
-/// @member signature - of the supplier offer merkle tree root
+/// @member signature - of the offer
 /// @member amount - to borrow from this offer
 /// @member offer intended for usage in the loan
 struct OfferArgs {
-    bytes32[] proof;
-    Root root;
     bytes signature;
     uint256 amount;
     Offer offer;
@@ -74,35 +63,15 @@ struct CollateralState {
 /// @member loanToValue amount to lend per collateral unit
 /// @member duration in seconds, time before mandatory repayment after loan start
 /// @member expirationDate date after which the offer can't be used
-/// @member collateralSpecType identifies logic to establish validity of an asset
 /// @member tranche identifies the interest rate tranche
-/// @member collateralSpecs abi-encoded arguments for the validity checker
+/// @member collateral the NFT that can be used as collateral with this offer
 struct Offer {
     IERC20 assetToLend;
     uint256 loanToValue;
     uint256 duration;
     uint256 expirationDate;
-    CollatSpecType collatSpecType;
     uint256 tranche;
-    bytes collatSpecs;
-}
-
-/// @dev Add "Spec" as suffix to structs meant for describing collaterals
-
-/// @notice Collateral type accepting any NFT of a collection
-/// @dev we use struct with a single member to keep the type check on
-///     collateral being an IERC721
-/// @member implem NFT contract I.e collection
-struct FloorSpec {
-    IERC721 implem;
-}
-
-/// @notice Root of a supplier offer merkle tree
-/// @dev we use a struct with a single member to sign in the EIP712 fashion
-///     so signed roots are only available for the desired contract on desired chain
-/// @member root the merkle root
-struct Root {
-    bytes32 root;
+    NFToken collateral;
 }
 
 /// @title Non Fungible Token

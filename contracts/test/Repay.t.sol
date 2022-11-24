@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./SetUp.sol";
+import "./Commons/SetUp.sol";
 
 contract TestRepay is SetUp {
     using RayMath for Ray;
@@ -25,7 +25,7 @@ contract TestRepay is SetUp {
             loanIds[i] = i + 1;
             nft.mintOne();
             nft.transferFrom(address(this), address(kairos), i + 2);
-            Loan memory loan = getDefaultLoan();
+            Loan memory loan = getLoan();
             loan.borrower = address(this);
             loan.collateral.id = 2 + i;
             store(loan, i + 1);

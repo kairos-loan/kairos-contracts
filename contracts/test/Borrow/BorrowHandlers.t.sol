@@ -1,61 +1,40 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../../BorrowLogic/BorrowHandlers.sol";
-import "./BorrowTestCommons.sol";
+import "../Commons/Internal.sol";
 
-contract TestBorrowHandlers is BorrowTestCommons, BorrowHandlers {
+contract TestBorrowHandlers is Internal {
     // useOffer tests
     function testConsistentAssetRequests() public {
         CollateralState memory collatState;
+        Offer memory offer = getOffer();
+        offer.assetToLend = money;
 
         vm.mockCall(
-            address(MOCK_TOKEN),
+            address(money),
             abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
             abi.encode(true)
         );
         vm.expectRevert(
-            abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), MOCK_TOKEN)
+            abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), money)
         );
-        this.useOfferExternal(getOfferArgs(), collatState);
+        this.useOfferExternal(getOfferArgs(offer), collatState);
 
-        collatState.assetLent = MOCK_TOKEN;
+        collatState.assetLent = money;
         vm.mockCall(
-            address(MOCK_TOKEN),
+            address(money),
             abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
             abi.encode(true)
         );
-        this.useOfferExternal(getOfferArgs(), collatState);
+        this.useOfferExternal(getOfferArgs(offer), collatState);
         assertEq(supplyPositionStorage().totalSupply, 1);
     }
 
-    function testRequestAmountCheckAndAssetTransfer() public {
-        CollateralState memory collatState;
-        collatState.assetLent = MOCK_TOKEN;
-        OfferArgs memory args = getOfferArgs();
-        args.amount = 1 ether;
-        // not finished
-    }
-
-    // helpers todo #10 move helpers to dedicated file
-
-    function useOfferExternal(
-        OfferArgs memory args,
-        CollateralState memory collatState
-    ) public returns (CollateralState memory) {
-        return useOffer(args, collatState);
-    }
-
-    function getOfferArgs() private returns (OfferArgs memory ret) {
-        Offer memory offer;
-        FloorSpec memory specs;
-        offer.assetToLend = MOCK_TOKEN;
-        offer.collatSpecs = abi.encode(specs);
-        offer.loanToValue = 1 ether;
-        offer.expirationDate = block.timestamp + 2 weeks;
-        Root memory root = Root({root: keccak256(abi.encode(offer))});
-        ret.offer = offer;
-        ret.root = root;
-        ret.signature = getSignatureInternal(root);
-    }
+    // function testRequestAmountCheckAndAssetTransfer() public {
+    //     CollateralState memory collatState;
+    //     collatState.assetLent = money;
+    //     // OfferArgs memory args = getOfferArgs(getOffer());
+    //     // args.amount = 1 ether;
+    //     // todo #28 finish TestBorrowHandlers
+    // }
 }
