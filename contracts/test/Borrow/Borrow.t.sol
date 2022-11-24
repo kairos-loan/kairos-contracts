@@ -17,16 +17,15 @@ contract TestBorrow is External {
     }
 
     function testWrongNFTAddress() public {
-        IERC721 wrongNFT = IERC721(address(1));
-
         Offer memory offer = getOffer();
-        offer.collateral.implem = wrongNFT;
+        OfferArgs[] memory offArgs = getOfferArgs(offer);
+        bytes memory data = abi.encode(offArgs);
+        uint256 tokenId = nft2.mintOneTo(BORROWER);
 
-        bytes memory data = abi.encode(getOfferArgs(offer));
-        uint256 tokenId = getTokens(signer);
-
-        vm.startPrank(signer);
-        vm.expectRevert(abi.encodeWithSelector(NFTContractDoesntMatchOfferSpecs.selector, nft, wrongNFT));
-        nft.safeTransferFrom(signer, address(kairos), tokenId, data);
+        vm.startPrank(BORROWER);
+        vm.expectRevert(
+            abi.encodeWithSelector(BadCollateral.selector, offer, NFToken({implem: nft2, id: tokenId}))
+        );
+        nft2.safeTransferFrom(BORROWER, address(kairos), tokenId, data);
     }
 }

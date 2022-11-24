@@ -3,9 +3,12 @@ pragma solidity 0.8.17;
 
 import "../DataStructure/Global.sol";
 import "../Signature.sol";
+import "contracts/utils/NFTokenUtils.sol";
 
 /// @notice handles checks to verify validity of a loan request
 abstract contract BorrowCheckers is Signature {
+    using NFTokenUtils for NFToken;
+
     /// @notice computes EIP-712 compliant digest of a loan offer
     /// @param _offer the loan offer signed/to sign by a supplier
     /// @return digest the digest
@@ -30,12 +33,11 @@ abstract contract BorrowCheckers is Signature {
     }
 
     /// @notice checks collateral validity regarding the offer
-    /// @param implem implementation address of the NFT collection provided
-    /// @param tokenId token identifier of the provided NFT collateral
     /// @param offer loan offer which validity should be checked for the provided collateral
-    function checkCollateral(IERC721 implem, uint256 tokenId, Offer memory offer) internal pure {
-        if (implem != offer.collateral.implem || tokenId != offer.collateral.id) {
-            revert BadCollateral(offer, tokenId, implem);
+    /// @param providedNft nft sent to be used as collateral
+    function checkCollateral(Offer memory offer, NFToken memory providedNft) internal pure {
+        if (!offer.collateral.eq(providedNft)) {
+            revert BadCollateral(offer, providedNft);
         }
     }
 }
