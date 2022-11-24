@@ -29,4 +29,44 @@ contract TestBorrow is External {
         );
         nft2.safeTransferFrom(BORROWER, address(kairos), tokenId, data);
     }
+
+    function testSimpleBorrow() public {
+        borrowNTimes(1);
+    }
+
+    function testMultipleBorrow() public {
+        borrowNTimes(12);
+    }
+
+    function borrowNTimes(uint8 nbOfLoans) internal {
+        BorrowArgs[] memory borrowArgs = new BorrowArgs[](nbOfLoans);
+        Offer memory offer;
+        uint256 currentTokenId;
+
+        getFlooz(signer, money, nbOfLoans * getOfferArg().amount);
+
+        for (uint8 i; i < nbOfLoans; i++) {
+            OfferArgs[] memory offerArgs = new OfferArgs[](1);
+            currentTokenId = getJpeg(BORROWER, nft);
+            offer = getOffer();
+            offer.collateral.id = currentTokenId;
+            offerArgs[0] = OfferArgs({
+                signature: getSignature(offer),
+                amount: getOfferArg().amount,
+                offer: offer
+            });
+            borrowArgs[i] = BorrowArgs({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
+        }
+
+        vm.prank(BORROWER);
+        kairos.borrow(borrowArgs);
+
+        assertEq(nft.balanceOf(BORROWER), 0);
+        assertEq(money.balanceOf(signer), 0);
+        assertEq(money.balanceOf(BORROWER), nbOfLoans * getOfferArg().amount);
+        assertEq(nft.balanceOf(address(kairos)), nbOfLoans);
+        for (uint8 i; i < nbOfLoans; i++) {
+            assertEq(nft.ownerOf(i + 1), address(kairos));
+        }
+    }
 }

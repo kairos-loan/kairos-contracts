@@ -65,14 +65,32 @@ abstract contract TestCommons is Loggers {
             });
     }
 
+    function getOfferArg() internal returns (OfferArgs memory) {
+        return getOfferArg(getOffer());
+    }
+
     function getOfferArg(Offer memory offer) internal returns (OfferArgs memory arg) {
         arg = OfferArgs({signature: getSignature(offer), amount: offer.loanToValue / 10, offer: offer});
+    }
+
+    function getOfferArgs() internal returns (OfferArgs[] memory) {
+        return getOfferArgs(getOffer());
     }
 
     function getOfferArgs(Offer memory offer) internal returns (OfferArgs[] memory) {
         OfferArgs[] memory ret = new OfferArgs[](1);
         ret[0] = getOfferArg(offer);
         return ret;
+    }
+
+    function getBorrowArgs() internal returns (BorrowArgs[] memory) {
+        BorrowArgs[] memory args = new BorrowArgs[](1);
+        args[0] = BorrowArgs({nft: getNft(), args: getOfferArgs()});
+        return args;
+    }
+
+    function getNft() internal view returns (NFToken memory ret) {
+        ret = NFToken({implem: nft, id: 1});
     }
 
     function getTranche(uint256 trancheId) internal virtual returns (Ray rate);
@@ -111,7 +129,7 @@ abstract contract TestCommons is Loggers {
                 duration: 2 weeks,
                 expirationDate: block.timestamp + 2 hours,
                 tranche: 0,
-                collateral: NFToken({implem: nft, id: 1})
+                collateral: getNft()
             });
     }
 
