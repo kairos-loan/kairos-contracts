@@ -17,6 +17,7 @@ abstract contract TestCommons is Loggers {
     uint256 internal constant KEY2 = 0xB0B;
     address internal immutable signer;
     address internal immutable signer2;
+    address internal constant BORROWER = address(bytes20(keccak256("borrower")));
     bytes4 internal immutable erc721SafeTransferFromSelector;
     bytes4 internal immutable erc721SafeTransferFromDataSelector;
     Money internal money;
@@ -25,24 +26,15 @@ abstract contract TestCommons is Loggers {
     NFT internal nft2;
 
     constructor() {
-        bytes memory randoCode = hex"01";
-
         oneInArray = new uint256[](1);
         oneInArray[0] = 1;
         signer = vm.addr(KEY);
         signer2 = vm.addr(KEY2);
+        vm.label(BORROWER, "borrower");
         vm.label(signer, "signer");
         vm.label(signer2, "signer2");
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
         erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
-        money = Money(address(bytes20(keccak256("mock address money"))));
-        vm.etch(address(money), randoCode);
-        money2 = Money(address(bytes20(keccak256("mock address money2"))));
-        vm.etch(address(money2), randoCode);
-        nft = NFT(address(bytes20(keccak256("mock address nft"))));
-        vm.etch(address(nft), randoCode);
-        nft2 = NFT(address(bytes20(keccak256("mock address nft2"))));
-        vm.etch(address(nft2), randoCode);
     }
 
     function getOfferDigest(Offer memory offer) internal virtual returns (bytes32);
@@ -61,6 +53,18 @@ abstract contract TestCommons is Loggers {
         return getSignatureFromKey(offer, KEY2);
     }
 
+    function getCollateralState() internal view returns (CollateralState memory state) {
+        return
+            CollateralState({
+                matched: Ray.wrap(0),
+                assetLent: getOffer().assetToLend,
+                minOfferDuration: getOffer().duration,
+                from: BORROWER,
+                nft: getOffer().collateral,
+                loanId: 1
+            });
+    }
+
     function getOfferArgs(Offer memory offer) internal returns (OfferArgs memory args) {
         args = OfferArgs({signature: getSignature(offer), amount: 1 ether, offer: offer});
     }
@@ -71,14 +75,14 @@ abstract contract TestCommons is Loggers {
         Payment memory payment;
         return
             Loan({
-                assetLent: money,
+                assetLent: getOffer().assetToLend,
                 lent: 1 ether,
                 shareLent: ONE,
                 startDate: block.timestamp - 2 weeks,
                 endDate: block.timestamp + 2 weeks,
                 interestPerSecond: getTranche(0),
                 borrower: signer,
-                collateral: NFToken({implem: nft, id: 1}),
+                collateral: getOffer().collateral,
                 supplyPositionIndex: 1,
                 payment: payment,
                 nbOfPositions: 1

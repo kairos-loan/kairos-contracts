@@ -46,7 +46,7 @@ struct OfferArgs {
 /// @member matched proportion from 0 to 1 of the collateral value matched by offers
 /// @member assetLent - ERC20 that the protocol will send as loan
 /// @member minOfferDuration minimal duration among offers used
-/// @member from original owner of the nft
+/// @member from original owner of the nft (borrower in most cases)
 /// @member nft the collateral asset
 /// @member loanId loan identifier
 struct CollateralState {

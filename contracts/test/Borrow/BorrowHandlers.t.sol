@@ -6,27 +6,26 @@ import "../Commons/Internal.sol";
 contract TestBorrowHandlers is Internal {
     // useOffer tests
     function testConsistentAssetRequests() public {
-        CollateralState memory collatState;
+        CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
-        offer.assetToLend = money;
+        offer.assetToLend = money2;
+        OfferArgs memory offArgs = getOfferArgs(offer);
 
+        // vm.mockCall(
+        //     address(money),
+        //     abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
+        //     abi.encode(true)
+        // );
+        vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, money, money2));
+        this.useOfferExternal(offArgs, collatState);
+
+        collatState.assetLent = money2;
         vm.mockCall(
-            address(money),
-            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
+            address(money2),
+            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offArgs.amount),
             abi.encode(true)
         );
-        vm.expectRevert(
-            abi.encodeWithSelector(InconsistentAssetRequests.selector, IERC20(address(0)), money)
-        );
-        this.useOfferExternal(getOfferArgs(offer), collatState);
-
-        collatState.assetLent = money;
-        vm.mockCall(
-            address(money),
-            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
-            abi.encode(true)
-        );
-        this.useOfferExternal(getOfferArgs(offer), collatState);
+        this.useOfferExternal(offArgs, collatState);
         assertEq(supplyPositionStorage().totalSupply, 1);
     }
 
