@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../Commons/SetUp.sol";
+import "../Commons/External.sol";
 
-contract TestBorrow is SetUp {
+contract TestBorrow is External {
     using RayMath for Ray;
     using RayMath for uint256;
 
     function testSimpleNFTonReceived() public {
-        uint256 tokenId = getTokens(signer);
+        uint256 tokenId = getTokens(BORROWER);
 
         bytes memory data = abi.encode(getOfferArgs(getOffer()));
 
-        vm.prank(signer);
-        nft.safeTransferFrom(signer, address(kairos), tokenId, data);
+        vm.prank(BORROWER);
+        nft.safeTransferFrom(BORROWER, address(kairos), tokenId, data);
     }
 
     function testWrongNFTAddress() public {

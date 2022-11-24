@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import "./TestCommons.sol";
 import "./BigKairos.sol";
 
+/// @dev inherit from this contract to perform tests from INSIDE kairos
 contract Internal is TestCommons, BigKairos {
     using RayMath for Ray;
 

@@ -1,15 +1,29 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-
 import "./External.sol";
+import "./TestCommons.sol";
+import "contracts/interface/IDCHelperFacet.sol";
+import "./DCHelperFacet.sol";
+import "./DCTarget.sol";
 import "diamond/Diamond.sol";
+import "contracts/ContractsCreator.sol";
 import "contracts/interface/IKairos.sol";
 
-contract SetUp is External, ERC721Holder {
+contract SetUp is TestCommons, ContractsCreator {
+    IKairos internal kairos;
+    DCHelperFacet internal helper;
+    DCTarget internal dcTarget;
+
+    constructor() {
+        createContracts();
+        helper = new DCHelperFacet();
+        dcTarget = new DCTarget();
+    }
+
     function setUp() public {
         bytes memory emptyBytes;
+
         DiamondArgs memory args = DiamondArgs({
             owner: address(this),
             init: address(initializer),
@@ -26,6 +40,14 @@ contract SetUp is External, ERC721Holder {
         money2 = new Money();
         vm.label(address(money2), "money2");
         vm.warp(2 * 365 days);
+        getMoula(signer, money);
+    }
+
+    function getMoula(address to, Money moula) internal {
+        vm.startPrank(to);
+        moula.mint(100 ether);
+        moula.approve(address(kairos), 100 ether);
+        vm.stopPrank();
     }
 
     function testFacetCuts() internal view returns (IDiamond.FacetCut[] memory) {
@@ -38,6 +60,16 @@ contract SetUp is External, ERC721Holder {
         });
 
         return facetCuts;
+    }
+
+    /// @dev use only in TestCommons
+    function getOfferDigest(Offer memory offer) internal view override returns (bytes32) {
+        return kairos.offerDigest(offer);
+    }
+
+    /// @dev use only in TestCommons
+    function getTranche(uint256 trancheId) internal view override returns (Ray rate) {
+        return kairos.getRateOfTranche(trancheId);
     }
 
     function helperFS() private pure returns (bytes4[] memory) {

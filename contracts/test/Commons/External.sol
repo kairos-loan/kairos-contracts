@@ -1,24 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "contracts/interface/IKairos.sol";
-import "./TestCommons.sol";
-import "./DCHelperFacet.sol";
-import "contracts/ContractsCreator.sol";
-import "contracts/interface/IDCHelperFacet.sol";
-import "./DCTarget.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-contract External is TestCommons, ContractsCreator {
-    IKairos internal kairos;
-    DCHelperFacet internal helper;
-    DCTarget internal dcTarget;
+import "./SetUp.sol";
 
-    constructor() {
-        createContracts();
-        helper = new DCHelperFacet();
-        dcTarget = new DCTarget();
-    }
-
+/// @dev inherit from this contract to perform tests from OUTSIDE kairos
+contract External is SetUp, ERC721Holder {
     function store(Loan memory loan, uint256 loanId) internal {
         IDCHelperFacet(address(kairos)).delegateCall(
             address(dcTarget),
@@ -49,15 +37,5 @@ contract External is TestCommons, ContractsCreator {
         money.approve(address(kairos), 100 ether);
 
         vm.stopPrank();
-    }
-
-    /// @dev use only in TestCommons
-    function getOfferDigest(Offer memory offer) internal view override returns (bytes32) {
-        return kairos.offerDigest(offer);
-    }
-
-    /// @dev use only in TestCommons
-    function getTranche(uint256 trancheId) internal view override returns (Ray rate) {
-        return kairos.getRateOfTranche(trancheId);
     }
 }

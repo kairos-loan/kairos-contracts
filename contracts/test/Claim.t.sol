@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Commons/SetUp.sol";
+import "./Commons/External.sol";
 
-contract TestClaim is SetUp {
+contract TestClaim is External {
     using RayMath for Ray;
 
     function testSimpleClaim() public {

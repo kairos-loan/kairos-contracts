@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Commons/SetUp.sol";
+import "./Commons/External.sol";
 
-contract TestAuction is SetUp {
+contract TestAuction is External {
     // test simplest case of auction
     function testSimpleAuction() public {
         BuyArgs[] memory args = new BuyArgs[](1);

@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
-import {SetUp} from "contracts/test/Commons/SetUp.sol";
+import {External} from "contracts/test/Commons/External.sol";
 import "contracts/DataStructure/Global.sol";
 
 struct ComplexBorrowData {
@@ -18,7 +18,7 @@ struct ComplexBorrowData {
     uint256 m2InitialBalance;
 }
 
-contract ComplexBorrowPreExecFuncs is SetUp {
+contract ComplexBorrowPreExecFuncs is External {
     function prepareSigners() internal {
         vm.prank(signer);
         money.mint(2 ether);

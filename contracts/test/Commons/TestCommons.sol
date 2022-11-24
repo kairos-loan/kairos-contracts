@@ -65,8 +65,14 @@ abstract contract TestCommons is Loggers {
             });
     }
 
-    function getOfferArgs(Offer memory offer) internal returns (OfferArgs memory args) {
-        args = OfferArgs({signature: getSignature(offer), amount: 1 ether, offer: offer});
+    function getOfferArg(Offer memory offer) internal returns (OfferArgs memory arg) {
+        arg = OfferArgs({signature: getSignature(offer), amount: offer.loanToValue / 10, offer: offer});
+    }
+
+    function getOfferArgs(Offer memory offer) internal returns (OfferArgs[] memory) {
+        OfferArgs[] memory ret = new OfferArgs[](1);
+        ret[0] = getOfferArg(offer);
+        return ret;
     }
 
     function getTranche(uint256 trancheId) internal virtual returns (Ray rate);

@@ -9,13 +9,8 @@ contract TestBorrowHandlers is Internal {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
         offer.assetToLend = money2;
-        OfferArgs memory offArgs = getOfferArgs(offer);
+        OfferArgs memory offArgs = getOfferArg(offer);
 
-        // vm.mockCall(
-        //     address(money),
-        //     abi.encodeWithSelector(IERC20.transferFrom.selector, signer, address(0), uint256(0)),
-        //     abi.encode(true)
-        // );
         vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, money, money2));
         this.useOfferExternal(offArgs, collatState);
 

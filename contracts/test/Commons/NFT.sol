@@ -74,7 +74,6 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
-        mintOne();
     }
 
     function mintOne() public returns (uint256) {

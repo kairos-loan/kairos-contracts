@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Commons/SetUp.sol";
+import "./Commons/External.sol";
 
-contract TestRepay is SetUp {
+contract TestRepay is External {
     using RayMath for Ray;
     using RayMath for uint256;
 
