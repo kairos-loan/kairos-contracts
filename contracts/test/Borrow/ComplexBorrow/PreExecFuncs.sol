@@ -20,23 +20,12 @@ struct ComplexBorrowData {
 
 contract ComplexBorrowPreExecFuncs is External {
     function prepareSigners() internal {
-        vm.prank(signer);
-        money.mint(2 ether);
-        vm.prank(signer);
-        money.approve(address(kairos), 2 ether);
+        getFlooz(signer, money, 2 ether);
+        getFlooz(signer2, money, 2 ether);
+        getFlooz(signer, money2, 2 ether);
 
-        vm.prank(signer2);
-        money.mint(2 ether);
-        vm.prank(signer2);
-        money.approve(address(kairos), 2 ether);
-
-        vm.prank(signer);
-        money2.mint(2 ether);
-        vm.prank(signer);
-        money2.approve(address(kairos), 2 ether);
-
-        nft.approve(address(kairos), 1);
-        nft2.approve(address(kairos), 1);
+        getJpeg(BORROWER, nft);
+        getJpeg(BORROWER, nft2);
     }
 
     function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
@@ -66,7 +55,7 @@ contract ComplexBorrowPreExecFuncs is External {
             duration: 2 weeks,
             expirationDate: block.timestamp + 1,
             tranche: 0,
-            collateral: NFToken({implem: nft2, id: 1})
+            collateral: NFToken({implem: nft, id: 1})
         });
         d.signer1Offer2 = Offer({
             assetToLend: money2,

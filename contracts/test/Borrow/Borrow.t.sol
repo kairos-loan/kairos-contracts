@@ -8,7 +8,8 @@ contract TestBorrow is External {
     using RayMath for uint256;
 
     function testSimpleNFTonReceived() public {
-        uint256 tokenId = getTokens(BORROWER);
+        getFlooz(signer, money, getOfferArg(getOffer()).amount);
+        uint256 tokenId = nft.mintOneTo(BORROWER);
 
         bytes memory data = abi.encode(getOfferArgs(getOffer()));
 

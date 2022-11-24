@@ -34,6 +34,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         batchbargs[0] = d.bargs1;
         batchbargs[1] = d.bargs2;
 
+        vm.prank(BORROWER);
         kairos.borrow(batchbargs);
         assertEq(kairos.balanceOf(signer), 2);
         assertEq(kairos.balanceOf(signer2), 1);
@@ -55,12 +56,12 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         assertEq(money2.balanceOf(signer), 1 ether, "sig1 m2 bal pb");
 
         // borrower money balances
-        assertEq(money.balanceOf(address(this)), ((1 ether / 4) * 5) + d.m1InitialBalance, "bor m1 bal pb");
-        assertEq(money2.balanceOf(address(this)), (1 ether) + d.m2InitialBalance, "bor m2 bal pb");
+        assertEq(money.balanceOf(BORROWER), ((1 ether / 4) * 5) + d.m1InitialBalance, "bor m1 bal pb");
+        assertEq(money2.balanceOf(BORROWER), (1 ether) + d.m2InitialBalance, "bor m2 bal pb");
 
         // nft balances
-        assertEq(nft.balanceOf(address(this)), 0);
-        assertEq(nft2.balanceOf(address(this)), 0);
+        assertEq(nft.balanceOf(BORROWER), 0);
+        assertEq(nft2.balanceOf(BORROWER), 0);
         assertEq(nft.balanceOf(address(kairos)), 1);
         assertEq(nft.balanceOf(address(kairos)), 1);
     }
@@ -68,7 +69,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
     function checkLoans() private view {
         uint256[] memory supplyPositionIds2 = new uint256[](1);
         supplyPositionIds2[0] = 3;
-        Ray tranche0Rate = kairos.getRateOfTranche(0);
+        Ray tranche0Rate = getTranche(0);
         Payment memory payment;
         Loan memory loan2 = Loan({
             assetLent: money2,
@@ -77,7 +78,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
             startDate: block.timestamp,
             endDate: block.timestamp + 4 weeks,
             interestPerSecond: tranche0Rate,
-            borrower: address(this),
+            borrower: BORROWER,
             collateral: NFToken({implem: nft2, id: 1}),
             payment: payment,
             supplyPositionIndex: 3,
@@ -102,7 +103,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
                 startDate: block.timestamp,
                 endDate: block.timestamp + 1 weeks,
                 interestPerSecond: tranche0Rate,
-                borrower: address(this),
+                borrower: BORROWER,
                 collateral: NFToken({implem: nft, id: 1}),
                 payment: payment,
                 supplyPositionIndex: 1,

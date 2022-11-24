@@ -40,18 +40,6 @@ contract SetUp is TestCommons, ContractsCreator {
         money2 = new Money();
         vm.label(address(money2), "money2");
         vm.warp(2 * 365 days);
-        getFlooz(signer, money);
-    }
-
-    function getFlooz(address to, Money moula) internal {
-        getFlooz(to, moula, 100 ether);
-    }
-
-    function getFlooz(address to, Money moula, uint256 amount) internal {
-        vm.startPrank(to);
-        moula.mint(amount);
-        moula.approve(address(kairos), amount);
-        vm.stopPrank();
     }
 
     function testFacetCuts() internal view returns (IDiamond.FacetCut[] memory) {

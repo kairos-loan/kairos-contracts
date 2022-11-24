@@ -38,4 +38,21 @@ contract External is SetUp, ERC721Holder {
 
         vm.stopPrank();
     }
+
+    function getFlooz(address to, Money moula) internal {
+        getFlooz(to, moula, 100 ether);
+    }
+
+    function getFlooz(address to, Money moula, uint256 amount) internal {
+        vm.startPrank(to);
+        moula.mint(amount);
+        moula.approve(address(kairos), amount);
+        vm.stopPrank();
+    }
+
+    function getJpeg(address to, NFT implem) internal returns (uint256 tokenId) {
+        tokenId = implem.mintOneTo(to);
+        vm.prank(to);
+        implem.approve(address(kairos), tokenId);
+    }
 }
