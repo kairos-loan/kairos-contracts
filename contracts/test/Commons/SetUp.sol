@@ -40,10 +40,10 @@ contract SetUp is TestCommons, ContractsCreator {
         money2 = new Money();
         vm.label(address(money2), "money2");
         vm.warp(2 * 365 days);
-        getMoula(signer, money);
+        getFlooz(signer, money);
     }
 
-    function getMoula(address to, Money moula) internal {
+    function getFlooz(address to, Money moula) internal {
         vm.startPrank(to);
         moula.mint(100 ether);
         moula.approve(address(kairos), 100 ether);

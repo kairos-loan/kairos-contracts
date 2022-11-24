@@ -76,6 +76,12 @@ contract NFT is Context, ERC165, IERC721Metadata, IERC721 {
         _symbol = symbol_;
     }
 
+    function mintOneTo(address to) public returns (uint256) {
+        totalSupply++;
+        _mint(to, totalSupply);
+        return totalSupply;
+    }
+
     function mintOne() public returns (uint256) {
         totalSupply++;
         _safeMint(msg.sender, totalSupply);

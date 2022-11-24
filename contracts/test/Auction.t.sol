@@ -15,7 +15,7 @@ contract TestAuction is External {
         loan.endDate = block.timestamp - 2 days; // price should be the same as lent amount
         store(loan, 1);
         mintPosition(signer, getProvision());
-        nft.transferFrom(address(this), address(kairos), 1);
+        nft.mintOneTo(address(kairos));
         vm.prank(signer);
         kairos.buy(args);
         assertEq(nft.ownerOf(1), signer2);
