@@ -7,7 +7,11 @@ contract Money is ERC20 {
     /* solhint-disable-next-line no-empty-blocks */
     constructor() ERC20("Money", "MON") {}
 
-    function mint(uint256 amount) public {
+    function mint(uint256 amount) external {
         _mint(msg.sender, amount);
+    }
+
+    function mint(uint256 amount, address to) external {
+        _mint(to, amount);
     }
 }

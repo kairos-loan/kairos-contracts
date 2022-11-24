@@ -24,6 +24,7 @@ contract TestClaim is External {
 
     function claimN(uint8 nbOfClaims) internal {
         uint256[] memory positionIds = new uint256[](nbOfClaims);
+        uint256 balanceBefore;
 
         for (uint8 i; i < nbOfClaims; i++) {
             positionIds[i] = i + 1;
@@ -34,14 +35,19 @@ contract TestClaim is External {
             Provision memory provision = getProvision();
             provision.loanId = i + 1;
             mintPosition(signer, provision);
-            money.transfer(address(kairos), 1 ether);
+            money.mint(1 ether, address(kairos));
         }
 
+        balanceBefore = money.balanceOf(signer);
         vm.prank(signer);
         kairos.claim(positionIds);
 
-        assertEq(money.balanceOf(address(kairos)), 0);
-        assertEq(money.balanceOf(address(signer)), nbOfClaims * 1 ether);
+        assertEq(money.balanceOf(address(kairos)), 0, "kairos balance invalid");
+        assertEq(
+            money.balanceOf(address(signer)),
+            balanceBefore + nbOfClaims * 1 ether,
+            "signer balance invalid"
+        );
 
         for (uint8 i; i < nbOfClaims; i++) {
             vm.expectRevert(ERC721InvalidTokenId.selector);
@@ -60,13 +66,13 @@ contract TestClaim is External {
             loan.payment.liquidated = true;
 
             store(loan, i + 1);
-            money.transfer(address(kairos), 1 ether / 2);
+            money.mint(1 ether / 2, address(kairos));
         }
 
-        vm.prank(signer);
+        vm.prank(BORROWER);
         kairos.claimAsBorrower(loanIds);
 
         assertEq(money.balanceOf(address(kairos)), 0);
-        assertEq(money.balanceOf(address(signer)), (nbOfClaims * 1 ether) / 2);
+        assertEq(money.balanceOf(address(BORROWER)), (nbOfClaims * 1 ether) / 2);
     }
 }
