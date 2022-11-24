@@ -52,7 +52,7 @@ function borrowFS() pure returns (bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](3);
 
     functionSelectors[0] = IBorrowFacet.onERC721Received.selector;
-    functionSelectors[1] = IBorrowFacet.rootDigest.selector;
+    functionSelectors[1] = IBorrowFacet.offerDigest.selector;
     functionSelectors[2] = IBorrowFacet.borrow.selector;
 
     return functionSelectors;

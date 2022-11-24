@@ -3,11 +3,12 @@ pragma solidity 0.8.17;
 
 import "forge-std/Script.sol";
 import "diamond/Diamond.sol";
+
 import "../ContractsCreator.sol";
-import "contracts/test/TestCommons.sol";
+import "contracts/interface/IKairos.sol";
 
 /// @dev deploy script intended for local testing
-contract DeployLocal is Script, ContractsCreator, TestCommons {
+contract DeployLocal is Script, ContractsCreator {
     function run() public {
         IKairos kairos;
 

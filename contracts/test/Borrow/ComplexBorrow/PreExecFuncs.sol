@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
-import {SetUp} from "contracts/test/SetUp.sol";
+import {External} from "contracts/test/Commons/External.sol";
 import "contracts/DataStructure/Global.sol";
 
 struct ComplexBorrowData {
@@ -18,56 +18,29 @@ struct ComplexBorrowData {
     uint256 m2InitialBalance;
 }
 
-contract ComplexBorrowPreExecFuncs is SetUp {
+contract ComplexBorrowPreExecFuncs is External {
     function prepareSigners() internal {
-        vm.prank(signer);
-        money.mint(2 ether);
-        vm.prank(signer);
-        money.approve(address(kairos), 2 ether);
+        getFlooz(signer, money, 2 ether);
+        getFlooz(signer2, money, 2 ether);
+        getFlooz(signer, money2, 2 ether);
 
-        vm.prank(signer2);
-        money.mint(2 ether);
-        vm.prank(signer2);
-        money.approve(address(kairos), 2 ether);
-
-        vm.prank(signer);
-        money2.mint(2 ether);
-        vm.prank(signer);
-        money2.approve(address(kairos), 2 ether);
-
-        nft.approve(address(kairos), 1);
-        nft2.approve(address(kairos), 1);
+        getJpeg(BORROWER, nft);
+        getJpeg(BORROWER, nft2);
     }
 
     function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
-        bytes32 hashSign1Off1 = keccak256(abi.encode(d.signer1Offer1));
-        bytes32 hashSign1Off2 = keccak256(abi.encode(d.signer1Offer2));
-        bytes32 hashSign2Off = keccak256(abi.encode(d.signer2Offer));
-        Root memory rootSign1 = getRootOfTwoHashes(hashSign1Off1, hashSign1Off2);
-        Root memory rootSign2 = Root({root: hashSign2Off});
-        bytes32[] memory proofSign1Off1 = new bytes32[](1);
-        proofSign1Off1[0] = hashSign1Off2;
-        bytes32[] memory proofSign1Off2 = new bytes32[](1);
-        proofSign1Off2[0] = hashSign1Off1;
-        bytes32[] memory proofSign2Off;
         d.oargs1 = OfferArgs({
-            proof: proofSign1Off1,
-            root: rootSign1,
-            signature: getSignature(rootSign1),
+            signature: getSignature(d.signer1Offer1),
             amount: 1 ether / 2, // 25%
             offer: d.signer1Offer1
         });
         d.oargs2 = OfferArgs({
-            proof: proofSign2Off,
-            root: rootSign2,
-            signature: getSignature2(rootSign2),
+            signature: getSignature2(d.signer2Offer),
             amount: 3 ether / 4, // 75%
             offer: d.signer2Offer
         });
         d.oargs3 = OfferArgs({
-            proof: proofSign1Off2,
-            root: rootSign1,
-            signature: getSignature(rootSign1),
+            signature: getSignature(d.signer1Offer2),
             amount: 1 ether, // 50%
             offer: d.signer1Offer2
         });
@@ -81,28 +54,25 @@ contract ComplexBorrowPreExecFuncs is SetUp {
             loanToValue: 2 ether,
             duration: 2 weeks,
             expirationDate: block.timestamp + 1,
-            collatSpecType: CollatSpecType.Single,
             tranche: 0,
-            collatSpecs: abi.encode(NFToken({implem: nft, id: 1}))
+            collateral: NFToken({implem: nft, id: 1})
         });
         d.signer1Offer2 = Offer({
             assetToLend: money2,
             loanToValue: 2 ether,
             duration: 4 weeks,
             expirationDate: block.timestamp + 1 days,
-            collatSpecType: CollatSpecType.Single,
             tranche: 0,
-            collatSpecs: abi.encode(NFToken({implem: nft2, id: 1}))
+            collateral: NFToken({implem: nft2, id: 1})
         });
 
         d.signer2Offer = Offer({
             assetToLend: money,
             loanToValue: 1 ether,
             duration: 1 weeks,
-            expirationDate: block.timestamp + 5 hours,
-            collatSpecType: CollatSpecType.Floor,
+            expirationDate: block.timestamp + 1 hours,
             tranche: 0,
-            collatSpecs: abi.encode(FloorSpec({implem: nft}))
+            collateral: NFToken({implem: nft, id: 1})
         });
 
         return d;
