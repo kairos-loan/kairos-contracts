@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 import "diamond/Diamond.sol";
 
 import "../ContractsCreator.sol";
-import "contracts/interface/IKairos.sol";
+import "kmain-contracts/interface/IKairos.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, ContractsCreator {

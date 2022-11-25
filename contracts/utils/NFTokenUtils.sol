@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "contracts/DataStructure/Global.sol";
+import "kmain-contracts/DataStructure/Global.sol";
 
 /// @notice Manipulates NFTs
 library NFTokenUtils {

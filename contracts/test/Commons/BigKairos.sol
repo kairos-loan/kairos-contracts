@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "contracts/AuctionFacet.sol";
-import "contracts/BorrowFacet.sol";
-import "contracts/ClaimFacet.sol";
-import "contracts/ProtocolFacet.sol";
-import "contracts/RepayFacet.sol";
-import "contracts/SupplyPositionFacet.sol";
+import "kmain-contracts/AuctionFacet.sol";
+import "kmain-contracts/BorrowFacet.sol";
+import "kmain-contracts/ClaimFacet.sol";
+import "kmain-contracts/ProtocolFacet.sol";
+import "kmain-contracts/RepayFacet.sol";
+import "kmain-contracts/SupplyPositionFacet.sol";
 
 /// @notice immutable version of kairos including all facets for usage in internal tests
 /* solhint-disable-next-line no-empty-blocks */

@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "diamond/interfaces/IERC165.sol";
 
-import "contracts/interface/IERC721.sol";
+import "kmain-contracts/interface/IERC721.sol";
 
 interface IERC721Metadata {
     /**

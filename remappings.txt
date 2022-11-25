@@ -3,3 +3,4 @@ forge-std/=node_modules/forge-std/src/
 ds-test/=node_modules/ds-test/src/
 diamond/=node_modules/contracts-starter/contracts/
 generated/=generated/
+kmain-contracts/=contracts
