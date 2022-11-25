@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "kmain-contracts/DataStructure/Global.sol";
+import "../../DataStructure/Global.sol";
 import "forge-std/Test.sol";
 
 contract Loggers is Test {

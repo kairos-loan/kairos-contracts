@@ -2,8 +2,8 @@
 pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
-import {External} from "kmain-contracts/test/Commons/External.sol";
-import "kmain-contracts/DataStructure/Global.sol";
+import {External} from "../../Commons/External.sol";
+import "../../../DataStructure/Global.sol";
 
 struct ComplexBorrowData {
     BorrowArgs bargs1;

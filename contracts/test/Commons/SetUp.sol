@@ -3,12 +3,12 @@ pragma solidity 0.8.17;
 
 import "./External.sol";
 import "./TestCommons.sol";
-import "kmain-contracts/interface/IDCHelperFacet.sol";
+import "../../interface/IDCHelperFacet.sol";
 import "./DCHelperFacet.sol";
 import "./DCTarget.sol";
 import "diamond/Diamond.sol";
-import "kmain-contracts/ContractsCreator.sol";
-import "kmain-contracts/interface/IKairos.sol";
+import "../../ContractsCreator.sol";
+import "../../interface/IKairos.sol";
 
 contract SetUp is TestCommons, ContractsCreator {
     IKairos internal kairos;

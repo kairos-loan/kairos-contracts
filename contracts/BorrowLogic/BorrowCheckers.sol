@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import "../DataStructure/Global.sol";
 import "../Signature.sol";
-import "kmain-contracts/utils/NFTokenUtils.sol";
+import "../utils/NFTokenUtils.sol";
 
 /// @notice handles checks to verify validity of a loan request
 abstract contract BorrowCheckers is Signature {
