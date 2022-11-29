@@ -37,12 +37,12 @@ contract TestAuction is External {
             positionIds[i]=i+1;
             args[i] = BuyArgs({loanId: i+1, to: signer2, positionIds: positionIds});
             Loan memory loan = getLoan();
-            loan.supplyPositionIndex = i;
+            loan.supplyPositionIndex = i+1;
             loan.startDate = block.timestamp - 1 weeks;
             loan.endDate = block.timestamp - 2 days; // price should be the same as lent amount
-            store(loan, i);
+            store(loan, i+1);
             Provision memory provision = getProvision();
-            provision.loanId = i;
+            provision.loanId = i+1;
             mintPosition(signer, provision);
             nft.mintOneTo(address(kairos));
         }
@@ -63,6 +63,8 @@ contract TestAuction is External {
         loan.endDate = block.timestamp - 2 days;
         loan.payment.paid = 1 ether;
         store(loan, 1);
+        Provision memory provision = getProvision();
+        provision.loanId = 1;
         mintPosition(signer, getProvision());
         nft.mintOneTo(address(kairos));
         vm.startPrank(signer);

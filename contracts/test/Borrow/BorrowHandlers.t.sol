@@ -24,11 +24,34 @@ contract TestBorrowHandlers is Internal {
         assertEq(supplyPositionStorage().totalSupply, 1);
     }
 
-    // function testRequestAmountCheckAndAssetTransfer() public {
-    //     CollateralState memory collatState;
-    //     collatState.assetLent = money;
-    //     // OfferArgs memory args = getOfferArgs(getOffer());
-    //     // args.amount = 1 ether;
-    //     // todo #28 finish TestBorrowHandlers
-    // }
+    function testRequestedAmountTooHigh() public{
+        CollateralState memory collatState = getCollateralState();
+        OfferArgs memory offerArgs = getOfferArg();
+
+        vm.startPrank(signer);
+        offerArgs.amount = 2;
+
+        collatState.matched = Ray.wrap(1);
+        /*
+        vm.expectRevert(
+            abi.encodeWithSelector(RequestedAmountTooHigh.selector,
+            offerArgs.amount,
+            offerArgs.offer.loanToValue
+            ));
+            */
+        this.useOfferExternal(offerArgs, collatState);
+    }
+
+    //todo #28 finish TestBorrowHandlers
+/*
+    function testRequestAmountCheckAndAssetTransfer() public {
+        CollateralState memory collatState;
+        collatState.assetLent = money;
+        OfferArgs memory args = getOfferArgs(getOffer());
+        args.amount = 1 ether;
+     }
+*/
+
+
+
 }
