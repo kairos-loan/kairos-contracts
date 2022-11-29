@@ -2,8 +2,7 @@
 pragma solidity 0.8.17;
 
 import "./Commons/External.sol";
-import "./Commons/Internal.sol";
-import "forge-std/Test.sol";
+
 
 contract TestAuction is External {
     // test simplest case of auction
@@ -99,15 +98,4 @@ contract TestAuction is External {
         vm.expectRevert(abi.encodeWithSelector(SupplyPositionDoesntBelongToTheLoan.selector, args[0].positionIds[0], args[0].loanId));
         kairos.buy(args);
     }
-}
-
-contract TestAuctionInternal is Internal{
-
-
-
-    //Test SupplyPositionDoesntBelongToTheLoan
-
-
-
-
 }
