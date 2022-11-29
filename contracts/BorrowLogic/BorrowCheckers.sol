@@ -28,7 +28,6 @@ abstract contract BorrowCheckers is Signature {
         if (args.amount > args.offer.loanToValue) {
             revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);
         }
-
         return signer;
     }
 
