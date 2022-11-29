@@ -5,6 +5,7 @@ import "./BorrowCheckers.sol";
 import "../utils/RayMath.sol";
 import "../SupplyPositionFacet.sol";
 import "../SupplyPositionLogic/SafeMint.sol";
+import "forge-std/Test.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
@@ -32,7 +33,8 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         collatState.matched = collatState.matched.add(shareMatched);
 
         if (collatState.matched.gt(ONE)) {
-            revert RequestedAmountTooHigh(
+
+        revert RequestedAmountTooHigh(
                 args.amount,
                 args.offer.loanToValue - args.offer.loanToValue.mul(collatState.matched)
             );

@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
 import "./SupplyPositionLogic/NFTUtils.sol";
+import "forge-std/Test.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is NFTUtils {
@@ -37,9 +38,11 @@ contract AuctionFacet is NFTUtils {
         if (args.to == loan.borrower) {
             loan.payment.borrowerBought = true;
             shareToPay = loan.shareLent;
+
         }
 
-        uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
+
+    uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
         uint256 toPay;
         Provision storage provision;
 
@@ -60,7 +63,8 @@ contract AuctionFacet is NFTUtils {
             _burn(args.positionIds[i]);
         }
 
-        toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
+
+    toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
         loan.assetLent.transferFrom(msg.sender, address(this), toPay);
         loan.payment.paid = toPay;
         loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);

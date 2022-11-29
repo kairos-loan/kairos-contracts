@@ -3,6 +3,7 @@ pragma solidity 0.8.17;
 
 import "./Commons/External.sol";
 import "./Commons/Internal.sol";
+import "forge-std/Test.sol";
 
 contract TestAuction is External {
     // test simplest case of auction
@@ -26,31 +27,24 @@ contract TestAuction is External {
     // todo #13 test multiple auctions
 
     function testMultipleAuctions() public {
-        auctionN(2);
+        auctionN(10);
     }
 
-    function auctionN(uint8 nbOfAuctions) internal {
+    function auctionN(uint256 nbOfAuctions) internal {
         BuyArgs[] memory args = new BuyArgs[](nbOfAuctions);
-        uint256[] memory positionIds = new uint256[](nbOfAuctions);
-
+        uint256[] memory positionIds = new uint256[](0);
+        getFlooz(signer, money, nbOfAuctions * 4 ether);
         for(uint8 i; i< nbOfAuctions; i++){
-            positionIds[i]=i+1;
-            args[i] = BuyArgs({loanId: i+1, to: signer2, positionIds: positionIds});
+            uint256 tokenId = nft.mintOneTo(address (kairos));
+            args[i] = BuyArgs({loanId: i + 1, to: signer, positionIds: positionIds});
             Loan memory loan = getLoan();
-            loan.supplyPositionIndex = i+1;
             loan.startDate = block.timestamp - 1 weeks;
             loan.endDate = block.timestamp - 2 days; // price should be the same as lent amount
-            store(loan, i+1);
-            Provision memory provision = getProvision();
-            provision.loanId = i+1;
-            mintPosition(signer, provision);
-            nft.mintOneTo(address(kairos));
+            loan.collateral = NFToken({implem: nft, id: tokenId}) ;
+            store(loan, i + 1);
         }
         vm.prank(signer);
         kairos.buy(args);
-        assertEq(nft.ownerOf(1), signer2);
-        vm.expectRevert(ERC721InvalidTokenId.selector);
-        assertEq(kairos.ownerOf(1), address(0));
     }
 
     function testLoanAlreadyRepaid() public {

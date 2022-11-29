@@ -4,6 +4,8 @@ pragma solidity 0.8.17;
 import "../Commons/Internal.sol";
 
 contract TestBorrowHandlers is Internal {
+    using RayMath for uint256;
+    using RayMath for Ray;
     // useOffer tests
     function testConsistentAssetRequests() public {
         CollateralState memory collatState = getCollateralState();
@@ -26,20 +28,21 @@ contract TestBorrowHandlers is Internal {
 
     function testRequestedAmountTooHigh() public{
         CollateralState memory collatState = getCollateralState();
-        OfferArgs memory offerArgs = getOfferArg();
+        Offer memory offer = getOffer();
+        OfferArgs memory offArgs = getOfferArg(offer);
 
-        vm.startPrank(signer);
-        offerArgs.amount = 2;
+        offArgs.amount = 11 ether;
 
-        collatState.matched = Ray.wrap(1);
-        /*
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offArgs.amount),
+            abi.encode(true)
+        );
         vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountTooHigh.selector,
-            offerArgs.amount,
-            offerArgs.offer.loanToValue
-            ));
-            */
-        this.useOfferExternal(offerArgs, collatState);
+            abi.encodeWithSelector(RequestedAmountTooHigh.selector, offArgs.amount, offer.loanToValue)
+        );
+
+        this.useOfferExternal(offArgs, collatState);
     }
 
     //todo #28 finish TestBorrowHandlers
