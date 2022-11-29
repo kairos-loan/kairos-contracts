@@ -60,7 +60,7 @@ struct CollateralState {
 
 /// @notice Loan offer
 /// @member assetToLend address of the ERC-20 to lend
-/// @member loanToValue amount to lend per collateral unit
+/// @member loanToValue amount to lend per collateral
 /// @member duration in seconds, time before mandatory repayment after loan start
 /// @member expirationDate date after which the offer can't be used
 /// @member tranche identifies the interest rate tranche
