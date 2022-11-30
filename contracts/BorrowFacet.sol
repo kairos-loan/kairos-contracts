@@ -34,8 +34,11 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     ) external returns (bytes4) {
         OfferArgs[] memory args = abi.decode(data, (OfferArgs[]));
         Loan[] memory loans = new Loan[](1);
+
         loans[0] = useCollateral(args, from, NFToken({implem: IERC721(msg.sender), id: tokenId}));
+
         emit Borrow(loans);
+
         return this.onERC721Received.selector;
     }
 

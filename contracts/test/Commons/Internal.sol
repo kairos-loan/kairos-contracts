@@ -37,7 +37,7 @@ contract Internal is TestCommons, BigKairos {
         return checkOfferArgs(args);
     }
 
-    function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external view {
+    function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {
         checkCollateral(offer, providedNft);
     }
 
