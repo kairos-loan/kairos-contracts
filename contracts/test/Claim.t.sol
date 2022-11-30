@@ -75,4 +75,31 @@ contract TestClaim is External {
         assertEq(money.balanceOf(address(kairos)), 0);
         assertEq(money.balanceOf(address(BORROWER)), (nbOfClaims * 1 ether) / 2);
     }
+
+    function testNotBorrowerOfTheLoan() public {
+        uint256[] memory loanIds = new uint256[](1);
+
+        Loan memory loan = getLoan();
+        store(loan, 1);
+        loanIds[0]=1;
+        vm.prank(signer2);
+        vm.expectRevert(abi.encodeWithSelector(NotBorrowerOfTheLoan.selector, loanIds[0]));
+        kairos.claimAsBorrower(loanIds);
+
+    }
+
+    function testBorrowerAlreadyClaimed() public {
+        uint256[] memory loanIds = new uint256[](1);
+
+        Loan memory loan = getLoan();
+        loan.payment.borrowerClaimed = true;
+        loan.payment.borrowerBought = true;
+        store(loan, 1);
+        loanIds[0]=1;
+        vm.prank(BORROWER);
+        vm.expectRevert(abi.encodeWithSelector(BorrowerAlreadyClaimed.selector, loanIds[0]));
+        kairos.claimAsBorrower(loanIds);
+
+    }
+
 }

@@ -16,7 +16,7 @@ contract TestBorrowCheckers is Internal {
         assertEq(signer, checkOfferArgs(args));
     }
 
-    function testExpirationDate() public {
+    function testOfferHasExpired() public {
         Offer memory offer1;
         Offer memory offer2;
         OfferArgs memory args1;
@@ -48,5 +48,12 @@ contract TestBorrowCheckers is Internal {
         args.signature = getSignature(offer);
         vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, 1 ether - 1));
         this.checkOfferArgsExternal(args);
+    }
+
+    function testBadCollateral() public {
+        Offer memory offer = getOffer();
+        NFToken memory nft = NFToken({implem: nft, id: 2});
+        vm.expectRevert(abi.encodeWithSelector(BadCollateral.selector, offer, nft));
+        this.checkCollateralExternal(offer, nft);
     }
 }
