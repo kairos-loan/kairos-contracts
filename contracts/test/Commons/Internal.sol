@@ -41,6 +41,10 @@ contract Internal is TestCommons, BigKairos {
         checkCollateral(offer, providedNft);
     }
 
+    function useCollateralExternal(OfferArgs[] memory args, address from, NFToken memory nft)external returns (Loan memory loan){
+        loan = useCollateral(args, from, nft);
+    }
+
     /// @dev use only in TestCommons
     function getOfferDigest(Offer memory offer) internal view override returns (bytes32) {
         return offerDigest(offer);

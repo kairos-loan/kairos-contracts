@@ -11,6 +11,7 @@ import {getSelector} from "../../utils/FuncSelectors.h.sol";
 abstract contract TestCommons is Loggers {
     error AssertionFailedLoanDontMatch();
     error AssertionFailedRayDontMatch(Ray expected, Ray actual);
+    error AssertionFailedCollatStateDontMatch();
 
     uint256[] internal oneInArray;
     uint256 internal constant KEY = 0xA11CE;
@@ -102,7 +103,7 @@ abstract contract TestCommons is Loggers {
                 assetLent: getOffer().assetToLend,
                 lent: 1 ether,
                 shareLent: ONE,
-                startDate: block.timestamp - 2 weeks,
+                startDate: block.timestamp,
                 endDate: block.timestamp + 2 weeks,
                 interestPerSecond: getTranche(0),
                 borrower: BORROWER,
@@ -118,6 +119,14 @@ abstract contract TestCommons is Loggers {
             logLoan(expected, "expected");
             logLoan(actual, "actual  ");
             revert AssertionFailedLoanDontMatch();
+        }
+    }
+
+    function assertEq(CollateralState memory actual, CollateralState memory expected) internal view {
+        if (keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
+            logCollateralState(expected, "expected");
+            logCollateralState(actual, "actual  ");
+            revert AssertionFailedCollatStateDontMatch();
         }
     }
 
