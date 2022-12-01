@@ -37,7 +37,7 @@ contract Loggers is Test {
         console.log("assetToLend    ", address(offer.assetToLend));
         console.log("loanToValue    ", offer.loanToValue);
         console.log("duration       ", offer.duration);
-        console.log("duration       ", offer.duration);
+        console.log("expirationDate ", offer.expirationDate);
         console.log("tranche        ", offer.tranche);
         console.log("collat implem  ", address(offer.collateral.implem));
         console.log("collat id      ", offer.collateral.id);
