@@ -3,8 +3,6 @@ pragma solidity 0.8.17;
 
 import "./Errors.sol";
 
-bytes32 constant OFFER_TYPEHASH = keccak256("Offer(TODO)");
-
 bytes32 constant PROTOCOL_SP = keccak256("eth.kairos.protocol");
 bytes32 constant SUPPLY_SP = keccak256("eth.kairos.supply-position");
 
