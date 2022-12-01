@@ -3,10 +3,6 @@ pragma solidity 0.8.17;
 
 import "./Errors.sol";
 
-bytes32 constant OFFER_TYPEHASH = keccak256(
-    "Offer(address assetToLend,uint256 loanToValue,uint256 duration,uint256 expirationDate,uint256 tranche,NFToken collateral)NFToken(address implem,uint256 id)"
-); // generated with ethers js
-
 bytes32 constant PROTOCOL_SP = keccak256("eth.kairos.protocol");
 bytes32 constant SUPPLY_SP = keccak256("eth.kairos.supply-position");
 

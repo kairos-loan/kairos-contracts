@@ -1,20 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../DataStructure/Global.sol";
 import "../Signature.sol";
 import "../utils/NFTokenUtils.sol";
 
 /// @notice handles checks to verify validity of a loan request
 abstract contract BorrowCheckers is Signature {
     using NFTokenUtils for NFToken;
-
-    /// @notice computes EIP-712 compliant digest of a loan offer
-    /// @param _offer the loan offer signed/to sign by a supplier
-    /// @return digest the digest
-    function offerDigest(Offer memory _offer) public view returns (bytes32) {
-        return _hashTypedDataV4(keccak256(abi.encode(OFFER_TYPEHASH, _offer)));
-    }
 
     /// @notice checks arguments validity for usage of one Offer
     /// @param args arguments for the Offer

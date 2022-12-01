@@ -10,7 +10,7 @@ import "./BorrowLogic/BorrowHandlers.sol";
 contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @notice one or multiple loans have been initiated
     /// @param loans loans initiated
-    event Borrow(Loan[] loans); // todo : use loan ids instead
+    event Borrow(Loan[] loans); // todo #33 use loan ids instead
 
     // todo #19 add reentrency check
     // todo #20 process supplier coins

@@ -42,7 +42,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         }
 
         collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
-        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
+        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId})); // todo #35 verify provision has expected values
         return (collatState);
     }
 
@@ -56,6 +56,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         address from,
         NFToken memory nft
     ) internal returns (Loan memory loan) {
+        // todo #36 test returned loan
         Protocol storage proto = protocolStorage();
         uint256 lent;
         uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
@@ -85,6 +86,6 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             payment: notPaid,
             nbOfPositions: uint8(args.length)
         });
-        proto.loan[collatState.loanId] = loan;
+        proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
     }
 }
