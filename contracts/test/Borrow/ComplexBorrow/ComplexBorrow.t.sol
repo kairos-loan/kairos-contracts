@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../../../utils/RayMath.sol";
+import "../../../src/utils/RayMath.sol";
 import "./PreExecFuncs.sol";
 
 contract TestComplexBorrow is ComplexBorrowPreExecFuncs {

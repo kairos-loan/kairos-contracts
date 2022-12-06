@@ -17,4 +17,11 @@ contract SafeMint is NFTUtils {
         sp.provision[tokenId] = provision;
         _safeMint(to, tokenId);
     }
+
+    /* solhint-disable no-empty-blocks */
+    function emitTransfer(address from, address to, uint256 tokenId) internal virtual override {}
+
+    function emitApproval(address owner, address approved, uint256 tokenId) internal virtual override {}
+
+    function emitApprovalForAll(address owner, address operator, bool approved) internal virtual override {}
 }

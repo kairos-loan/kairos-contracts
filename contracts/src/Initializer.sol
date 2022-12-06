@@ -3,11 +3,11 @@ pragma solidity 0.8.17;
 
 // Derived from Nick Mudge's DiamondInit from the reference diamond implementation
 
-import {LibDiamond} from "diamond/libraries/LibDiamond.sol";
-import {IDiamondLoupe} from "diamond/interfaces/IDiamondLoupe.sol";
-import {IDiamondCut} from "diamond/interfaces/IDiamondCut.sol";
-import {IERC173} from "diamond/interfaces/IERC173.sol";
-import {IERC165} from "diamond/interfaces/IERC165.sol";
+import {LibDiamond} from "diamond/contracts/libraries/LibDiamond.sol";
+import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
+import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
+import {IERC173} from "diamond/contracts/interfaces/IERC173.sol";
+import {IERC165} from "diamond/contracts/interfaces/IERC165.sol";
 
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";

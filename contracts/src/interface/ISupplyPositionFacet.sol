@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../interface/IERC721.sol";
+// import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../DataStructure/Global.sol";
 
 interface ISupplyPositionFacet is IERC721 {

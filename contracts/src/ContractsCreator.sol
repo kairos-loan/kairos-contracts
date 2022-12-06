@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "diamond/facets/OwnershipFacet.sol";
-import "diamond/facets/DiamondCutFacet.sol";
-import "diamond/interfaces/IDiamondCut.sol";
-import "diamond/facets/DiamondLoupeFacet.sol";
+import "diamond/contracts/facets/OwnershipFacet.sol";
+import "diamond/contracts/facets/DiamondCutFacet.sol";
+import "diamond/contracts/interfaces/IDiamondCut.sol";
+import "diamond/contracts/facets/DiamondLoupeFacet.sol";
+
 import "./Initializer.sol";
 import "./BorrowFacet.sol";
 import "./ClaimFacet.sol";

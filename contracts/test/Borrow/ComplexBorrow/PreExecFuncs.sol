@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import "../Borrow.t.sol";
 import {External} from "../../Commons/External.sol";
-import "../../../DataStructure/Global.sol";
+import "../../../src/DataStructure/Global.sol";
 
 struct ComplexBorrowData {
     BorrowArgs bargs1;

@@ -3,10 +3,10 @@ pragma solidity 0.8.17;
 
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
-import "./SupplyPositionLogic/NFTUtils.sol";
+import "./SupplyPositionLogic/SafeMint.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
-contract AuctionFacet is NFTUtils {
+contract AuctionFacet is SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 

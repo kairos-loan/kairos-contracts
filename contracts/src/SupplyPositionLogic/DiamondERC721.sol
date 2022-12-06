@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import "../interface/IERC721.sol";
 import "../DataStructure/Global.sol";
 import "./NFTUtils.sol";
 
@@ -26,6 +26,18 @@ abstract contract DiamondERC721 is IERC721, NFTUtils {
     ///     it is included here for IERC721-compliance
     /* solhint-disable-next-line no-empty-blocks */
     function supportsInterface(bytes4 interfaceId) public view returns (bool) {}
+
+    function emitTransfer(address from, address to, uint256 tokenId) internal virtual override {
+        emit Transfer(from, to, tokenId);
+    }
+
+    function emitApproval(address owner, address approved, uint256 tokenId) internal virtual override {
+        emit Approval(owner, approved, tokenId);
+    }
+
+    function emitApprovalForAll(address owner, address operator, bool approved) internal virtual override {
+        emit ApprovalForAll(owner, operator, approved);
+    }
 
     function balanceOf(address owner) public view virtual returns (uint256) {
         SupplyPosition storage sp = supplyPositionStorage();

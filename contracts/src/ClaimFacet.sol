@@ -2,11 +2,11 @@
 pragma solidity 0.8.17;
 
 import "./DataStructure/Global.sol";
-import "./SupplyPositionLogic/NFTUtils.sol";
+import "./SupplyPositionLogic/SafeMint.sol";
 import "./utils/RayMath.sol";
 
 /// @notice claims supplier and borrower rights on loans or supply positions
-contract ClaimFacet is NFTUtils {
+contract ClaimFacet is SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
@@ -82,7 +82,10 @@ contract ClaimFacet is NFTUtils {
     /// @param loan - from which the collateral were liquidated
     /// @param provision liquidity provisioned by this loan by the supplier
     /// @return sent amount sent
-    function sendShareOfSaleAsSupplier(Loan storage loan, Provision storage provision) private returns (uint256 sent) {
+    function sendShareOfSaleAsSupplier(
+        Loan storage loan,
+        Provision storage provision
+    ) private returns (uint256 sent) {
         sent = loan.payment.borrowerBought
             ? loan.payment.paid.mul(provision.share.div(loan.shareLent))
             : loan.payment.paid.mul(provision.share);

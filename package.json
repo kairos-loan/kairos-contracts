@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.6.0",
-    "contracts-starter": "https://github.com/mudgen/diamond-1-hardhat",
+    "diamond": "https://github.com/mudgen/diamond-1-hardhat",
     "ds-test": "https://github.com/dapphub/ds-test",
     "ethers": "^5.6.9",
     "forge-std": "https://github.com/foundry-rs/forge-std",
@@ -18,6 +18,7 @@
     "solmate": "^6.5.0"
   },
   "devDependencies": {
+    "hardhat": "^2.12.3",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-rc.1"
   }
