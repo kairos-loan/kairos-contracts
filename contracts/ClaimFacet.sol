@@ -4,6 +4,8 @@ pragma solidity 0.8.17;
 import "./DataStructure/Global.sol";
 import "./SupplyPositionLogic/NFTUtils.sol";
 import "./utils/RayMath.sol";
+import "forge-std/Test.sol";
+
 
 /// @notice claims supplier and borrower rights on loans or supply positions
 contract ClaimFacet is NFTUtils {
@@ -31,7 +33,9 @@ contract ClaimFacet is NFTUtils {
             if (!_isApprovedOrOwner(msg.sender, positionIds[i])) {
                 revert ERC721CallerIsNotOwnerNorApproved();
             }
-            provision = sp.provision[positionIds[i]];
+            console.log("ok");
+
+        provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
             sentTemp = loan.payment.liquidated

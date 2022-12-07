@@ -99,4 +99,21 @@ contract TestClaim is External {
         assertEq(money.balanceOf(address(kairos)), 0);
         assertEq(money.balanceOf(address(BORROWER)), (nbOfClaims * 1 ether) / 2);
     }
+
+    function testSendInterests() public {
+        Payment memory payment;
+
+        Loan memory loan = getLoan();
+        Provision memory provision = getProvision();
+        NFToken memory nft = getNft();
+        store(loan, 1);
+        store(provision, 0);
+        uint256[] memory positionIds = new uint256[](1);
+        positionIds[0]=0;
+        vm.prank(BORROWER);
+        kairos.claim(positionIds);
+
+    }
+
+
 }

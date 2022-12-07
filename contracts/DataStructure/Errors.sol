@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 import "./Storage.sol";
 import "./ERC721Errors.sol";
 
-error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
 error BadCollateral(Offer offer, NFToken providedNft);
 error OfferHasExpired(Offer offer, uint256 expirationDate);
 error RequestedAmountTooHigh(uint256 requested, uint256 offered);

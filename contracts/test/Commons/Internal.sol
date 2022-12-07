@@ -54,4 +54,18 @@ contract Internal is TestCommons, BigKairos {
     function getTranche(uint256 trancheId) internal view override returns (Ray rate) {
         return protocolStorage().tranche[trancheId];
     }
+/*
+    function sendInterestExternal()external   {
+        Protocol storage proto = protocolStorage();
+        SupplyPosition storage sp = supplyPositionStorage();
+
+    sendInterests(proto.loan[0], sp.provision[0]);
+    }
+
+    function sendShareOfSaleAsSupplier() external  {
+        Protocol storage proto = protocolStorage();
+        SupplyPosition storage sp = supplyPositionStorage();
+        sendShareOfSaleAsSupplier(proto.loan[0], sp.provision[0]);
+    }
+    */
 }

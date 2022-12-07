@@ -133,6 +133,37 @@ contract TestBorrowHandlers is Internal {
 
     }
 
+    //To diferency loans
+    function testLoanAtExpectedId() public {
+        Offer[] memory offerUsed = new Offer[](4);
+        NFToken[] memory nftUsed = new NFToken[](4);
+
+        for(uint256 i=1; i<4; i++){
+            OfferArgs[] memory offerArgs = new OfferArgs[](1);
+
+            Payment memory payment;
+            Offer memory offer = getOffer();
+            offer.collateral.id = i;
+            offerArgs[0]= getOfferArg(offer);
+
+            vm.mockCall(
+                address(money),
+                abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offerArgs[0].amount),
+                abi.encode(true)
+            );
+            NFToken memory nft = NFToken({implem: nft, id: i});
+
+            Loan memory loan = this.useCollateralExternal(offerArgs, BORROWER, nft);
+            offerUsed[i]= offer;
+            nftUsed[i]=nft;
+
+        }
+        Protocol storage proto = protocolStorage();
+
+        for(uint256 i=1; i<4; i++){
+            assertEqU(i, proto.loan[i].collateral.id);
+        }
+    }
 
 
     //todo #28 finish TestBorrowHandlers

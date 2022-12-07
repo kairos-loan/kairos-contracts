@@ -12,6 +12,7 @@ abstract contract TestCommons is Loggers {
     error AssertionFailedLoanDontMatch();
     error AssertionFailedRayDontMatch(Ray expected, Ray actual);
     error AssertionFailedCollatStateDontMatch();
+    error AssertionFailedUintDontMatch(uint256 expected,uint256 actual);
 
     uint256[] internal oneInArray;
     uint256 internal constant KEY = 0xA11CE;
@@ -122,6 +123,7 @@ abstract contract TestCommons is Loggers {
         }
     }
 
+
     function assertEq(CollateralState memory actual, CollateralState memory expected) internal view {
         if (keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
             logCollateralState(expected, "expected");
@@ -145,6 +147,11 @@ abstract contract TestCommons is Loggers {
     function assertEq(Ray actual, Ray expected) internal pure {
         if (Ray.unwrap(actual) != Ray.unwrap(expected)) {
             revert AssertionFailedRayDontMatch(expected, actual);
+        }
+    }
+    function assertEqU(uint256 actual, uint256 expected) internal pure {
+        if (actual != expected) {
+            revert AssertionFailedUintDontMatch(expected, actual);
         }
     }
 
