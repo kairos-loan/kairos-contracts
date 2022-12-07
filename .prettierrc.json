@@ -9,5 +9,9 @@
   ],
   "plugins": [
     "prettier-plugin-solidity"
-  ]
+  ],
+  "semi": false,
+  "trailingComma": "none",
+  "printWidth": 80,
+  "tabWidth": 2
 }

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "strict": true,
+    "declaration": true,
+    "outDir": "./out",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "es6"
+  },
+  "include": ["script"],
+  "files": ["./hardhat.config.ts"]
+}
