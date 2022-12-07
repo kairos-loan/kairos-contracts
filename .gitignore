@@ -12,4 +12,7 @@ commands.txt
 generated/deployment.js
 key
 key.pub
-contracts/script
+Secrets.sol
+out-sepolia-5-12-22-18-34
+foundry-cache
+deployments

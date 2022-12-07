@@ -1,13 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "../DataStructure/Global.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
+import "../DataStructure/Global.sol";
+
 /// @notice internal logic for DiamondERC721 adapted fo usage with diamond storage
-contract NFTUtils is IERC721Events {
+abstract contract NFTUtils {
     using Address for address;
+
+    function emitTransfer(address from, address to, uint256 tokenId) internal virtual;
+
+    function emitApproval(address owner, address approved, uint256 tokenId) internal virtual;
+
+    function emitApprovalForAll(address owner, address operator, bool approved) internal virtual;
 
     function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal {
         _transfer(from, to, tokenId);
@@ -40,7 +47,7 @@ contract NFTUtils is IERC721Events {
         sp.balance[to] += 1;
         sp.owner[tokenId] = to;
 
-        emit Transfer(address(0), to, tokenId);
+        emitTransfer(address(0), to, tokenId);
     }
 
     function _burn(uint256 tokenId) internal {
@@ -54,7 +61,7 @@ contract NFTUtils is IERC721Events {
         sp.balance[owner] -= 1;
         delete sp.owner[tokenId];
 
-        emit Transfer(owner, address(0), tokenId);
+        emitTransfer(owner, address(0), tokenId);
     }
 
     function _transfer(address from, address to, uint256 tokenId) internal {
@@ -74,14 +81,14 @@ contract NFTUtils is IERC721Events {
         sp.balance[to] += 1;
         sp.owner[tokenId] = to;
 
-        emit Transfer(from, to, tokenId);
+        emitTransfer(from, to, tokenId);
     }
 
     function _approve(address to, uint256 tokenId) internal {
         SupplyPosition storage sp = supplyPositionStorage();
 
         sp.tokenApproval[tokenId] = to;
-        emit Approval(_ownerOf(tokenId), to, tokenId);
+        emitApproval(_ownerOf(tokenId), to, tokenId);
     }
 
     function _setApprovalForAll(address owner, address operator, bool approved) internal {
@@ -91,7 +98,7 @@ contract NFTUtils is IERC721Events {
             revert ERC721ApproveToCaller();
         }
         sp.operatorApproval[owner][operator] = approved;
-        emit ApprovalForAll(owner, operator, approved);
+        emitApprovalForAll(owner, operator, approved);
     }
 
     function _checkOnERC721Received(
@@ -101,7 +108,9 @@ contract NFTUtils is IERC721Events {
         bytes memory data
     ) internal returns (bool) {
         if (to.isContract()) {
-            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (bytes4 retval) {
+            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (
+                bytes4 retval
+            ) {
                 return retval == IERC721Receiver.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {

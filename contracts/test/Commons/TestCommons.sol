@@ -6,7 +6,7 @@ import "forge-std/Test.sol";
 import "./Loggers.sol";
 import "./Money.sol";
 import "./NFT.sol";
-import {getSelector} from "../../utils/FuncSelectors.h.sol";
+import {getSelector} from "../../src/utils/FuncSelectors.h.sol";
 
 abstract contract TestCommons is Loggers {
     error AssertionFailedLoanDontMatch();

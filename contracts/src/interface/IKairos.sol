@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "diamond/interfaces/IDiamondLoupe.sol";
-import "diamond/interfaces/IDiamondCut.sol";
+import "diamond/contracts/interfaces/IDiamondLoupe.sol";
+import "diamond/contracts/interfaces/IDiamondCut.sol";
 
 import "./IAuctionFacet.sol";
 import "./IBorrowFacet.sol";
