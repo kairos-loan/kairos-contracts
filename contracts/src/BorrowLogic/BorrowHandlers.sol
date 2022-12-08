@@ -11,7 +11,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 
-    /// @notice one or multiple loans have been initiated
+    /// @notice one loan has been initiated
     /// @param loanId id of the loan
     /// @param borrower borrower of the loan
     event Borrow(uint256 loanId, address borrower);
