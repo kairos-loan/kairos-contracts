@@ -99,4 +99,11 @@ contract TestClaim is External {
         assertEq(money.balanceOf(address(kairos)), 0);
         assertEq(money.balanceOf(address(BORROWER)), (nbOfClaims * 1 ether) / 2);
     }
+
+    function testSendInterest() public {
+
+
+    }
+
+
 }

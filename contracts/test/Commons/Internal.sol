@@ -37,6 +37,10 @@ contract Internal is TestCommons, BigKairos {
         return checkOfferArgs(args);
     }
 
+    function useCollateralExternal(OfferArgs[] memory args, address from, NFToken memory nft)external returns (Loan memory loan){
+        loan = useCollateral(args, from, nft);
+    }
+
     function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {
         checkCollateral(offer, providedNft);
     }
