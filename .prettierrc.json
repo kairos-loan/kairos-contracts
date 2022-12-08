@@ -3,7 +3,8 @@
     {
       "files": "./contracts/**/*.sol",
       "options": {
-        "printWidth": 110
+        "printWidth": 110,
+        "tabWidth": 4
       }
     }
   ],
