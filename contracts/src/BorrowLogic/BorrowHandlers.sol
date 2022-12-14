@@ -11,6 +11,11 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 
+    /// @notice one loan has been initiated
+    /// @param loanId id of the loan
+    /// @param borrower borrower of the loan
+    event Borrow(uint256 loanId, address borrower);
+
     /// @notice handles usage of a loan offer to borrow from
     /// @param args arguments for the usage of this offer
     /// @param collatState tracked state of the matching of the collateral
@@ -87,5 +92,6 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             nbOfPositions: uint8(args.length)
         });
         proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
+        emit Borrow(collatState.loanId, from);
     }
 }

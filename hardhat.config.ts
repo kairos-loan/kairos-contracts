@@ -8,6 +8,7 @@ import * as tdly from "@tenderly/hardhat-tenderly"
 tdly.setup({ automaticVerifications: true })
 
 const sepoliaRpc: string = env.SEPOLIA_URL as string
+const goerliRpc: string = env.GOERLI_URL as string
 const pKey: string = env.TEST_PKEY as string
 
 const config: HardhatUserConfig = {
@@ -18,6 +19,10 @@ const config: HardhatUserConfig = {
   networks: {
     sepolia: {
       url: sepoliaRpc,
+      accounts: [pKey]
+    },
+    goerli: {
+      url: goerliRpc,
       accounts: [pKey]
     }
   },
