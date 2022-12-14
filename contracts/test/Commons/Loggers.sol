@@ -54,13 +54,11 @@ contract Loggers is Test {
 
     function logCollateralState(CollateralState memory collat, string memory name) internal view {
         console.log("~~~~~~~ start Collateral State ", name, " ~~~~~~~");
-        console.log("matched   ", Ray.unwrap(collat.matched));
-        console.log("matched   ", collat.minOfferDuration);
-        console.log("matched   ", collat.from);
-        console.log("matched   ", collat.nft.id);
-        console.log("matched   ", collat.loanId);
-        console.log("~~~~~~~ end Collateral ", name, "   ~~~~~~~");
+        console.log("matched          ", Ray.unwrap(collat.matched));
+        console.log("minOfferDuration ", collat.minOfferDuration);
+        console.log("from             ", collat.from);
+        console.log("nft.id           ", collat.nft.id);
+        console.log("loanId           ", collat.loanId);
+        console.log("~~~~~~~ end Collateral ", name, "         ~~~~~~~");
     }
-
-
 }

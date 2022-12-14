@@ -1,13 +1,13 @@
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.17;
 
 import "../Commons/Internal.sol";
-
 
 contract TestAuctionInternal is Internal {
     using RayMath for Ray;
     using RayMath for uint256;
-    //Test with fuzzing but high valued convert into HEX
 
+    //Test with fuzzing but high valued convert into HEX
 
     function testPrice() public {
         Protocol storage proto = protocolStorage();
@@ -29,5 +29,4 @@ contract TestAuctionInternal is Internal {
         res = price(fuzeLent, shareLent, timeElapsed);
         assertEq(res, 0);
     }
-
 }

@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-
 import "./Commons/External.sol";
 
-contract TestClaim is External{
+contract TestClaim is External {
     using RayMath for Ray;
 
     function testSimpleClaim() public {
@@ -45,6 +44,24 @@ contract TestClaim is External{
         vm.prank(BORROWER);
         vm.expectRevert(abi.encodeWithSelector(BorrowerAlreadyClaimed.selector, loanIds[0]));
         kairos.claimAsBorrower(loanIds);
+    }
+
+    function testClaimInterest() public {
+        uint256[] memory loanIds = new uint256[](1);
+        Loan memory loan = getLoan();
+        Provision memory provision = getProvision();
+
+        store(loan, 1);
+        store(provision, 1);
+        loanIds[0] = 1;
+
+        loan.payment.paid = 1 ether;
+        loan.shareLent = ONE.div(2);
+        loan.payment.liquidated = true;
+        mintPosition(signer, provision);
+
+        vm.prank(signer);
+        kairos.claim(loanIds);
     }
 
     function claimN(uint8 nbOfClaims) internal {
@@ -100,24 +117,4 @@ contract TestClaim is External{
         assertEq(money.balanceOf(address(kairos)), 0);
         assertEq(money.balanceOf(address(BORROWER)), (nbOfClaims * 1 ether) / 2);
     }
-
-    function testClaimInterest() public {
-        uint256[] memory loanIds = new uint256[](1);
-        Loan memory loan = getLoan();
-        Provision memory provision = getProvision();
-
-        store(loan, 1);
-        store(provision,1);
-        loanIds[0] = 1;
-
-        loan.payment.paid = 1 ether;
-        loan.shareLent = ONE.div(2);
-        loan.payment.liquidated = true;
-        mintPosition(signer, provision);
-
-        vm.prank(signer);
-        uint256 res = kairos.claim(loanIds);
-    }
 }
-
-

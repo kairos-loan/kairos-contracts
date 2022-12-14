@@ -14,7 +14,6 @@ contract TestBorrowHandlers is Internal {
         offer.assetToLend = money2;
         OfferArgs memory offArgs = getOfferArg(offer);
 
-
         vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, money, money2));
         this.useOfferExternal(offArgs, collatState);
 
@@ -41,7 +40,7 @@ contract TestBorrowHandlers is Internal {
         this.useOfferExternal(offArgs, collatState);
     }
 
-    function testUseOfferReturn() public{
+    function testUseOfferReturn() public {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
         OfferArgs memory offArgs = getOfferArg(offer);
@@ -59,9 +58,7 @@ contract TestBorrowHandlers is Internal {
 
         res.loanId = 3;
 
-        vm.expectRevert(
-            abi.encodeWithSelector( AssertionFailedCollatStateDontMatch.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(AssertionFailedCollatStateDontMatch.selector));
 
         assertEq(res, collatState);
     }
@@ -83,8 +80,8 @@ contract TestBorrowHandlers is Internal {
     function testMultipleUseCollateral() public {
         OfferArgs[] memory offerArgs = new OfferArgs[](10);
 
-        for(uint8 i; i <10; i++ ){
-            offerArgs[i]= getOfferArg(getOffer());
+        for (uint8 i; i < 10; i++) {
+            offerArgs[i] = getOfferArg(getOffer());
         }
 
         vm.mockCall(
@@ -96,25 +93,24 @@ contract TestBorrowHandlers is Internal {
     }
 
     function testUseCollateralReturn() public {
-
         OfferArgs[] memory offerArgs = new OfferArgs[](1);
 
         Payment memory payment;
 
-        offerArgs[0]= getOfferArg(getOffer());
+        offerArgs[0] = getOfferArg(getOffer());
 
         Loan memory defaultLoan = Loan({
-        assetLent: getOffer().assetToLend,
-        lent: 1 ether,
-        shareLent: ONE,
-        startDate: block.timestamp,
-        endDate: 2 weeks +1 seconds,
-        interestPerSecond:getTranche(0), // todo #27 adapt rate to the offers
-        borrower: BORROWER,
-        collateral: getOffer().collateral,
-        supplyPositionIndex: 1,
-        payment: payment,
-        nbOfPositions: 1
+            assetLent: getOffer().assetToLend,
+            lent: 1 ether,
+            shareLent: ONE,
+            startDate: block.timestamp,
+            endDate: 2 weeks + 1 seconds,
+            interestPerSecond: getTranche(0), // todo #27 adapt rate to the offers
+            borrower: BORROWER,
+            collateral: getOffer().collateral,
+            supplyPositionIndex: 1,
+            payment: payment,
+            nbOfPositions: 1
         });
 
         vm.mockCall(
@@ -124,11 +120,8 @@ contract TestBorrowHandlers is Internal {
         );
 
         Loan memory loan = this.useCollateralExternal(offerArgs, BORROWER, getNft());
-        vm.expectRevert(
-            abi.encodeWithSelector(AssertionFailedLoanDontMatch.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(AssertionFailedLoanDontMatch.selector));
         assertEq(loan, defaultLoan);
-
     }
 
     //To diferency loans
@@ -136,12 +129,12 @@ contract TestBorrowHandlers is Internal {
         Offer[] memory offerUsed = new Offer[](4);
         NFToken[] memory nftUsed = new NFToken[](4);
 
-        for(uint256 i=1; i<4; i++){
+        for (uint256 i = 1; i < 4; i++) {
             OfferArgs[] memory offerArgs = new OfferArgs[](1);
 
             Offer memory offer = getOffer();
             offer.collateral.id = i;
-            offerArgs[0]= getOfferArg(offer);
+            offerArgs[0] = getOfferArg(offer);
 
             vm.mockCall(
                 address(money),
@@ -151,13 +144,12 @@ contract TestBorrowHandlers is Internal {
             NFToken memory nft = NFToken({implem: nft, id: i});
 
             Loan memory loan = this.useCollateralExternal(offerArgs, BORROWER, nft);
-            offerUsed[i]= offer;
-            nftUsed[i]=nft;
-
+            offerUsed[i] = offer;
+            nftUsed[i] = nft;
         }
         Protocol storage proto = protocolStorage();
 
-        for(uint256 i=1; i<4; i++){
+        for (uint256 i = 1; i < 4; i++) {
             assertEq(i, proto.loan[i].collateral.id);
         }
     }

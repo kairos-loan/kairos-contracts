@@ -4,8 +4,6 @@ pragma solidity 0.8.17;
 import "./DataStructure/Global.sol";
 import "./SupplyPositionLogic/SafeMint.sol";
 import "./utils/RayMath.sol";
-import "forge-std/Test.sol";
-
 
 /// @notice claims supplier and borrower rights on loans or supply positions
 contract ClaimFacet is SafeMint {
@@ -39,8 +37,7 @@ contract ClaimFacet is SafeMint {
             sentTemp = loan.payment.liquidated
                 ? sendShareOfSaleAsSupplier(loan, provision)
                 : sendInterests(loan, provision);
-            console.log(sentTemp);
-        emit Claim(msg.sender, sentTemp, loanId);
+            emit Claim(msg.sender, sentTemp, loanId);
             sent += sentTemp;
             _burn(positionIds[i]);
         }
