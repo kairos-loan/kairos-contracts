@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./External.sol";
+
 import "./TestCommons.sol";
 import "../../src/interface/IDCHelperFacet.sol";
 import "./DCHelperFacet.sol";

@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import "./DataStructure/Global.sol";
 import "./utils/RayMath.sol";
 import "./SupplyPositionLogic/SafeMint.sol";
+import "forge-std/Test.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is SafeMint {
@@ -78,10 +79,12 @@ contract AuctionFacet is SafeMint {
 
         // todo : explore attack vectors based on small values messing with calculus
         uint256 loanToValue = lent.div(shareLent);
-        uint256 initialPrice = loanToValue.mul(proto.auctionPriceFactor);
+
+    uint256 initialPrice = loanToValue.mul(proto.auctionPriceFactor);
         Ray decreasingFactor = timeElapsed >= proto.auctionDuration
             ? ZERO
-            : timeElapsed.div(proto.auctionDuration);
+            : ONE.sub(timeElapsed.div(proto.auctionDuration));
+
         return initialPrice.mul(decreasingFactor);
     }
 }

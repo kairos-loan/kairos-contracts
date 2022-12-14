@@ -3,9 +3,10 @@ pragma solidity 0.8.17;
 
 import "./TestCommons.sol";
 import "./BigKairos.sol";
+import "./SetUp.sol";
 
 /// @dev inherit from this contract to perform tests from INSIDE kairos
-contract Internal is TestCommons, BigKairos {
+contract Internal is TestCommons, BigKairos{
     using RayMath for Ray;
 
     constructor() {
@@ -63,24 +64,9 @@ contract Internal is TestCommons, BigKairos {
         res = price(lent, shareLent, timeElapsed);
     }
 
-    /*
-
-    function storeInternal(Loan memory loan, uint256 loanId) internal {
-        IDCHelperFacet(address(kairos)).delegateCall(
-            address(dcTarget),
-            abi.encodeWithSelector(dcTarget.storeLoan.selector, loan, loanId)
-        );
+    function sentInterestsIn(Loan storage loan, Provision storage provision) internal returns (uint256 sent){
+        sent = sendInterests(loan, provision);
     }
-
-
-    function storeInternal(Provision memory provision, uint256 positionId) internal {
-        IDCHelperFacet(address(kairos)).delegateCall(
-            address(dcTarget),
-            abi.encodeWithSelector(dcTarget.storeProvision.selector, provision, positionId)
-        );
-    }
-    */
-
 
     /// @dev use only in TestCommons
     function getTranche(uint256 trancheId) internal view override returns (Ray rate) {

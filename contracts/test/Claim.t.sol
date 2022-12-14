@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+
 import "./Commons/External.sol";
-import "./Commons/Internal.sol";
 
 contract TestClaim is External{
     using RayMath for Ray;
@@ -104,37 +104,20 @@ contract TestClaim is External{
     function testClaimInterest() public {
         uint256[] memory loanIds = new uint256[](1);
         Loan memory loan = getLoan();
+        Provision memory provision = getProvision();
+
         store(loan, 1);
+        store(provision,1);
         loanIds[0] = 1;
 
-        Provision memory provision = getProvision();
-        provision.loanId = 1;
         loan.payment.paid = 1 ether;
         loan.shareLent = ONE.div(2);
         loan.payment.liquidated = true;
-
-    mintPosition(signer, provision);
+        mintPosition(signer, provision);
 
         vm.prank(signer);
-        kairos.claim(loanIds);
-
-        console.log(loan.payment.liquidated);
-        console.log(money.balanceOf(signer));
-
-
-    }
-
-
-
-
-}
-
-contract TestClaimInternal is Internal{
-    function testSendInterest() public {
-        Loan memory loan = getLoan();
-        Provision memory provision = getProvision();
-
-        //storeInternal(loan, 1);
-        //storeInternal(provision,1);
+        uint256 res = kairos.claim(loanIds);
     }
 }
+
+

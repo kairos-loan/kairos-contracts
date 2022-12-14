@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Commons/External.sol";
-import "./Commons/Internal.sol";
+import "../Commons/External.sol";
+
 
 contract TestAuction is External {
     // test simplest case of auction
@@ -23,9 +23,8 @@ contract TestAuction is External {
         vm.expectRevert(ERC721InvalidTokenId.selector);
         assertEq(kairos.ownerOf(1), address(0));
     }
+
     // todo #13 test multiple auctions
-
-
     function testMultipleAuctions() public {
         auctionN(10);
     }
@@ -103,26 +102,4 @@ contract TestAuction is External {
 }
 
 
-contract TestAuctionInternal is Internal {
-    using RayMath for Ray;
-    using RayMath for uint256;
-//Test with fuzzing but high valued convert into HEX
 
-
-    function testPrice() public {
-        Protocol storage proto = protocolStorage();
-
-        uint256 fuzeLent = 101832;
-        Ray shareLent = Ray.wrap(3);
-        uint256 timeElapsed = 1 weeks;
-
-        uint256 res = priceI(fuzeLent, shareLent, timeElapsed);
-
-        uint256 estimRes = (fuzeLent.div(shareLent)).mul(proto.auctionPriceFactor);
-
-        console.log(proto.auctionPriceFactor);
-        assertEq(res, estimRes);
-
-    }
-
-}

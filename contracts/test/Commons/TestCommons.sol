@@ -12,7 +12,7 @@ abstract contract TestCommons is Loggers {
     error AssertionFailedLoanDontMatch();
     error AssertionFailedRayDontMatch(Ray expected, Ray actual);
     error AssertionFailedUintDontMatch(uint256 expected,uint256 actual);
-    error  AssertionFailedCollatStateDontMatch();
+    error AssertionFailedCollatStateDontMatch();
 
 
     uint256[] internal oneInArray;
@@ -105,7 +105,7 @@ abstract contract TestCommons is Loggers {
                 assetLent: getOffer().assetToLend,
                 lent: 1 ether,
                 shareLent: ONE,
-                startDate: block.timestamp - 2 weeks,
+                startDate: block.timestamp -2 weeks,
                 endDate: block.timestamp + 2 weeks,
                 interestPerSecond: getTranche(0),
                 borrower: BORROWER,
@@ -149,16 +149,18 @@ abstract contract TestCommons is Loggers {
             revert AssertionFailedRayDontMatch(expected, actual);
         }
     }
-
+    function getProvision() internal pure returns (Provision memory) {
+        return Provision({amount: 1 ether, share: ONE, loanId: 1});
+    }
+/*
     function assertEqU(uint256 actual, uint256 expected) internal pure {
         if (actual != expected) {
             revert AssertionFailedUintDontMatch(expected, actual);
         }
     }
+  */
 
-    function getProvision() internal pure returns (Provision memory) {
-        return Provision({amount: 1 ether, share: ONE, loanId: 1});
-    }
+
 
 
 }

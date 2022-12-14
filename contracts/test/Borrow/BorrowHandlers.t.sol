@@ -14,6 +14,7 @@ contract TestBorrowHandlers is Internal {
         offer.assetToLend = money2;
         OfferArgs memory offArgs = getOfferArg(offer);
 
+
         vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, money, money2));
         this.useOfferExternal(offArgs, collatState);
 
@@ -157,7 +158,7 @@ contract TestBorrowHandlers is Internal {
         Protocol storage proto = protocolStorage();
 
         for(uint256 i=1; i<4; i++){
-            assertEqU(i, proto.loan[i].collateral.id);
+            assertEq(i, proto.loan[i].collateral.id);
         }
     }
 }
