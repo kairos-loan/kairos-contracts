@@ -45,10 +45,42 @@ contract Internal is TestCommons, BigKairos {
         checkCollateral(offer, providedNft);
     }
 
+
+    function sendInterestsExternal(Loan storage loan, Provision storage provision) internal returns(uint256 sent){
+        sent = sendInterests(loan, provision);
+    }
+    function sendShareOfSaleAsSupplierExternal(Loan storage loan, Provision storage provision) internal returns(uint256 sent){
+        sent = sendShareOfSaleAsSupplier(loan, provision);
+    }
+
     /// @dev use only in TestCommons
     function getOfferDigest(Offer memory offer) internal view override returns (bytes32) {
         return offerDigest(offer);
     }
+
+
+    function priceI(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns (uint256 res) {
+        res = price(lent, shareLent, timeElapsed);
+    }
+
+    /*
+
+    function storeInternal(Loan memory loan, uint256 loanId) internal {
+        IDCHelperFacet(address(kairos)).delegateCall(
+            address(dcTarget),
+            abi.encodeWithSelector(dcTarget.storeLoan.selector, loan, loanId)
+        );
+    }
+
+
+    function storeInternal(Provision memory provision, uint256 positionId) internal {
+        IDCHelperFacet(address(kairos)).delegateCall(
+            address(dcTarget),
+            abi.encodeWithSelector(dcTarget.storeProvision.selector, provision, positionId)
+        );
+    }
+    */
+
 
     /// @dev use only in TestCommons
     function getTranche(uint256 trancheId) internal view override returns (Ray rate) {

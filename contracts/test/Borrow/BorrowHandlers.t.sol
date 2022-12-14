@@ -54,11 +54,15 @@ contract TestBorrowHandlers is Internal {
         Ray shareMatched = offArgs.amount.div(offer.loanToValue);
         collatState.matched = collatState.matched.add(shareMatched);
 
-        //assertEq(res, collatState);
+        assertEq(res, collatState);
 
         res.loanId = 3;
 
-        //assertEq(res, collatState);
+        vm.expectRevert(
+            abi.encodeWithSelector( AssertionFailedCollatStateDontMatch.selector)
+        );
+
+        assertEq(res, collatState);
     }
 
     function testUseCollateral() public {

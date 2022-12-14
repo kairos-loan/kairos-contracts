@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 import "./Commons/External.sol";
+import "./Commons/Internal.sol";
 
 contract TestAuction is External {
     // test simplest case of auction
@@ -98,4 +99,30 @@ contract TestAuction is External {
         vm.expectRevert(abi.encodeWithSelector(SupplyPositionDoesntBelongToTheLoan.selector, args[0].positionIds[0], args[0].loanId));
         kairos.buy(args);
     }
+
+}
+
+
+contract TestAuctionInternal is Internal {
+    using RayMath for Ray;
+    using RayMath for uint256;
+//Test with fuzzing but high valued convert into HEX
+
+
+    function testPrice() public {
+        Protocol storage proto = protocolStorage();
+
+        uint256 fuzeLent = 101832;
+        Ray shareLent = Ray.wrap(3);
+        uint256 timeElapsed = 1 weeks;
+
+        uint256 res = priceI(fuzeLent, shareLent, timeElapsed);
+
+        uint256 estimRes = (fuzeLent.div(shareLent)).mul(proto.auctionPriceFactor);
+
+        console.log(proto.auctionPriceFactor);
+        assertEq(res, estimRes);
+
+    }
+
 }
