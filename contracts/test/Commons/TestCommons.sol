@@ -4,8 +4,8 @@ pragma solidity 0.8.17;
 import "forge-std/Test.sol";
 
 import "./Loggers.sol";
-import "./Money.sol";
-import "./NFT.sol";
+import "../../src/mock/Money.sol";
+import "../../src/mock/NFT.sol";
 import {getSelector} from "../../src/utils/FuncSelectors.h.sol";
 
 abstract contract TestCommons is Loggers {
