@@ -40,6 +40,20 @@ contract TestBorrowHandlers is Internal {
         this.useOfferExternal(offArgs, collatState);
     }
 
+    function testUseCollateralNominal() public returns (Loan memory loan) {
+        Offer memory offer = getOffer();
+        OfferArgs[] memory offArgs = getOfferArgs(offer);
+        NFToken memory nft = getNft();
+
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offArgs[0].amount),
+            abi.encode(true)
+        );
+
+        return this.useCollateralExternal(offArgs, BORROWER, nft);
+    }
+
     function testUseOfferReturn() public {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
@@ -55,20 +69,6 @@ contract TestBorrowHandlers is Internal {
         collatState.matched = collatState.matched.add(shareMatched);
 
         assertEq(res, collatState);
-    }
-
-    function testUseCollateral() public {
-        Offer memory offer = getOffer();
-        OfferArgs[] memory offArgs = getOfferArgs(offer);
-        NFToken memory nft = getNft();
-
-        vm.mockCall(
-            address(money),
-            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offArgs[0].amount),
-            abi.encode(true)
-        );
-
-        this.useCollateralExternal(offArgs, BORROWER, nft);
     }
 
     function testMultipleUseCollateral() public {
@@ -87,64 +87,12 @@ contract TestBorrowHandlers is Internal {
     }
 
     function testUseCollateralReturn() public {
-        OfferArgs[] memory offerArgs = new OfferArgs[](1);
-
-        Payment memory payment;
-
-        offerArgs[0] = getOfferArg(getOffer());
-
-        Loan memory defaultLoan = Loan({
-            assetLent: getOffer().assetToLend,
-            lent: 1 ether,
-            shareLent: ONE,
-            startDate: block.timestamp,
-            endDate: 2 weeks + 1 seconds,
-            interestPerSecond: getTranche(0), // todo #27 adapt rate to the offers
-            borrower: BORROWER,
-            collateral: getOffer().collateral,
-            supplyPositionIndex: 1,
-            payment: payment,
-            nbOfPositions: 1
-        });
-
-        vm.mockCall(
-            address(money),
-            abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offerArgs[0].amount),
-            abi.encode(true)
-        );
-
-        Loan memory loan = this.useCollateralExternal(offerArgs, BORROWER, getNft());
-        vm.expectRevert(abi.encodeWithSelector(AssertionFailedLoanDontMatch.selector));
-        assertEq(loan, defaultLoan);
+        Loan memory loan = getLoan();
+        loan.shareLent = ONE.div(10);
+        loan.startDate = block.timestamp;
+        loan.endDate = block.timestamp + 2 weeks;
+        assertEq(testUseCollateralNominal(), loan);
     }
 
-    //To diferency loans
-    function testLoanAtExpectedId() public {
-        Offer[] memory offerUsed = new Offer[](4);
-        NFToken[] memory nftUsed = new NFToken[](4);
-
-        for (uint256 i = 1; i < 4; i++) {
-            OfferArgs[] memory offerArgs = new OfferArgs[](1);
-
-            Offer memory offer = getOffer();
-            offer.collateral.id = i;
-            offerArgs[0] = getOfferArg(offer);
-
-            vm.mockCall(
-                address(money),
-                abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offerArgs[0].amount),
-                abi.encode(true)
-            );
-            NFToken memory nft = NFToken({implem: nft, id: i});
-
-            Loan memory loan = this.useCollateralExternal(offerArgs, BORROWER, nft);
-            offerUsed[i] = offer;
-            nftUsed[i] = nft;
-        }
-        Protocol storage proto = protocolStorage();
-
-        for (uint256 i = 1; i < 4; i++) {
-            assertEq(i, proto.loan[i].collateral.id);
-        }
-    }
+    // todo #48 test use collateral puts loan at correct id
 }
