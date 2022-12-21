@@ -72,10 +72,6 @@ contract Internal is TestCommons, BigKairos {
         return offerDigest(offer);
     }
 
-    function priceI(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns (uint256 res) {
-        res = price(lent, shareLent, timeElapsed);
-    }
-
     /// @dev use only in TestCommons
     function getTranche(uint256 trancheId) internal view override returns (Ray rate) {
         return protocolStorage().tranche[trancheId];

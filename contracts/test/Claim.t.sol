@@ -46,24 +46,6 @@ contract TestClaim is External {
         kairos.claimAsBorrower(loanIds);
     }
 
-    function testClaimInterest() public {
-        uint256[] memory loanIds = new uint256[](1);
-        Loan memory loan = getLoan();
-        Provision memory provision = getProvision();
-
-        store(loan, 1);
-        store(provision, 1);
-        loanIds[0] = 1;
-
-        loan.payment.paid = 1 ether;
-        loan.shareLent = ONE.div(2);
-        loan.payment.liquidated = true;
-        mintPosition(signer, provision);
-
-        vm.prank(signer);
-        kairos.claim(loanIds);
-    }
-
     function claimN(uint8 nbOfClaims) internal {
         uint256[] memory positionIds = new uint256[](nbOfClaims);
         uint256 balanceBefore;
