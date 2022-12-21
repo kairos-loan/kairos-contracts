@@ -73,7 +73,8 @@ No abreviation if the abreviated word is the whole name
 
 respect solhint warnings and errors  
 No file longer than 150 lines  
-use singular for mapping names, plural for arrays
+use singular for mapping names, plural for arrays  
+never ever copy paste, find & destroy code duplication
 
 ## Repository management policy
 

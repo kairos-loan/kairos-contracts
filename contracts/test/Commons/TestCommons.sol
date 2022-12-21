@@ -14,6 +14,7 @@ abstract contract TestCommons is Loggers {
     error AssertionFailedCollatStateDontMatch();
 
     uint256[] internal oneInArray;
+    uint256[] internal emptyArray;
     uint256 internal constant KEY = 0xA11CE;
     uint256 internal constant KEY2 = 0xB0B;
     address internal immutable signer;
@@ -36,6 +37,7 @@ abstract contract TestCommons is Loggers {
         vm.label(signer2, "signer2");
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
         erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
+        vm.warp(365 days);
     }
 
     function getOfferDigest(Offer memory offer) internal virtual returns (bytes32);
@@ -94,9 +96,10 @@ abstract contract TestCommons is Loggers {
         ret = NFToken({implem: nft, id: 1});
     }
 
-    function getTranche(uint256 trancheId) internal virtual returns (Ray rate);
+    function getTranche(uint256 trancheId) internal view virtual returns (Ray rate);
 
-    function getLoan() internal returns (Loan memory) {
+    /// @dev created as override helper, to modify only few elements in loan
+    function _getLoan() internal view returns (Loan memory) {
         Payment memory payment;
         return
             Loan({
@@ -112,6 +115,10 @@ abstract contract TestCommons is Loggers {
                 payment: payment,
                 nbOfPositions: 1
             });
+    }
+
+    function getLoan() internal view virtual returns (Loan memory) {
+        return _getLoan();
     }
 
     function assertEq(Loan memory actual, Loan memory expected) internal view {
