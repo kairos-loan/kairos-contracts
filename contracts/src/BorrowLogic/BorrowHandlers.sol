@@ -71,7 +71,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             minOfferDuration: type(uint256).max,
             from: from,
             nft: nft,
-            loanId: ++proto.nbOfLoans
+            loanId: ++proto.nbOfLoans // returns incremented value (also increments in storage)
         });
         for (uint8 i; i < args.length; i++) {
             collatState = useOffer(args[i], collatState);
