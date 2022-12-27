@@ -1,0 +1,21 @@
+{
+  "name": "kairos-loan-contracts",
+  "version": "0.1.0",
+  "main": "typechain/index.ts",
+  "files": [
+    "src/*"
+  ],
+  "scripts": {
+    "deploy-mocks": "export $(grep -v '^#' .env | xargs) && forge script contracts/script/DeployNftAndMoney.s.sol -vvvv --chain 420 --verify --rpc-url $GOERLI_URL --broadcast"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
+    "diamond": "https://github.com/mudgen/diamond-1-hardhat",
+    "ds-test": "https://github.com/dapphub/ds-test",
+    "forge-std": "https://github.com/foundry-rs/forge-std",
+    "solmate": "^6.5.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1"
+  }
+}
