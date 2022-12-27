@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "out/ts",
+    "rootDir": "ts-script"
+  },
+  "include": ["ts-script"]
+  // "files": ["../../hardhat.config.ts"]
+}
