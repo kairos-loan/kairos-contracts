@@ -5,4 +5,6 @@ import "../src/DataStructure/Global.sol";
 
 interface IAuctionFacet {
     function buy(BuyArgs[] memory args) external;
+
+    function publicPrice(uint256 loanId) external view returns (uint256);
 }
