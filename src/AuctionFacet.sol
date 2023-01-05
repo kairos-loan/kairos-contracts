@@ -23,14 +23,15 @@ contract AuctionFacet is SafeMint {
         }
     }
 
-    /// @notice gets price of a loan at a given time
+    /// @notice gets the price to buy the underlying collateral of the loan
     /// @param loanId identifier of the loan
-    function publicPrice(uint256 loanId) external view returns (uint256) {
+    /// @return price computed price
+    function price(uint256 loanId) external view returns (uint256) {
         Protocol storage proto = protocolStorage();
         Loan storage loan = proto.loan[loanId];
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate;
         uint256 priceAuction = price(loan.lent, loan.shareLent, timeSinceLiquidable);
-        return priceAuction.mul(ONE);
+        return priceAuction;
     }
 
     /// @notice handles buying one NFT

@@ -103,7 +103,7 @@ function auctionFS() pure returns (bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](2);
 
     functionSelectors[0] = IAuctionFacet.buy.selector;
-    functionSelectors[1] = IAuctionFacet.publicPrice.selector;
+    functionSelectors[1] = IAuctionFacet.price.selector;
 
     return functionSelectors;
 }
