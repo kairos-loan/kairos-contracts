@@ -26,15 +26,20 @@ contract DeployLocal is Script, External {
         dcTarget = new DCTarget();
         address payable frontTester = payable(vm.envAddress("FRONT_TEST_ADDR"));
         frontTester.transfer(10 ether);
-        NFT frontNft = new NFT("Test Doodles", "TNFT");
+        NFT frontNft = new NFT("Test Doodles", "TDood");
         frontNft.mintOneTo(frontTester);
+        frontNft.mintOneTo(frontTester); // mint doodle #2 as well
         toWrite = addConst(toWrite, "testDoodlesAddr", vm.toString(address(frontNft)));
-        frontNft = new NFT("Test Azukis", "TNFT");
+        frontNft = new NFT("Test Azukis", "TAzuk");
         frontNft.setBaseURI(
             "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/"
         );
         frontNft.mintOneTo(frontTester);
         toWrite = addConst(toWrite, "testAzukisAddr", vm.toString(address(frontNft)));
+        frontNft = new NFT("Test mfers", "TMfer");
+        frontNft.mintOneTo(frontTester);
+        toWrite = addConst(toWrite, "testMfersAddr", vm.toString(address(frontNft)));
+        frontNft.setBaseURI("ipfs://QmWiQE65tmpYzcokCheQmng2DCM33DEhjXcPB6PanwpAZo/");
         // end for front testing
 
         createContracts();
