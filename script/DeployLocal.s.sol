@@ -58,6 +58,7 @@ contract DeployLocal is Script, External {
         money.approve(address(kairos), 100 ether);
         nft.mintOne();
         nft.approve(address(kairos), 1);
+        frontNft.mintOneTo(address(kairos)); // mint azuki #2 as liquidable for front auction testing
 
         vm.stopBroadcast();
 
