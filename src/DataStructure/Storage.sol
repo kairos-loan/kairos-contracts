@@ -13,6 +13,7 @@ import "./Objects.sol";
 ///         I.e lent * time since loan start * tranche = interests to repay
 /// @member loan - of id -
 struct Protocol {
+    // todo #71 add admin methods to tweak parameters
     uint256 auctionDuration;
     uint256 nbOfLoans;
     Ray auctionPriceFactor;
