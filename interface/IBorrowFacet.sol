@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../src/DataStructure/Global.sol";
+import {BorrowArgs, Offer} from "../src/DataStructure/Objects.sol";
 
 interface IBorrowFacet {
     function onERC721Received(

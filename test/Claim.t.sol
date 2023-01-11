@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Commons/External.sol";
+import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "../src/DataStructure/Errors.sol";
+import {ERC721InvalidTokenId} from "../src/DataStructure/ERC721Errors.sol";
+import {External} from "./Commons/External.sol";
+import {Loan, Provision} from "../src/DataStructure/Storage.sol";
+import {ONE} from "../src/DataStructure/Global.sol";
+import {Ray} from "../src/DataStructure/Objects.sol";
+import {RayMath} from "../src/utils/RayMath.sol";
 
 contract TestClaim is External {
     using RayMath for Ray;

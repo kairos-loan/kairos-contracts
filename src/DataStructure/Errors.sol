@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Storage.sol";
-import "./ERC721Errors.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {NFToken, Offer} from "./Objects.sol";
 
 error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
 error BadCollateral(Offer offer, NFToken providedNft);

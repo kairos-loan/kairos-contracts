@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./SupplyPositionLogic/DiamondERC721.sol";
+import {DiamondERC721} from "./SupplyPositionLogic/DiamondERC721.sol";
+import {ERC721InvalidTokenId} from "./DataStructure/ERC721Errors.sol";
+import {SupplyPosition, Provision} from "./DataStructure/Storage.sol";
+import {supplyPositionStorage} from "./DataStructure/Global.sol";
 
 /// @notice NFT collection facet for transferable tradable non fungible supply positions
 contract SupplyPositionFacet is DiamondERC721 {

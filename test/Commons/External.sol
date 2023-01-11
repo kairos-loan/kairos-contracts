@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-import "./SetUp.sol";
+import {IDCHelperFacet} from "../../interface/IDCHelperFacet.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {Money} from "../../src/mock/Money.sol";
+import {NFT} from "../../src/mock/NFT.sol";
+import {SetUp} from "./SetUp.sol";
 
 /// @dev inherit from this contract to perform tests from OUTSIDE kairos
 contract External is SetUp, ERC721Holder {

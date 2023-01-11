@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./BorrowCheckers.sol";
-import "../utils/RayMath.sol";
-import "../SupplyPositionFacet.sol";
-import "../SupplyPositionLogic/SafeMint.sol";
+import {BorrowCheckers} from "./BorrowCheckers.sol";
+import {CollateralState, NFToken, OfferArgs, Ray} from "../DataStructure/Objects.sol";
+import {Loan, Payment, Protocol, Provision} from "../DataStructure/Storage.sol";
+import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
+import {RayMath} from "../utils/RayMath.sol";
+import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
+import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
+import {InconsistentAssetRequests, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is BorrowCheckers, SafeMint {

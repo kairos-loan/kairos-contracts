@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../DataStructure/Global.sol";
+import {Loan} from "../DataStructure/Storage.sol";
+import {NFToken, Offer} from "../DataStructure/Objects.sol";
 
 /* solhint-disable no-empty-blocks */
 
