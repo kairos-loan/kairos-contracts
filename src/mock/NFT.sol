@@ -24,6 +24,12 @@ contract NFT is ERC721 {
         return totalSupply;
     }
 
+    function mintMultiple(uint256 amount) public {
+        for (uint256 i = 0; i < amount; i++) {
+            mintOne();
+        }
+    }
+
     function setBaseURI(string memory newBaseURI) public {
         baseURI = newBaseURI;
     }
