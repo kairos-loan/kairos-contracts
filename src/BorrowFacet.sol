@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-import "./BorrowLogic/BorrowHandlers.sol";
+import {BorrowHandlers} from "./BorrowLogic/BorrowHandlers.sol";
+import {BorrowArgs, NFToken, OfferArgs} from "./DataStructure/Objects.sol";
+import {SupplyPosition} from "./DataStructure/Storage.sol";
 
 /// @notice public facing methods for borrowing
 /// @dev contract handles all borrowing logic through inheritance

@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "./NFTUtils.sol";
+import {NFTUtils} from "./NFTUtils.sol";
+import {Provision, SupplyPosition} from "../DataStructure/Storage.sol";
+import {supplyPositionStorage} from "../DataStructure/Global.sol";
 
 /// @notice safeMint internal method added to base ERC721 implementation for supply position minting
 /// @dev inherit this to make an ERC721-compliant facet with added feature internal safeMint

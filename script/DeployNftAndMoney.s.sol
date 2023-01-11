@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "forge-std/Script.sol";
+import {Script} from "forge-std/Script.sol";
 
-import "../src/mock/NFT.sol";
-import "../src/mock/Money.sol";
+import {Money} from "../src/mock/Money.sol";
+import {NFT} from "../src/mock/NFT.sol";
 
 contract Deploy is Script {
     function run() public {

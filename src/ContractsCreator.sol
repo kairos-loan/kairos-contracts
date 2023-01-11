@@ -1,18 +1,20 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "diamond/contracts/facets/OwnershipFacet.sol";
-import "diamond/contracts/facets/DiamondCutFacet.sol";
-import "diamond/contracts/interfaces/IDiamondCut.sol";
-import "diamond/contracts/facets/DiamondLoupeFacet.sol";
+import {OwnershipFacet} from "diamond/contracts/facets/OwnershipFacet.sol";
+import {DiamondCutFacet} from "diamond/contracts/facets/DiamondCutFacet.sol";
+import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
+import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
+import {DiamondLoupeFacet} from "diamond/contracts/facets/DiamondLoupeFacet.sol";
 
-import "./Initializer.sol";
-import "./BorrowFacet.sol";
-import "./ClaimFacet.sol";
-import "./ProtocolFacet.sol";
-import "./AuctionFacet.sol";
-import "./RepayFacet.sol";
-import "./utils/FuncSelectors.h.sol";
+import {AuctionFacet} from "./AuctionFacet.sol";
+import {BorrowFacet} from "./BorrowFacet.sol";
+import {ClaimFacet} from "./ClaimFacet.sol";
+import {Initializer} from "./Initializer.sol";
+import {ProtocolFacet} from "./ProtocolFacet.sol";
+import {RepayFacet} from "./RepayFacet.sol";
+import {SupplyPositionFacet} from "./SupplyPositionFacet.sol";
+import {auctionFS, claimFS, borrowFS, cutFS, loupeFS, protoFS, ownershipFS, repayFS, supplyPositionFS} from "./utils/FuncSelectors.h.sol";
 
 /// @notice handles uinitialized deployment of all contracts of the protocol and exposes facet cuts
 /// @dev for production, the 3 contracts imported from diamonds don't have to be redeployed as they are already

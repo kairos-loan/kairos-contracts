@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../Commons/External.sol";
+import {BuyArgs, NFToken} from "../../src/DataStructure/Objects.sol";
+import {ERC721CallerIsNotOwnerNorApproved} from "../../src/DataStructure/ERC721Errors.sol";
+import {External} from "../Commons/External.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "../../src/DataStructure/Errors.sol";
 
 contract TestAuction is External {
     // test simplest case of auction

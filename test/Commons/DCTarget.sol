@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./BigKairos.sol";
+import {BigKairos} from "./BigKairos.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {protocolStorage, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
 
 /// @notice Delegate Call Target for modifying kairos internal state
 contract DCTarget is BigKairos {

@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../Commons/Internal.sol";
+import {BadCollateral, OfferHasExpired, RequestedAmountTooHigh} from "../../src/DataStructure/Errors.sol";
+import {Internal} from "../Commons/Internal.sol";
+import {NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
 
 contract TestBorrowCheckers is Internal {
     function testAddressRecovery() public {
