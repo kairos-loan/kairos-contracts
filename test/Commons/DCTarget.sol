@@ -15,7 +15,7 @@ contract DCTarget is BigKairos {
 
     function mintLoan(Loan memory loan) external returns (uint256 loanId) {
         loanId = ++protocolStorage().nbOfLoans;
-        emit Borrow(loanId, loan.borrower);
+        emit Borrow(loanId, loan.borrower, loan.endDate);
         storeLoan(loan, loanId);
     }
 
