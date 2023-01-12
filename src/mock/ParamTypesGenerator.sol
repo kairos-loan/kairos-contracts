@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {Loan} from "../DataStructure/Storage.sol";
-import {NFToken, Offer} from "../DataStructure/Objects.sol";
+import {NFToken, Offer, OfferArgs} from "../DataStructure/Objects.sol";
 
 /* solhint-disable no-empty-blocks */
 
