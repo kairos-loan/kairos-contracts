@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./DataStructure/Global.sol";
-import "./utils/RayMath.sol";
-import "./SupplyPositionLogic/SafeMint.sol";
+import {BuyArgs, NFToken, Ray} from "./DataStructure/Objects.sol";
+import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
+import {LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "./DataStructure/Errors.sol";
+import {RayMath} from "./utils/RayMath.sol";
+import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
+import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
+import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is SafeMint {

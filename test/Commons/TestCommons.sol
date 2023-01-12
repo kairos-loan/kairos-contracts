@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
-import "./Loggers.sol";
-import "../../src/mock/Money.sol";
-import "../../src/mock/NFT.sol";
+import {BorrowArgs, CollateralState, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
 import {getSelector} from "../../src/utils/FuncSelectors.h.sol";
+import {Loan, Payment, Provision} from "../../src/DataStructure/Storage.sol";
+import {Loggers} from "./Loggers.sol";
+import {Money} from "../../src/mock/Money.sol";
+import {NFT} from "../../src/mock/NFT.sol";
+import {ONE} from "../../src/DataStructure/Global.sol";
+import {Ray} from "../../src/DataStructure/Objects.sol";
 
 abstract contract TestCommons is Loggers {
     error AssertionFailedLoanDontMatch();

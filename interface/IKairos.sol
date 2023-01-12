@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "diamond/contracts/interfaces/IDiamondLoupe.sol";
-import "diamond/contracts/interfaces/IDiamondCut.sol";
+import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
+import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
 
-import "./IAuctionFacet.sol";
-import "./IBorrowFacet.sol";
-import "./IClaimFacet.sol";
-import "./IOwnershipFacet.sol";
-import "./IProtocolFacet.sol";
-import "./IRepayFacet.sol";
-import "./ISupplyPositionFacet.sol";
+import {IAuctionFacet} from "./IAuctionFacet.sol";
+import {IBorrowFacet} from "./IBorrowFacet.sol";
+import {IClaimFacet} from "./IClaimFacet.sol";
+import {IOwnershipFacet} from "./IOwnershipFacet.sol";
+import {IProtocolFacet} from "./IProtocolFacet.sol";
+import {IRepayFacet} from "./IRepayFacet.sol";
+import {ISupplyPositionFacet} from "./ISupplyPositionFacet.sol";
 
 /* solhint-disable-next-line no-empty-blocks */
 interface IKairos is

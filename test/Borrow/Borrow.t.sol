@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../Commons/External.sol";
+import {BadCollateral} from "../../src/DataStructure/Errors.sol";
+import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
+import {External} from "../Commons/External.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {Ray} from "../../src/DataStructure/Global.sol";
+import {RayMath} from "../../src/utils/RayMath.sol";
 
 contract TestBorrow is External {
     using RayMath for Ray;

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./Errors.sol";
+import {Protocol, SupplyPosition} from "./Storage.sol";
+import {Ray} from "./Objects.sol";
 
 bytes32 constant PROTOCOL_SP = keccak256("eth.kairos.protocol");
 bytes32 constant SUPPLY_SP = keccak256("eth.kairos.supply-position");

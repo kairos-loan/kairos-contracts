@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./TestCommons.sol";
-import "../../interface/IDCHelperFacet.sol";
-import "./DCHelperFacet.sol";
-import "./DCTarget.sol";
-import "diamond/contracts/Diamond.sol";
-import "../../src/ContractsCreator.sol";
-import "../../interface/IKairos.sol";
+import {ContractsCreator} from "../../src/ContractsCreator.sol";
+import {DCHelperFacet} from "./DCHelperFacet.sol";
+import {DCTarget} from "./DCTarget.sol";
+import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
+import {IDCHelperFacet} from "../../interface/IDCHelperFacet.sol";
+import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
+import {IKairos} from "../../interface/IKairos.sol";
+import {Money} from "../../src/mock/Money.sol";
+import {NFT} from "../../src/mock/NFT.sol";
+import {Offer, Ray} from "../../src/DataStructure/Objects.sol";
+import {RayMath} from "../../src/utils/RayMath.sol";
+import {TestCommons} from "./TestCommons.sol";
 
 contract SetUp is TestCommons, ContractsCreator {
     IKairos internal kairos;

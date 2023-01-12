@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./DataStructure/Global.sol";
+import {Loan, Protocol} from "./DataStructure/Storage.sol";
+import {protocolStorage} from "./DataStructure/Global.sol";
+import {Ray} from "./DataStructure/Objects.sol";
 
 /// @notice external loupe functions exposing protocol storage and supplier nonce incrementer
 contract ProtocolFacet {

@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "diamond/contracts/interfaces/IDiamondLoupe.sol";
-import "diamond/contracts/interfaces/IDiamondCut.sol";
-import "diamond/contracts/facets/OwnershipFacet.sol";
-import "diamond/contracts/interfaces/IERC165.sol";
+import {DiamondERC721} from "../SupplyPositionLogic/DiamondERC721.sol";
+import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
+import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {IERC165} from "diamond/contracts/interfaces/IERC165.sol";
+import {OwnershipFacet} from "diamond/contracts/facets/OwnershipFacet.sol";
 
-import "../SupplyPositionFacet.sol";
-import "../../interface/IBorrowFacet.sol";
-import "../../interface/IProtocolFacet.sol";
-import "../../interface/IRepayFacet.sol";
-import "../../interface/IAuctionFacet.sol";
-import "../../interface/IClaimFacet.sol";
+import {IAuctionFacet} from "../../interface/IAuctionFacet.sol";
+import {IBorrowFacet} from "../../interface/IBorrowFacet.sol";
+import {IClaimFacet} from "../../interface/IClaimFacet.sol";
+import {IProtocolFacet} from "../../interface/IProtocolFacet.sol";
+import {IRepayFacet} from "../../interface/IRepayFacet.sol";
+import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
 
 /* solhint-disable func-visibility */
 
