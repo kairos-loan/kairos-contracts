@@ -77,7 +77,7 @@ contract DeployLocal is Script, External {
         toWrite = addConst(toWrite, "supplierAddr", vm.toString(supplier));
         toWrite = addLastConst(toWrite, "deployerAddr", vm.toString(deployer));
         toWrite = string.concat(toWrite, "}");
-        vm.writeFile("./out/deployment.json", toWrite);
+        vm.writeFile("./packages/shared/src/generated/deployment.json", toWrite);
     }
 
     /* solhint-disable quotes */
