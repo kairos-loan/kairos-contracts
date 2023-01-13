@@ -5,7 +5,6 @@ import {External} from "./Commons/External.sol";
 import {OfferArgs, Ray} from "../src/DataStructure/Objects.sol";
 import {RayMath} from "../src/utils/RayMath.sol";
 
-
 /// @notice tests of entire loan lifecycles
 contract TestIntegration is External {
     using RayMath for Ray;
