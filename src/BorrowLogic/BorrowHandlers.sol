@@ -8,7 +8,7 @@ import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Glob
 import {RayMath} from "../utils/RayMath.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
 import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
-import {InconsistentAssetRequests, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
+import {InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
@@ -34,6 +34,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         if (args.offer.assetToLend != collatState.assetLent) {
             // all offers used for a collateral must refer to the same erc20
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
+        }
+
+        if (args.amount == 0) {
+            revert RequestedAmountIsNull();
         }
 
         checkCollateral(args.offer, collatState.nft);

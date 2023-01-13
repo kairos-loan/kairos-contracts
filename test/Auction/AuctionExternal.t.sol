@@ -25,6 +25,14 @@ contract TestAuction is External {
         kairos.buy(args);
     }
 
+    function testLoanAlreadyLiquidated() public {
+        Loan memory loan = getLoan();
+        loan.payment.liquidated = true;
+        BuyArgs[] memory args = storeAndGetArgs(loan);
+        vm.expectRevert(abi.encodeWithSelector(LoanAlreadyRepaid.selector, 1));
+        kairos.buy(args);
+    }
+
     function testErc721CallerIsNotOwnerNorApproved() public {
         BuyArgs[] memory args = setupLoan();
         args[0].positionIds = oneInArray;
