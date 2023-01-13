@@ -18,7 +18,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
     /// @notice one loan has been initiated
     /// @param loanId id of the loan
     /// @param borrower borrower of the loan
-    event Borrow(uint256 loanId, address borrower);
+    event Borrow(uint256 loanId, address borrower, uint256 endDate);
 
     /// @notice handles usage of a loan offer to borrow from
     /// @param args arguments for the usage of this offer
@@ -82,12 +82,13 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             lent += args[i].amount;
         }
         Payment memory notPaid;
+        uint256 endDate = block.timestamp + collatState.minOfferDuration;
         loan = Loan({
             assetLent: collatState.assetLent,
             lent: lent,
             shareLent: collatState.matched,
             startDate: block.timestamp,
-            endDate: block.timestamp + collatState.minOfferDuration,
+            endDate: endDate,
             interestPerSecond: proto.tranche[0], // todo #27 adapt rate to the offers
             borrower: from,
             collateral: nft,
@@ -96,6 +97,6 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             nbOfPositions: uint8(args.length)
         });
         proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
-        emit Borrow(collatState.loanId, from);
+        emit Borrow(collatState.loanId, from, endDate);
     }
 }
