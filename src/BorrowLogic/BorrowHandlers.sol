@@ -35,7 +35,6 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             // all offers used for a collateral must refer to the same erc20
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
         }
-
         if (args.amount == 0) {
             revert RequestedAmountIsNull();
         }
@@ -55,7 +54,8 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         }
 
         collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
-        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId})); // todo #35 verify provision has expected values
+        // todo #35 verify provision has expected values
+        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);
     }
 
