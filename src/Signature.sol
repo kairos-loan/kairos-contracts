@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
-import "./DataStructure/Global.sol";
+import {NFToken} from "./DataStructure/Objects.sol";
+import {Offer} from "./DataStructure/Objects.sol";
 
 /// @notice handles signature verification
 abstract contract Signature is EIP712 {

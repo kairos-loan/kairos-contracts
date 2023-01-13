@@ -3,14 +3,16 @@ pragma solidity 0.8.17;
 
 // Derived from Nick Mudge's DiamondInit from the reference diamond implementation
 
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {LibDiamond} from "diamond/contracts/libraries/LibDiamond.sol";
 import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
 import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
 import {IERC173} from "diamond/contracts/interfaces/IERC173.sol";
 import {IERC165} from "diamond/contracts/interfaces/IERC165.sol";
 
-import "./DataStructure/Global.sol";
-import "./utils/RayMath.sol";
+import {ONE, protocolStorage, Ray, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {Protocol, SupplyPosition} from "./DataStructure/Storage.sol";
+import {RayMath} from "./utils/RayMath.sol";
 
 /// @notice initilizes the kairos protocol
 contract Initializer {

@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../../src/AuctionFacet.sol";
-import "../../src/BorrowFacet.sol";
-import "../../src/ClaimFacet.sol";
-import "../../src/ProtocolFacet.sol";
-import "../../src/RepayFacet.sol";
-import "../../src/SupplyPositionFacet.sol";
+import {AuctionFacet} from "../../src/AuctionFacet.sol";
+import {BorrowFacet} from "../../src/BorrowFacet.sol";
+import {ClaimFacet} from "../../src/ClaimFacet.sol";
+import {DiamondERC721} from "../../src/SupplyPositionLogic/DiamondERC721.sol";
+import {ProtocolFacet} from "../../src/ProtocolFacet.sol";
+import {RepayFacet} from "../../src/RepayFacet.sol";
+import {SafeMint} from "../../src/SupplyPositionLogic/SafeMint.sol";
+import {SupplyPositionFacet} from "../../src/SupplyPositionFacet.sol";
 
 /// @notice immutable version of kairos including all facets for usage in internal tests
 contract BigKairos is AuctionFacet, BorrowFacet, ClaimFacet, ProtocolFacet, RepayFacet, SupplyPositionFacet {

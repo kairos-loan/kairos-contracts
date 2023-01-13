@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../../../src/utils/RayMath.sol";
-import "./PreExecFuncs.sol";
+import {ComplexBorrowData, ComplexBorrowPreExecFuncs} from "./PreExecFuncs.sol";
+import {BorrowArgs, NFToken, Ray} from "../../../src/DataStructure/Objects.sol";
+import {Loan, Payment, Provision} from "../../../src/DataStructure/Storage.sol";
+import {ONE} from "../../../src/DataStructure/Global.sol";
+import {RayMath} from "../../../src/utils/RayMath.sol";
 
 contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
     using RayMath for Ray;

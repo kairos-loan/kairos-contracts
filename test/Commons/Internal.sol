@@ -1,8 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "./TestCommons.sol";
-import "./BigKairos.sol";
+import {BigKairos} from "./BigKairos.sol";
+import {CollateralState, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {Money} from "../../src/mock/Money.sol";
+import {NFT} from "../../src/mock/NFT.sol";
+import {protocolStorage, ONE, Ray} from "../../src/DataStructure/Global.sol";
+import {RayMath} from "../../src/utils/RayMath.sol";
+import {TestCommons} from "./TestCommons.sol";
 
 /// @dev inherit from this contract to perform tests from INSIDE kairos
 contract Internal is TestCommons, BigKairos {

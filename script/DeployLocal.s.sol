@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "forge-std/Script.sol";
-import "diamond/contracts/Diamond.sol";
-import "../test/Commons/External.sol";
+import {DCHelperFacet} from "../test/Commons/DCHelperFacet.sol";
+import {DCTarget} from "../test/Commons/DCTarget.sol";
+import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
+import {External} from "../test/Commons/External.sol";
+import {IKairos} from "../interface/IKairos.sol";
+import {Money} from "../src/mock/Money.sol";
+import {NFT} from "../src/mock/NFT.sol";
+import {Offer} from "../src/DataStructure/Objects.sol";
+import {Script} from "forge-std/Script.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, External {

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "../DataStructure/Global.sol";
+import {RAY} from "../DataStructure/Global.sol";
+import {Ray} from "../DataStructure/Objects.sol";
 
 /// @notice Manipulates fixed-point unsigned decimals numbers
 /// @dev all uints are considered integers (no wad)
