@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {BadCollateral} from "../../src/DataStructure/Errors.sol";
+import {BadCollateral, RequestedAmountIsNull} from "../../src/DataStructure/Errors.sol";
 import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
@@ -73,5 +73,25 @@ contract TestBorrow is External {
         for (uint8 i; i < nbOfLoans; i++) {
             assertEq(nft.ownerOf(i + 1), address(kairos));
         }
+    }
+
+    function testNullBorrowAmount() public {
+        Offer memory offer = getOffer();
+        OfferArgs[] memory offerArgs = new OfferArgs[](1);
+        offerArgs[0] = OfferArgs({
+            signature: getSignature(offer),
+            amount: 0,
+            offer: offer
+        });
+
+        uint256 currentTokenId = getJpeg(BORROWER, nft);
+        BorrowArgs[] memory borrowArgs = new BorrowArgs[](1);
+        borrowArgs[0] = BorrowArgs({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
+
+        vm.prank(BORROWER);
+        vm.expectRevert(
+            abi.encodeWithSelector(RequestedAmountIsNull.selector, offer)
+        );
+        kairos.borrow(borrowArgs);
     }
 }

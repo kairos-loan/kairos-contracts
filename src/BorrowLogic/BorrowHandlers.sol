@@ -36,7 +36,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
         }
         if (args.amount == 0) {
-            revert RequestedAmountIsNull();
+            revert RequestedAmountIsNull(args.offer);
         }
 
         checkCollateral(args.offer, collatState.nft);
