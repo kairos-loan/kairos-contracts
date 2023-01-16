@@ -52,6 +52,17 @@ contract TestAuction is External {
         kairos.buy(args);
     }
 
+    function testPaidPrice() public {
+        BuyArgs[] memory args = new BuyArgs[](1);
+        getFlooz(signer, money);
+        uint256 balanceBefore = money.balanceOf(signer);
+        nft.mintOneTo(address(kairos));
+        args[0] = setupLoan(1)[0];
+        vm.prank(signer);
+        kairos.buy(args);
+        assertEq(balanceBefore - money.balanceOf(signer), kairos.price(1));
+    }
+
     function auctionN(uint256 nbOfAuctions) internal {
         BuyArgs[] memory args = new BuyArgs[](nbOfAuctions);
         getFlooz(signer, money, nbOfAuctions * 1 ether);
