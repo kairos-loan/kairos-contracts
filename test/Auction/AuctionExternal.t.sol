@@ -58,6 +58,7 @@ contract TestAuction is External {
         uint256 balanceBefore = money.balanceOf(signer);
         nft.mintOneTo(address(kairos));
         args[0] = setupLoan(1)[0];
+        skip(3600);
         vm.prank(signer);
         kairos.buy(args);
         assertEq(balanceBefore - money.balanceOf(signer), kairos.price(1));
