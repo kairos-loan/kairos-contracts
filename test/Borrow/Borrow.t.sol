@@ -36,21 +36,12 @@ contract TestBorrow is External {
     }
 
     function testNullBorrowAmount() public {
-        Offer memory offer = getOffer();
-        OfferArgs[] memory offerArgs = new OfferArgs[](1);
-        offerArgs[0] = OfferArgs({
-        signature: getSignature(offer),
-        amount: 0,
-        offer: offer
-        });
-
-        uint256 currentTokenId = getJpeg(BORROWER, nft);
-        BorrowArgs[] memory borrowArgs = new BorrowArgs[](1);
-        borrowArgs[0] = BorrowArgs({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
+        BorrowArgs[] memory borrowArgs = getBorrowArgs();
+        borrowArgs[0].args[0].amount = 0;
 
         vm.prank(BORROWER);
         vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountIsNull.selector, offer)
+            abi.encodeWithSelector(RequestedAmountIsNull.selector, borrowArgs[0].args[0].offer)
         );
         kairos.borrow(borrowArgs);
     }
