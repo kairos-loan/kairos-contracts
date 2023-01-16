@@ -35,6 +35,26 @@ contract TestBorrow is External {
         nft2.safeTransferFrom(BORROWER, address(kairos), tokenId, data);
     }
 
+    function testNullBorrowAmount() public {
+        Offer memory offer = getOffer();
+        OfferArgs[] memory offerArgs = new OfferArgs[](1);
+        offerArgs[0] = OfferArgs({
+        signature: getSignature(offer),
+        amount: 0,
+        offer: offer
+        });
+
+        uint256 currentTokenId = getJpeg(BORROWER, nft);
+        BorrowArgs[] memory borrowArgs = new BorrowArgs[](1);
+        borrowArgs[0] = BorrowArgs({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
+
+        vm.prank(BORROWER);
+        vm.expectRevert(
+            abi.encodeWithSelector(RequestedAmountIsNull.selector, offer)
+        );
+        kairos.borrow(borrowArgs);
+    }
+
     function testSimpleBorrow() public {
         borrowNTimes(1);
     }
@@ -73,25 +93,5 @@ contract TestBorrow is External {
         for (uint8 i; i < nbOfLoans; i++) {
             assertEq(nft.ownerOf(i + 1), address(kairos));
         }
-    }
-
-    function testNullBorrowAmount() public {
-        Offer memory offer = getOffer();
-        OfferArgs[] memory offerArgs = new OfferArgs[](1);
-        offerArgs[0] = OfferArgs({
-            signature: getSignature(offer),
-            amount: 0,
-            offer: offer
-        });
-
-        uint256 currentTokenId = getJpeg(BORROWER, nft);
-        BorrowArgs[] memory borrowArgs = new BorrowArgs[](1);
-        borrowArgs[0] = BorrowArgs({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
-
-        vm.prank(BORROWER);
-        vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountIsNull.selector, offer)
-        );
-        kairos.borrow(borrowArgs);
     }
 }
