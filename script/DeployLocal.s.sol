@@ -17,7 +17,7 @@ contract DeployLocal is Script, External {
     /* solhint-disable-next-line function-max-lines */
     function run() public {
         bytes memory emptyBytes;
-        string memory toWrite = "const deployment = {\n";
+        string memory toWrite = "{\n";
         uint256 testKey = uint256(
             bytes32(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80)
         );
@@ -76,8 +76,8 @@ contract DeployLocal is Script, External {
         toWrite = addConst(toWrite, "nftAddr", vm.toString(address(nft)));
         toWrite = addConst(toWrite, "supplierAddr", vm.toString(supplier));
         toWrite = addLastConst(toWrite, "deployerAddr", vm.toString(deployer));
-        toWrite = string.concat(toWrite, "}\n\nexport default deployment\n");
-        vm.writeFile("./packages/shared/src/generated/deployment.ts", toWrite);
+        toWrite = string.concat(toWrite, "}");
+        vm.writeFile("./packages/shared/src/generated/deployment.json", toWrite);
     }
 
     /* solhint-disable quotes */
@@ -87,9 +87,9 @@ contract DeployLocal is Script, External {
         string memory name,
         string memory const
     ) internal pure returns (string memory toWrite) {
-        toWrite = string.concat(written, "  ");
+        toWrite = string.concat(written, ' "');
         toWrite = string.concat(toWrite, name);
-        toWrite = string.concat(toWrite, ': "');
+        toWrite = string.concat(toWrite, '": "');
         toWrite = string.concat(toWrite, const);
         toWrite = string.concat(toWrite, '",\n');
     }
@@ -99,9 +99,9 @@ contract DeployLocal is Script, External {
         string memory name,
         string memory const
     ) internal pure returns (string memory toWrite) {
-        toWrite = string.concat(written, "  ");
+        toWrite = string.concat(written, ' "');
         toWrite = string.concat(toWrite, name);
-        toWrite = string.concat(toWrite, ': "');
+        toWrite = string.concat(toWrite, '": "');
         toWrite = string.concat(toWrite, const);
         toWrite = string.concat(toWrite, '"\n');
     }
