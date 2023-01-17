@@ -3,8 +3,9 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "out/ts",
-    "rootDir": "ts-script"
+    "rootDir": "ts-script",
+    "types": ["mocha"]
   },
-  "include": ["ts-script"]
-  // "files": ["../../hardhat.config.ts"]
+  "include": ["ts-script"],
+  "files": ["./ts-script/hardhat.config.ts"]
 }

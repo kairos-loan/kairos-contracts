@@ -1,4 +1,6 @@
 import { ethers } from "hardhat"
+import { Contract as depContract } from "ethers"
+
 const {
   getSelectors,
   FacetCutAction
@@ -20,7 +22,10 @@ const facetNames = [
 ]
 let facetCuts: any = []
 
-export async function deploy(name: string, arg?: Array<any>) {
+export async function deploy(
+  name: string,
+  arg?: Array<any>
+): Promise<depContract> {
   const ToDeploy = await ethers.getContractFactory(name)
 
   let toDeploy
