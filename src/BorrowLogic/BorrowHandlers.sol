@@ -17,8 +17,8 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
 
     /// @notice one loan has been initiated
     /// @param loanId id of the loan
-    /// @param borrower borrower of the loan
-    event Borrow(uint256 loanId, address borrower, uint256 endDate);
+    /// @param loan the loan created
+    event Borrow(uint256 loanId, bytes loan);
 
     /// @notice handles usage of a loan offer to borrow from
     /// @param args arguments for the usage of this offer
@@ -101,6 +101,6 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             nbOfPositions: uint8(args.length)
         });
         proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
-        emit Borrow(collatState.loanId, from, endDate);
+        emit Borrow(collatState.loanId, abi.encode(loan));
     }
 }
