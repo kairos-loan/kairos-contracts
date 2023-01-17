@@ -14,7 +14,7 @@ contract AuctionFacet is SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    /// @notice a NFT collateral has beem sold as part of a liquidation
+    /// @notice a NFT collateral has been sold as part of a liquidation
     /// @param loanId identifier of the loan previously backed by the sold collateral
     event Buy(uint256 indexed loanId);
 
@@ -53,10 +53,10 @@ contract AuctionFacet is SafeMint {
         uint256 toPay;
         Provision storage provision;
 
-        loan.payment.liquidated = true;
-        if (loan.payment.paid != 0) {
+        if (loan.payment.paid != 0 || loan.payment.liquidated) {
             revert LoanAlreadyRepaid(args.loanId);
         }
+        loan.payment.liquidated = true;
 
         for (uint8 i; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
