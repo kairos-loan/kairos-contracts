@@ -25,6 +25,14 @@ contract TestAuction is External {
         kairos.buy(args);
     }
 
+    function testLoanAlreadyLiquidated() public {
+        Loan memory loan = getLoan();
+        loan.payment.liquidated = true;
+        BuyArgs[] memory args = storeAndGetArgs(loan);
+        vm.expectRevert(abi.encodeWithSelector(LoanAlreadyRepaid.selector, 1));
+        kairos.buy(args);
+    }
+
     function testErc721CallerIsNotOwnerNorApproved() public {
         BuyArgs[] memory args = setupLoan();
         args[0].positionIds = oneInArray;
@@ -50,6 +58,18 @@ contract TestAuction is External {
             )
         );
         kairos.buy(args);
+    }
+
+    function testPaidPrice() public {
+        BuyArgs[] memory args = new BuyArgs[](1);
+        getFlooz(signer, money);
+        uint256 balanceBefore = money.balanceOf(signer);
+        nft.mintOneTo(address(kairos));
+        args[0] = setupLoan(1)[0];
+        skip(3600);
+        vm.prank(signer);
+        kairos.buy(args);
+        assertEq(balanceBefore - money.balanceOf(signer), kairos.price(1));
     }
 
     function auctionN(uint256 nbOfAuctions) internal {
