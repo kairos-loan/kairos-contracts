@@ -17,7 +17,7 @@ abstract contract Signature is EIP712 {
     bytes32 internal constant NFTOKEN_TYPEHASH = keccak256("NFToken(address implem,uint256 id)");
 
     /* solhint-disable-next-line no-empty-blocks */
-    constructor() EIP712("Kairos protocol", "0.1") {}
+    constructor() EIP712("Kairos Loan protocol", "0.1") {}
 
     /// @notice computes EIP-712 compliant digest of a loan offer
     /// @param offer the loan offer signed/to sign by a supplier
