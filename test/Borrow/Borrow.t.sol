@@ -36,6 +36,7 @@ contract TestBorrow is External {
     }
 
     function testNullBorrowAmount() public {
+        getJpeg(BORROWER, nft);
         BorrowArgs[] memory borrowArgs = getBorrowArgs();
         borrowArgs[0].args[0].amount = 0;
 

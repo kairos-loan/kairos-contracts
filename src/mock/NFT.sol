@@ -12,12 +12,12 @@ contract NFT is ERC721Enumerable {
     }
 
     function mintOneTo(address to) public returns (uint256 createdId) {
-        createdId = totalSupply();
+        createdId = totalSupply() + 1;
         _mint(to, createdId);
     }
 
     function mintOne() public returns (uint256 createdId) {
-        createdId = totalSupply();
+        createdId = totalSupply() + 1;
         _safeMint(msg.sender, createdId);
     }
 
