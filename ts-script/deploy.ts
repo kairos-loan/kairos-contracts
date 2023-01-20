@@ -1,5 +1,7 @@
-import { ethers } from "hardhat"
 import { Contract as depContract } from "ethers"
+import { ethers } from "hardhat"
+
+const blockConfirmations = 3
 
 const {
   getSelectors,
@@ -35,6 +37,7 @@ export async function deploy(
     toDeploy = await ToDeploy.deploy()
   }
   await toDeploy.deployed()
+  await toDeploy.deployTransaction.wait(blockConfirmations)
   if (name === "SupplyPositionFacet") {
     supplyPositionFacetAddress = toDeploy.address
   }
@@ -43,6 +46,7 @@ export async function deploy(
 
 async function deployFacet(name: string) {
   const facet = await deploy(name)
+  await facet.deployTransaction.wait(blockConfirmations)
   facetCuts.push({
     facetAddress: facet.address,
     action: FacetCutAction.Add,
