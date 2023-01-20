@@ -20,7 +20,9 @@ const facetNames = [
   "RepayFacet",
   "BorrowFacet",
   "SupplyPositionFacet",
-  "ProtocolFacet"
+  "ProtocolFacet",
+  "AuctionFacet",
+  "ClaimFacet"
 ]
 let facetCuts: any = []
 
@@ -44,7 +46,7 @@ export async function deploy(
   return toDeploy
 }
 
-async function deployFacet(name: string) {
+export async function deployFacet(name: string) {
   const facet = await deploy(name)
   await facet.deployTransaction.wait(blockConfirmations)
   facetCuts.push({
@@ -83,6 +85,7 @@ async function main() {
   deploy("Diamond", [facetCuts, diamondArgs])
 }
 
+// a 'replacement fee too low' error pops on start but seem to have no effect
 main().catch((error) => {
   console.error(error)
   process.exitCode = 1
