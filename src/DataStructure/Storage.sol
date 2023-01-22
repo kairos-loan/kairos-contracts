@@ -7,12 +7,12 @@ import {NFToken, Ray} from "./Objects.sol";
 /// @notice type definitions of data permanently stored
 
 /// @notice General protocol
-/// @member auctionDuration number of seconds after the auction start when the price hits 0
-/// @member nbOfLoans total number of loans ever issued (active and ended)
-/// @member auctionPriceFactor multiplier of the mean tvl used as start price for the auction
-/// @member tranche interest rate of tranche of provided id, in multiplier per second
+/// @param auctionDuration number of seconds after the auction start when the price hits 0
+/// @param nbOfLoans total number of loans ever issued (active and ended)
+/// @param auctionPriceFactor multiplier of the mean tvl used as start price for the auction
+/// @param tranche interest rate of tranche of provided id, in multiplier per second
 ///         I.e lent * time since loan start * tranche = interests to repay
-/// @member loan - of id -
+/// @param loan - of id -
 struct Protocol {
     // todo #71 add admin methods to tweak parameters
     uint256 auctionDuration;
@@ -23,17 +23,17 @@ struct Protocol {
 }
 
 /// @notice Issued Loan (corresponding to one collateral)
-/// @member assetLent currency lent
-/// @member lent total amount lent
-/// @member startDate timestamp of the borrowing transaction
-/// @member shareLent between 0 and 1, the share of the collateral value lent
-/// @member endDate timestamp after which sale starts & repay is impossible
-/// @member interestPerSecond share of the amount lent added to the debt per second
-/// @member borrower borrowing account
-/// @member collateral NFT asset used as collateral
-/// @member supplyPositionIndex identifier of the first supply position used in the loan
-/// @member payment data on the payment, a non-0 payment.paid value means the loan lifecyle is over
-/// @member nbOfPositions number of supply positions used, which ids are consecutive to the index
+/// @param assetLent currency lent
+/// @param lent total amount lent
+/// @param startDate timestamp of the borrowing transaction
+/// @param shareLent between 0 and 1, the share of the collateral value lent
+/// @param endDate timestamp after which sale starts & repay is impossible
+/// @param interestPerSecond share of the amount lent added to the debt per second
+/// @param borrower borrowing account
+/// @param collateral NFT asset used as collateral
+/// @param supplyPositionIndex identifier of the first supply position used in the loan
+/// @param payment data on the payment, a non-0 payment.paid value means the loan lifecyle is over
+/// @param nbOfPositions number of supply positions used, which ids are consecutive to the index
 struct Loan {
     IERC20 assetLent;
     uint256 lent;
@@ -49,10 +49,10 @@ struct Loan {
 }
 
 /// @notice tracking of the payment state of a loan
-/// @member paid amount sent on the tx closing the loan, non-zero value means loan's lifecycle is over
-/// @member liquidated this loan has been closed at the liquidation stage, the collateral has been sold
-/// @member borrowerClaimed borrower claimed his rights on this loan (either collateral or share of liquidation)
-/// @member borrowerBought borrower is the one who bought the collateral during the auction
+/// @param paid amount sent on the tx closing the loan, non-zero value means loan's lifecycle is over
+/// @param liquidated this loan has been closed at the liquidation stage, the collateral has been sold
+/// @param borrowerClaimed borrower claimed his rights on this loan (either collateral or share of liquidation)
+/// @param borrowerBought borrower is the one who bought the collateral during the auction
 struct Payment {
     uint256 paid;
     bool liquidated;
@@ -61,14 +61,14 @@ struct Payment {
 }
 
 /// @notice storage for the ERC721 compliant supply position facets. Related NFTs represent supplier positions
-/// @member name - of the NFT collection
-/// @member symbol - of the NFT collection
-/// @member totalSupply number of supply position ever issued - not decreased on burn
-/// @member owner - of nft of id -
-/// @member balance number of positions owned by -
-/// @member tokenApproval address approved to transfer position of id - on behalf of its owner
-/// @member operatorApproval address is approved to transfer all positions of - on his behalf
-/// @member provision supply position metadata
+/// @param name - of the NFT collection
+/// @param symbol - of the NFT collection
+/// @param totalSupply number of supply position ever issued - not decreased on burn
+/// @param owner - of nft of id -
+/// @param balance number of positions owned by -
+/// @param tokenApproval address approved to transfer position of id - on behalf of its owner
+/// @param operatorApproval address is approved to transfer all positions of - on his behalf
+/// @param provision supply position metadata
 struct SupplyPosition {
     string name;
     string symbol;
@@ -81,9 +81,9 @@ struct SupplyPosition {
 }
 
 /// @notice data on a liquidity provision from a supply offer in one existing loan
-/// @member amount - supplied for this provision
-/// @member share - of the collateral matched by this provision
-/// @member loanId identifier of the loan the liquidity went to
+/// @param amount - supplied for this provision
+/// @param share - of the collateral matched by this provision
+/// @param loanId identifier of the loan the liquidity went to
 struct Provision {
     uint256 amount;
     Ray share;
