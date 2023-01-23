@@ -5,7 +5,7 @@ import {BadCollateral, RequestedAmountIsNull} from "../../src/DataStructure/Erro
 import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
-import {Ray} from "../../src/DataStructure/Global.sol";
+import {Ray} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 
 contract TestBorrow is External {
@@ -41,9 +41,7 @@ contract TestBorrow is External {
         borrowArgs[0].args[0].amount = 0;
 
         vm.prank(BORROWER);
-        vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountIsNull.selector, borrowArgs[0].args[0].offer)
-        );
+        vm.expectRevert(abi.encodeWithSelector(RequestedAmountIsNull.selector, borrowArgs[0].args[0].offer));
         kairos.borrow(borrowArgs);
     }
 

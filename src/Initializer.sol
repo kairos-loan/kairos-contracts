@@ -10,7 +10,8 @@ import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
 import {IERC173} from "diamond/contracts/interfaces/IERC173.sol";
 import {IERC165} from "diamond/contracts/interfaces/IERC165.sol";
 
-import {ONE, protocolStorage, Ray, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {Ray} from "./DataStructure/Objects.sol";
 import {Protocol, SupplyPosition} from "./DataStructure/Storage.sol";
 import {RayMath} from "./utils/RayMath.sol";
 

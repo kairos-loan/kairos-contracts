@@ -4,7 +4,8 @@ pragma solidity 0.8.17;
 import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
-import {ONE, Ray, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 
