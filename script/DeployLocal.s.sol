@@ -65,6 +65,7 @@ contract DeployLocal is Script, External {
         nft.mintOne();
         nft.approve(address(kairos), 1);
         frontNft.mintOneTo(address(kairos)); // mint mfers #2 as liquidable for front auction testing
+        frontNft.mintOneTo(address(kairos)); // mint mfers #3 as liquidable for front auction testing
 
         vm.stopBroadcast();
 
