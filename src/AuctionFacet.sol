@@ -21,7 +21,7 @@ contract AuctionFacet is SafeMint {
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
     function buy(BuyArgs[] memory args) external {
-        for (uint8 i; i < args.length; i++) {
+        for (uint8 i = 0; i < args.length; i++) {
             useLoan(args[i]);
         }
     }
@@ -58,7 +58,7 @@ contract AuctionFacet is SafeMint {
         }
         loan.payment.liquidated = true;
 
-        for (uint8 i; i < args.positionIds.length; i++) {
+        for (uint8 i = 0; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
             if (!_isApprovedOrOwner(msg.sender, args.positionIds[i])) {

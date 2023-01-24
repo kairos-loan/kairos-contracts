@@ -6,7 +6,7 @@ import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 import {supplyPositionStorage} from "../DataStructure/Global.sol";
 import {SupplyPosition} from "../DataStructure/Storage.sol";
-import {ERC721ApproveToCaller, ERC721InvalidTokenId, ERC721TokenAlreadyMinted, ERC721MintToTheZeroAddress, ERC721TransferToIncorrectOwner, ERC721TransferToNonERC721ReceiverImplementer, ERC721TransferToTheZeroAddress} from "../DataStructure/ERC721Errors.sol";
+import {ERC721ApproveToCaller, ERC721InvalidTokenId, ERC721TokenAlreadyMinted, ERC721MintToTheZeroAddress, ERC721TransferFromIncorrectOwner, ERC721TransferToNonERC721ReceiverImplementer, ERC721TransferToTheZeroAddress} from "../DataStructure/ERC721Errors.sol";
 
 /// @notice internal logic for DiamondERC721 adapted fo usage with diamond storage
 abstract contract NFTUtils {
@@ -70,7 +70,7 @@ abstract contract NFTUtils {
         SupplyPosition storage sp = supplyPositionStorage();
 
         if (_ownerOf(tokenId) != from) {
-            revert ERC721TransferToIncorrectOwner();
+            revert ERC721TransferFromIncorrectOwner();
         }
         if (to == address(0)) {
             revert ERC721TransferToTheZeroAddress();
