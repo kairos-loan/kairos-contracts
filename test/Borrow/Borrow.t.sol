@@ -60,7 +60,7 @@ contract TestBorrow is External {
 
         getFlooz(signer, money, nbOfLoans * getOfferArg().amount);
 
-        for (uint8 i; i < nbOfLoans; i++) {
+        for (uint8 i = 0; i < nbOfLoans; i++) {
             OfferArgs[] memory offerArgs = new OfferArgs[](1);
             currentTokenId = getJpeg(BORROWER, nft);
             offer = getOffer();
@@ -80,7 +80,7 @@ contract TestBorrow is External {
         assertEq(money.balanceOf(signer), 0);
         assertEq(money.balanceOf(BORROWER), nbOfLoans * getOfferArg().amount);
         assertEq(nft.balanceOf(address(kairos)), nbOfLoans);
-        for (uint8 i; i < nbOfLoans; i++) {
+        for (uint8 i = 0; i < nbOfLoans; i++) {
             assertEq(nft.ownerOf(i + 1), address(kairos));
         }
     }

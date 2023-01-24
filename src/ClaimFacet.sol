@@ -31,7 +31,7 @@ contract ClaimFacet is SafeMint {
         uint256 loanId;
         uint256 sentTemp;
 
-        for (uint8 i; i < positionIds.length; i++) {
+        for (uint8 i = 0; i < positionIds.length; i++) {
             if (!_isApprovedOrOwner(msg.sender, positionIds[i])) {
                 revert ERC721CallerIsNotOwnerNorApproved();
             }
@@ -55,7 +55,7 @@ contract ClaimFacet is SafeMint {
         Loan storage loan;
         uint256 sentTemp;
 
-        for (uint8 i; i < loanIds.length; i++) {
+        for (uint8 i = 0; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
             if (loan.borrower != msg.sender) {
                 revert NotBorrowerOfTheLoan(loanIds[i]);

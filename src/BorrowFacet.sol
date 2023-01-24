@@ -42,7 +42,7 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @notice take loans, take ownership of NFTs specified as collateral, sends borrowed money to caller
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArgs[] calldata args) external {
-        for (uint8 i; i < args.length; i++) {
+        for (uint8 i = 0; i < args.length; i++) {
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             useCollateral(args[i].args, msg.sender, args[i].nft);
         }

@@ -28,7 +28,7 @@ contract RepayFacet {
         uint256 lent;
         uint256 toRepay;
 
-        for (uint8 i; i < loanIds.length; i++) {
+        for (uint8 i = 0; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
             if (loan.payment.paid > 0) {
                 revert LoanAlreadyRepaid(loanIds[i]);

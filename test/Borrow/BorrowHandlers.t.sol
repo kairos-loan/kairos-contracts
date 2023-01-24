@@ -81,7 +81,7 @@ contract TestBorrowHandlers is Internal {
     function testMultipleUseCollateral() public {
         OfferArgs[] memory offerArgs = new OfferArgs[](10);
 
-        for (uint8 i; i < 10; i++) {
+        for (uint8 i = 0; i < 10; i++) {
             offerArgs[i] = getOfferArg(getOffer());
         }
 
