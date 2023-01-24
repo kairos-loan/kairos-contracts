@@ -53,7 +53,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             collatState.minOfferDuration = args.offer.duration;
         }
 
-        collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
+        require(
+            collatState.assetLent.transferFrom(signer, collatState.from, args.amount),
+            "ERC20 transfer failed"
+        );
         // todo #35 verify provision has expected values
         safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);

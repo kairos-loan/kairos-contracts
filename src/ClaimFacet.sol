@@ -79,6 +79,8 @@ contract ClaimFacet is SafeMint {
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
+        /* Should be precise more but breaks tests
+        sent = loan.payment.paid.mul(provision.share).div(loan.shareLent); */
         loan.assetLent.transfer(msg.sender, sent);
     }
 
@@ -91,7 +93,7 @@ contract ClaimFacet is SafeMint {
         Provision storage provision
     ) internal returns (uint256 sent) {
         sent = loan.payment.borrowerBought
-            ? loan.payment.paid.mul(provision.share.div(loan.shareLent))
+            ? loan.payment.paid.mul(provision.share).div(loan.shareLent)
             : loan.payment.paid.mul(provision.share);
         loan.assetLent.transfer(msg.sender, sent);
     }

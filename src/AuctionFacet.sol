@@ -71,7 +71,9 @@ contract AuctionFacet is SafeMint {
         }
 
         toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
-        loan.assetLent.transferFrom(msg.sender, address(this), toPay);
+        if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
+            revert LoanAlreadyRepaid(args.loanId);
+        }
         loan.payment.paid = toPay;
         loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
 
@@ -87,11 +89,10 @@ contract AuctionFacet is SafeMint {
         Protocol storage proto = protocolStorage();
 
         // todo : explore attack vectors based on small values messing with calculus
-        uint256 loanToValue = lent.div(shareLent);
-        uint256 initialPrice = loanToValue.mul(proto.auctionPriceFactor);
         Ray decreasingFactor = timeElapsed >= proto.auctionDuration
             ? ZERO
             : ONE.sub(timeElapsed.div(proto.auctionDuration));
-        return initialPrice.mul(decreasingFactor);
+        uint256 totalToPay = lent.mul(proto.auctionPriceFactor).mul(decreasingFactor);
+        return totalToPay.div(shareLent);
     }
 }

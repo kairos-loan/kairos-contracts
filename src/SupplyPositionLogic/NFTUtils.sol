@@ -18,6 +18,32 @@ abstract contract NFTUtils {
 
     function emitApprovalForAll(address owner, address operator, bool approved) internal virtual;
 
+    function _checkOnERC721Received(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) internal returns (bool) {
+        if (to.isContract()) {
+            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (
+                bytes4 retval
+            ) {
+                return retval == IERC721Receiver.onERC721Received.selector;
+            } catch (bytes memory reason) {
+                if (reason.length == 0) {
+                    revert ERC721TransferToNonERC721ReceiverImplementer();
+                } else {
+                    /* solhint-disable-next-line no-inline-assembly */
+                    assembly {
+                        revert(add(32, reason), mload(reason))
+                    }
+                }
+            }
+        } else {
+            return true;
+        }
+    }
+
     function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal {
         _transfer(from, to, tokenId);
         if (!_checkOnERC721Received(from, to, tokenId, data)) {
@@ -101,32 +127,6 @@ abstract contract NFTUtils {
         }
         sp.operatorApproval[owner][operator] = approved;
         emitApprovalForAll(owner, operator, approved);
-    }
-
-    function _checkOnERC721Received(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal returns (bool) {
-        if (to.isContract()) {
-            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (
-                bytes4 retval
-            ) {
-                return retval == IERC721Receiver.onERC721Received.selector;
-            } catch (bytes memory reason) {
-                if (reason.length == 0) {
-                    revert ERC721TransferToNonERC721ReceiverImplementer();
-                } else {
-                    /* solhint-disable-next-line no-inline-assembly */
-                    assembly {
-                        revert(add(32, reason), mload(reason))
-                    }
-                }
-            }
-        } else {
-            return true;
-        }
     }
 
     function _exists(uint256 tokenId) internal view returns (bool) {
