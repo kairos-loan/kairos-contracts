@@ -13,7 +13,7 @@ contract BetaSettersFacet {
         _;
     }
 
-    function setAprAndAuctionDuration(Ray newTrancheZero, uint256 newAuctionDuration) external {
+    function setAprAndAuctionDuration(Ray newTrancheZero, uint256 newAuctionDuration) external onlyOwner {
         Protocol storage proto = protocolStorage();
 
         proto.tranche[0] = newTrancheZero;
