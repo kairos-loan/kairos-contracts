@@ -30,7 +30,7 @@ contract AddDeployedFacets is Script {
         uint256 oneBetaYear = oneBetaDay * 365;
         uint256 thirtyMinutes = 60 * 30; // in seconds
         IKairos kairos = IKairos(0xCA3624F4B6872662014588C5D7833e959eefa5Eb);
-        BetaSettersFacet betaSetters = BetaSettersFacet(0xa1F7F641b834e5044334F68aD30492DeeE40b36f);
+        BetaSettersFacet betaSetters = BetaSettersFacet(0xC82460fe25434dCA26801C30a27DC9b2E2cdF62B);
 
         IDiamond.FacetCut[] memory facetCuts = new IDiamond.FacetCut[](1);
 
