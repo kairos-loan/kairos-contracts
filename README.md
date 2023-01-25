@@ -47,3 +47,10 @@ No DAO fee is taken yet, but please note that it will be the case in the future.
 - .s as "script"
 - .t as "test"
 - .f as "facet"
+
+## Deploying
+
+.env vars expected :
+
+- _GOERLI_URL_
+- _DEPLOYER_KEY_

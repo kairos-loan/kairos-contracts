@@ -31,6 +31,7 @@ contract DeployLocal is Script, External {
         helper = new DCHelperFacet();
         dcTarget = new DCTarget();
         address payable frontTester = payable(vm.envAddress("FRONT_TEST_ADDR"));
+        toWrite = addConst(toWrite, "frontTestAddr", vm.toString(frontTester));
         frontTester.transfer(10 ether);
         NFT frontNft = new NFT("Test Doodles", "TDood");
         frontNft.mintOneTo(frontTester);
