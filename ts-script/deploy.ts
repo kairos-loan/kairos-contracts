@@ -1,5 +1,7 @@
-import { ethers } from "hardhat"
 import { Contract as depContract } from "ethers"
+import { ethers } from "hardhat"
+
+const blockConfirmations = 3
 
 const {
   getSelectors,
@@ -18,7 +20,9 @@ const facetNames = [
   "RepayFacet",
   "BorrowFacet",
   "SupplyPositionFacet",
-  "ProtocolFacet"
+  "ProtocolFacet",
+  "AuctionFacet",
+  "ClaimFacet"
 ]
 let facetCuts: any = []
 
@@ -35,14 +39,16 @@ export async function deploy(
     toDeploy = await ToDeploy.deploy()
   }
   await toDeploy.deployed()
+  await toDeploy.deployTransaction.wait(blockConfirmations)
   if (name === "SupplyPositionFacet") {
     supplyPositionFacetAddress = toDeploy.address
   }
   return toDeploy
 }
 
-async function deployFacet(name: string) {
+export async function deployFacet(name: string) {
   const facet = await deploy(name)
+  await facet.deployTransaction.wait(blockConfirmations)
   facetCuts.push({
     facetAddress: facet.address,
     action: FacetCutAction.Add,
@@ -79,6 +85,7 @@ async function main() {
   deploy("Diamond", [facetCuts, diamondArgs])
 }
 
+// a 'replacement fee too low' error pops on start but seem to have no effect
 main().catch((error) => {
   console.error(error)
   process.exitCode = 1
