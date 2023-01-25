@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {IRepayFacet} from "../interface/IRepayFacet.sol";
 import {Loan, Protocol} from "./DataStructure/Storage.sol";
 import {LoanAlreadyRepaid} from "./DataStructure/Errors.sol";
 import {protocolStorage} from "./DataStructure/Global.sol";
@@ -8,7 +9,7 @@ import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
 
 /// @notice handles repayment with interests of loans
-contract RepayFacet {
+contract RepayFacet is IRepayFacet {
     using RayMath for Ray;
     using RayMath for uint256;
 
@@ -35,7 +36,7 @@ contract RepayFacet {
             }
             lent = loan.lent;
             toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate));
-            loan.assetLent.transferFrom(msg.sender, address(this), toRepay);
+            require(loan.assetLent.transferFrom(msg.sender, address(this), toRepay), "ERC20 transfer failed");
             loan.payment.paid = toRepay;
             loan.payment.borrowerClaimed = true;
             loan.collateral.implem.safeTransferFrom(address(this), loan.borrower, loan.collateral.id);

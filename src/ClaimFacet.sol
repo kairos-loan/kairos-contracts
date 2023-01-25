@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {IClaimFacet} from "../interface/IClaimFacet.sol";
 import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
@@ -10,7 +11,7 @@ import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 
 /// @notice claims supplier and borrower rights on loans or supply positions
-contract ClaimFacet is SafeMint {
+contract ClaimFacet is IClaimFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
@@ -65,7 +66,7 @@ contract ClaimFacet is SafeMint {
             }
             loan.payment.borrowerClaimed = true;
             sentTemp = loan.payment.liquidated ? loan.payment.paid.mul(ONE.sub(loan.shareLent)) : 0;
-            loan.assetLent.transfer(msg.sender, sentTemp);
+            require(loan.assetLent.transfer(msg.sender, sentTemp), "ERC20 transfer failed");
             if (sentTemp > 0) {
                 emit Claim(msg.sender, sentTemp, loanIds[i]);
             }
@@ -81,7 +82,7 @@ contract ClaimFacet is SafeMint {
         sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
         /* Should be more precise but breaks tests
         sent = loan.payment.paid.mul(provision.share).div(loan.shareLent); */
-        loan.assetLent.transfer(msg.sender, sent);
+        require(loan.assetLent.transfer(msg.sender, sent), "ERC20 transfer failed");
     }
 
     /// @notice sends liquidation share due to `msg.sender` as a supplier
@@ -95,6 +96,7 @@ contract ClaimFacet is SafeMint {
         sent = loan.payment.borrowerBought
             ? loan.payment.paid.mul(provision.share).div(loan.shareLent)
             : loan.payment.paid.mul(provision.share);
-        loan.assetLent.transfer(msg.sender, sent);
+
+        require(loan.assetLent.transfer(msg.sender, sent), "ERC20 transfer failed");
     }
 }
