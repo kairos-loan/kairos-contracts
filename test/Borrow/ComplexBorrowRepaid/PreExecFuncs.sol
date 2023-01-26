@@ -26,24 +26,32 @@ contract ComplexBorrowPreExecFuncs is External {
         getJpeg(BORROWER, nft);
     }
 
-    function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
+    function initOfferArgs(
+        ComplexBorrowData memory d,
+        uint256 oargs1Amount,
+        uint256 oargs2Amount
+    ) internal returns (ComplexBorrowData memory) {
         d.oargs1 = OfferArgs({
             signature: getSignature(d.signer1Offer),
-            amount: 1 ether,
+            amount: oargs1Amount,
             offer: d.signer1Offer
         });
         d.oargs2 = OfferArgs({
             signature: getSignature2(d.signer2Offer),
-            amount: (1 ether * 3) / 2,
+            amount: oargs2Amount,
             offer: d.signer2Offer
         });
         return d;
     }
 
-    function initOffers(ComplexBorrowData memory d) internal view returns (ComplexBorrowData memory) {
+    function initOffers(
+        ComplexBorrowData memory d,
+        uint256 ltv1,
+        uint256 ltv2
+    ) internal view returns (ComplexBorrowData memory) {
         d.signer1Offer = Offer({
             assetToLend: money,
-            loanToValue: 2 ether,
+            loanToValue: ltv1,
             duration: 4 weeks,
             expirationDate: block.timestamp + 1 hours,
             tranche: 0,
@@ -52,7 +60,7 @@ contract ComplexBorrowPreExecFuncs is External {
 
         d.signer2Offer = Offer({
             assetToLend: money,
-            loanToValue: 3 ether,
+            loanToValue: ltv2,
             duration: 4 weeks,
             expirationDate: block.timestamp + 1 hours,
             tranche: 0,
