@@ -86,7 +86,7 @@ async function main() {
 }
 
 // a 'replacement fee too low' error pops on start but seem to have no effect
-main().catch((error) => {
-  console.error(error)
-  process.exitCode = 1
-})
+// main().catch((error) => {
+//   console.error(error)
+//   process.exitCode = 1
+// })
