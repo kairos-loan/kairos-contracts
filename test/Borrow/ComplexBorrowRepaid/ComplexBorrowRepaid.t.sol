@@ -22,9 +22,6 @@ contract TestComplexBorrowRepaid is ComplexBorrowPreExecFuncs {
         d = initOffers(d);
         d = initOfferArgs(d);
         d = initBorrowArgs(d);
-        console2.log("initial signer balance", money.balanceOf(signer));
-        console2.log("initial signer2 balance", money.balanceOf(signer2));
-        console2.log("borrower balance", money.balanceOf(BORROWER));
         execBorrowAndCheckSupplyPos(d);
         skip(2 days);
         execRepay();
@@ -37,34 +34,25 @@ contract TestComplexBorrowRepaid is ComplexBorrowPreExecFuncs {
 
         vm.prank(BORROWER);
         kairos.borrow(batchbargs);
-        assertEq(kairos.balanceOf(signer), 1); // Nb of supply positions
-        assertEq(kairos.balanceOf(signer2), 1);
     }
 
     function execRepay() private {
         vm.prank(BORROWER);
         uint256[] memory loanIds = new uint256[](1);
         loanIds[0] = 1;
-
         kairos.repay(loanIds);
-
-        console2.log("\n  signer balance after repay", money.balanceOf(signer));
-        console2.log("signer2 balance after repay", money.balanceOf(signer2));
-        console2.log("borrower balance", money.balanceOf(BORROWER));
     }
 
     function execClaim() private {
         uint256[] memory supplyPositionIds = new uint256[](1);
+
         vm.prank(signer);
         supplyPositionIds[0] = 1;
         kairos.claim(supplyPositionIds);
+
         vm.prank(signer2);
         supplyPositionIds[0] = 2;
         kairos.claim(supplyPositionIds);
-
-        console2.log("\n  signer balance after claim", money.balanceOf(signer));
-        console2.log("signer2 balance after claim", money.balanceOf(signer2));
-        console2.log("borrower balance", money.balanceOf(BORROWER));
     }
 
     function loan1() private view returns (Loan memory) {

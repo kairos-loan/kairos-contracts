@@ -29,12 +29,12 @@ contract ComplexBorrowPreExecFuncs is External {
     function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
         d.oargs1 = OfferArgs({
             signature: getSignature(d.signer1Offer),
-            amount: 2 ether,
+            amount: 1 ether,
             offer: d.signer1Offer
         });
         d.oargs2 = OfferArgs({
             signature: getSignature2(d.signer2Offer),
-            amount: 2 ether,
+            amount: (1 ether * 3) / 2,
             offer: d.signer2Offer
         });
         return d;
@@ -52,7 +52,7 @@ contract ComplexBorrowPreExecFuncs is External {
 
         d.signer2Offer = Offer({
             assetToLend: money,
-            loanToValue: 10 ether,
+            loanToValue: 3 ether,
             duration: 4 weeks,
             expirationDate: block.timestamp + 1 hours,
             tranche: 0,
