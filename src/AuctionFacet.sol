@@ -16,7 +16,8 @@ contract AuctionFacet is SafeMint {
 
     /// @notice a NFT collateral has been sold as part of a liquidation
     /// @param loanId identifier of the loan previously backed by the sold collateral
-    event Buy(uint256 indexed loanId);
+    /// @param args arguments NFT sold
+    event Buy(uint256 indexed loanId, bytes args);
 
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
@@ -75,7 +76,7 @@ contract AuctionFacet is SafeMint {
         loan.payment.paid = toPay;
         loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
 
-        emit Buy(args.loanId);
+        emit Buy(args.loanId, abi.encode(args));
     }
 
     /// @notice gets price calculated following a linear dutch auction
