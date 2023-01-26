@@ -77,7 +77,8 @@ contract ClaimFacet is SafeMint {
     /// @param provision liquidity provision for this loan
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
-        sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
+        Ray shareOfTotalLent = provision.amount.div(loan.lent);
+        sent = provision.amount + (loan.payment.paid - loan.lent).mul(shareOfTotalLent);
         loan.assetLent.transfer(msg.sender, sent);
     }
 

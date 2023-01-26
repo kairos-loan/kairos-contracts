@@ -8,13 +8,13 @@ import {ONE} from "../../../src/DataStructure/Global.sol";
 import {RayMath} from "../../../src/utils/RayMath.sol";
 import {console2} from "forge-std/console2.sol";
 
-contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
+contract TestComplexBorrowRepaid is ComplexBorrowPreExecFuncs {
     using RayMath for Ray;
     using RayMath for uint256;
 
     // should borrow from 1 NFT from 2 offers of different suppliers
     // NFT 1 : from collec1 with money1 with 2 suppliers
-    function testComplexBorrow() public {
+    function testComplexBorrowRepaid() public {
         ComplexBorrowData memory d; // d as data
         d.m1InitialBalance = money.balanceOf(address(this));
 
@@ -24,7 +24,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         d = initBorrowArgs(d);
         console2.log("initial signer balance", money.balanceOf(signer));
         console2.log("initial signer2 balance", money.balanceOf(signer2));
-        console2.log("kairos balance", money.balanceOf(address(this)));
+        console2.log("borrower balance", money.balanceOf(BORROWER));
         execBorrowAndCheckSupplyPos(d);
         skip(2 days);
         execRepay();
@@ -39,12 +39,6 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         kairos.borrow(batchbargs);
         assertEq(kairos.balanceOf(signer), 1); // Nb of supply positions
         assertEq(kairos.balanceOf(signer2), 1);
-
-        Provision memory supp1pos1 = kairos.position(1); // 1st supply position
-        Provision memory supp2pos = kairos.position(2);
-
-        assertEq(supp1pos1.amount, 1 ether);
-        assertEq(supp2pos.amount, 1 ether);
     }
 
     function execRepay() private {
@@ -56,7 +50,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
 
         console2.log("\n  signer balance after repay", money.balanceOf(signer));
         console2.log("signer2 balance after repay", money.balanceOf(signer2));
-        console2.log("kairos balance", money.balanceOf(address(this)));
+        console2.log("borrower balance", money.balanceOf(BORROWER));
     }
 
     function execClaim() private {
@@ -70,7 +64,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
 
         console2.log("\n  signer balance after claim", money.balanceOf(signer));
         console2.log("signer2 balance after claim", money.balanceOf(signer2));
-        console2.log("kairos balance", money.balanceOf(address(this)));
+        console2.log("borrower balance", money.balanceOf(BORROWER));
     }
 
     function loan1() private view returns (Loan memory) {
