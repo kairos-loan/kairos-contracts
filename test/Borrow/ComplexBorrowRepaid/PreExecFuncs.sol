@@ -3,7 +3,6 @@ pragma solidity 0.8.17;
 
 import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../../src/DataStructure/Objects.sol";
 import {External} from "../../Commons/External.sol";
-import {NFT} from "../../../src/mock/NFT.sol";
 
 struct ComplexBorrowData {
     BorrowArgs bargs;
