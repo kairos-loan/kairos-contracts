@@ -1,6 +1,6 @@
-import { deployFacet } from "./deploy"
+import { deployFacet } from "./deployFunc"
 
-const facetNames = ["BetaSettersFacet"]
+const facetNames = ["AuctionFacet", "BorrowFacet"]
 
 async function main() {
   for (const facetName of facetNames) {

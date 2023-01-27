@@ -2,16 +2,6 @@ import { Contract as depContract } from "ethers"
 import { ethers } from "hardhat"
 
 const blockConfirmations = 3
-
-const {
-  getSelectors,
-  FacetCutAction
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-} = require("diamond/scripts/libraries/diamond.js") // must keep as require
-
-// adapted from https://github.com/mudgen/diamond-1-hardhat/blob/main/scripts/deploy.js
-
-let supplyPositionFacetAddress: string
 const ierc165SupportsInterfaceSelector = "0x01ffc9a7"
 const facetNames = [
   "DiamondCutFacet",
@@ -24,6 +14,16 @@ const facetNames = [
   "AuctionFacet",
   "ClaimFacet"
 ]
+
+const {
+  getSelectors,
+  FacetCutAction
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+} = require("diamond/scripts/libraries/diamond.js") // must keep as require
+
+// adapted from https://github.com/mudgen/diamond-1-hardhat/blob/main/scripts/deploy.js
+
+let supplyPositionFacetAddress: string
 let facetCuts: any = []
 
 export async function deploy(
@@ -56,7 +56,7 @@ export async function deployFacet(name: string) {
   })
 }
 
-async function main() {
+export async function deployKairos() {
   const [deployer] = await ethers.getSigners()
 
   const init = await deploy("Initializer")
@@ -84,9 +84,3 @@ async function main() {
 
   deploy("Diamond", [facetCuts, diamondArgs])
 }
-
-// a 'replacement fee too low' error pops on start but seem to have no effect
-// main().catch((error) => {
-//   console.error(error)
-//   process.exitCode = 1
-// })

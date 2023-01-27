@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
+
 import {IKairos} from "../../interface/IKairos.sol";
 import {IClaimFacet} from "../../interface/IClaimFacet.sol";
 import {IAuctionFacet} from "../../interface/IAuctionFacet.sol";
