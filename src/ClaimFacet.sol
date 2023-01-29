@@ -34,6 +34,7 @@ contract ClaimFacet is SafeMint {
             if (!_isApprovedOrOwner(msg.sender, positionIds[i])) {
                 revert ERC721CallerIsNotOwnerNorApproved();
             }
+            _burn(positionIds[i]);
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
@@ -42,7 +43,6 @@ contract ClaimFacet is SafeMint {
                 : sendInterests(loan, provision);
             emit Claim(msg.sender, sentTemp, loanId);
             sent += sentTemp;
-            _burn(positionIds[i]);
         }
     }
 
