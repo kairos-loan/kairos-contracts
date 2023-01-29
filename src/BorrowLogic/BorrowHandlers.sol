@@ -46,7 +46,8 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
         if (collatState.matched.gt(ONE)) {
             revert RequestedAmountTooHigh(
                 args.amount,
-                args.offer.loanToValue - args.offer.loanToValue.mul(collatState.matched.sub(shareMatched))
+                args.offer.loanToValue.mul(ONE.sub(collatState.matched)),
+                args.offer
             );
         }
         if (args.offer.duration < collatState.minOfferDuration) {
