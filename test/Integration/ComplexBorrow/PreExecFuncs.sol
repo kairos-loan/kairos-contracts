@@ -19,15 +19,6 @@ struct ComplexBorrowData {
 }
 
 contract ComplexBorrowPreExecFuncs is External {
-    function prepareSigners() internal {
-        getFlooz(signer, money, 2 ether);
-        getFlooz(signer2, money, 2 ether);
-        getFlooz(signer, money2, 2 ether);
-
-        getJpeg(BORROWER, nft);
-        getJpeg(BORROWER, nft2);
-    }
-
     function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
         d.oargs1 = OfferArgs({
             signature: getSignature(d.signer1Offer1),

@@ -13,15 +13,6 @@ struct BorrowData {
 }
 
 contract FullLoanPreExecFuncs is External {
-    function prepareSigners() internal {
-        getFlooz(signer, money, 10 ether);
-        getFlooz(signer2, money, 10 ether);
-        getFlooz(BORROWER, money, 10 ether);
-        getFlooz(address(this), money, 10 ether);
-
-        getJpeg(BORROWER, nft);
-    }
-
     function initOfferArgs(
         BorrowData memory d,
         uint256 oargs1Amount,

@@ -22,7 +22,7 @@ contract TestFullLoan is FullLoanPreExecFuncs {
         lentFromSigner2 = 3 ether / 2;
         totalLent = lentFromSigner1 + lentFromSigner2;
         BorrowData memory d; // d as data
-        prepareSigners();
+        prepareSigners(10 ether, 10 ether, 10 ether);
         d = initOffers(d, 2 ether, 3 ether);
         d = initOfferArgs(d, lentFromSigner1, lentFromSigner2);
         d = initBorrowArgs(d);
@@ -38,7 +38,7 @@ contract TestFullLoan is FullLoanPreExecFuncs {
     // should borrow over the maximum from 1 NFT from 2 offers
     function testLoanTooHigh() public {
         BorrowData memory d;
-        prepareSigners();
+        prepareSigners(10 ether, 10 ether, 10 ether);
         d = initOffers(d, 2 ether, 3 ether);
         d = initOfferArgs(d, 1 ether, 2 ether);
         d = initBorrowArgs(d);
@@ -54,7 +54,7 @@ contract TestFullLoan is FullLoanPreExecFuncs {
         lentFromSigner2 = 1 ether;
         totalLent = lentFromSigner1 + lentFromSigner2;
         BorrowData memory d; // d as data
-        prepareSigners();
+        prepareSigners(10 ether, 10 ether, 10 ether);
         d = initOffers(d, 2 ether, 3 ether);
         d = initOfferArgs(d, lentFromSigner1, lentFromSigner2);
         d = initBorrowArgs(d);
