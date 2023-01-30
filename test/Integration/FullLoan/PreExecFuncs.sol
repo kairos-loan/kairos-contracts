@@ -4,21 +4,18 @@ pragma solidity 0.8.17;
 import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../../src/DataStructure/Objects.sol";
 import {External} from "../../Commons/External.sol";
 
-struct ComplexBorrowData {
+struct BorrowData {
     BorrowArgs bargs;
     OfferArgs oargs1;
     OfferArgs oargs2;
     Offer signer1Offer;
     Offer signer2Offer;
-    uint256 m1InitialBalance;
-    uint256 m2InitialBalance;
 }
 
-contract ComplexBorrowPreExecFuncs is External {
+contract FullLoanPreExecFuncs is External {
     function prepareSigners() internal {
         getFlooz(signer, money, 10 ether);
         getFlooz(signer2, money, 10 ether);
-
         getFlooz(BORROWER, money, 10 ether);
         getFlooz(address(this), money, 10 ether);
 
@@ -26,10 +23,10 @@ contract ComplexBorrowPreExecFuncs is External {
     }
 
     function initOfferArgs(
-        ComplexBorrowData memory d,
+        BorrowData memory d,
         uint256 oargs1Amount,
         uint256 oargs2Amount
-    ) internal returns (ComplexBorrowData memory) {
+    ) internal returns (BorrowData memory) {
         d.oargs1 = OfferArgs({
             signature: getSignature(d.signer1Offer),
             amount: oargs1Amount,
@@ -44,10 +41,10 @@ contract ComplexBorrowPreExecFuncs is External {
     }
 
     function initOffers(
-        ComplexBorrowData memory d,
+        BorrowData memory d,
         uint256 ltv1,
         uint256 ltv2
-    ) internal view returns (ComplexBorrowData memory) {
+    ) internal view returns (BorrowData memory) {
         d.signer1Offer = Offer({
             assetToLend: money,
             loanToValue: ltv1,
@@ -69,7 +66,7 @@ contract ComplexBorrowPreExecFuncs is External {
         return d;
     }
 
-    function initBorrowArgs(ComplexBorrowData memory d) internal view returns (ComplexBorrowData memory) {
+    function initBorrowArgs(BorrowData memory d) internal view returns (BorrowData memory) {
         OfferArgs[] memory offerArgs1 = new OfferArgs[](2);
         offerArgs1[0] = d.oargs1;
         offerArgs1[1] = d.oargs2;

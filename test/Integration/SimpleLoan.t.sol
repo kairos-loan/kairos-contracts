@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {External} from "./Commons/External.sol";
-import {OfferArgs, Ray} from "../src/DataStructure/Objects.sol";
-import {RayMath} from "../src/utils/RayMath.sol";
+import {External} from "../Commons/External.sol";
+import {OfferArgs, Ray} from "../../src/DataStructure/Objects.sol";
+import {RayMath} from "../../src/utils/RayMath.sol";
 
 /// @notice tests of entire loan lifecycles
 contract TestIntegration is External {
