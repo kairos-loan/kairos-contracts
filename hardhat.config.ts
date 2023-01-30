@@ -45,6 +45,11 @@ const config: HardhatUserConfig = {
       accounts: [
         "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
       ]
+    },
+    hardhat: {
+      mining: {
+        interval: 250 // 0.25s block time
+      }
     }
   },
   tenderly: {
