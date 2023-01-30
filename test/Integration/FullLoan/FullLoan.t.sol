@@ -10,16 +10,16 @@ contract TestFullLoan is FullLoanPreExecFuncs {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    uint256 lentFromSigner1;
-    uint256 lentFromSigner2;
-    uint256 totalLent;
-    uint256 initialBalance;
+    uint256 private lentFromSigner1;
+    uint256 private lentFromSigner2;
+    uint256 private totalLent;
+    uint256 private initialBalance = 10 ether;
+    uint256 private duration = 20 days;
 
     // should borrow the maximum amount from 1 NFT from 2 offers of different suppliers having different LTV
     function testFullLoan() public {
         lentFromSigner1 = 1 ether;
         lentFromSigner2 = 3 ether / 2;
-        initialBalance = 10 ether;
         totalLent = lentFromSigner1 + lentFromSigner2;
         BorrowData memory d; // d as data
         prepareSigners();
@@ -27,7 +27,7 @@ contract TestFullLoan is FullLoanPreExecFuncs {
         d = initOfferArgs(d, lentFromSigner1, lentFromSigner2);
         d = initBorrowArgs(d);
         execBorrow(d);
-        skip(2 days);
+        skip(duration);
         checkBalancesAfterBorrow();
         uint256 interestsToRepay = execRepay();
         checkBalancesAfterRepay(interestsToRepay);
@@ -36,7 +36,7 @@ contract TestFullLoan is FullLoanPreExecFuncs {
     }
 
     // should borrow over the maximum from 1 NFT from 2 offers
-    function testFullLoanTooHigh() public {
+    function testLoanTooHigh() public {
         BorrowData memory d;
         prepareSigners();
         d = initOffers(d, 2 ether, 3 ether);
@@ -46,6 +46,26 @@ contract TestFullLoan is FullLoanPreExecFuncs {
             abi.encodeWithSelector(RequestedAmountTooHigh.selector, 2 ether, 3 ether / 2, d.signer2Offer)
         );
         execBorrow(d);
+    }
+
+    // should borrow under the maximum from 1 NFT from 2 offers. Borrower will have a share
+    function testFullLoanUnderMax() public {
+        lentFromSigner1 = 1 ether;
+        lentFromSigner2 = 1 ether;
+        totalLent = lentFromSigner1 + lentFromSigner2;
+        BorrowData memory d; // d as data
+        prepareSigners();
+        d = initOffers(d, 2 ether, 3 ether);
+        d = initOfferArgs(d, lentFromSigner1, lentFromSigner2);
+        d = initBorrowArgs(d);
+        execBorrow(d);
+        skip(20 days);
+        checkBalancesAfterBorrow();
+        uint256 interestsToRepay = execRepay();
+        checkBalancesAfterRepay(interestsToRepay);
+        execClaim();
+        checkBalancesAfterClaim(interestsToRepay);
+        vm.prank(BORROWER);
     }
 
     function execBorrow(BorrowData memory d) private {
@@ -60,9 +80,7 @@ contract TestFullLoan is FullLoanPreExecFuncs {
         uint256[] memory loanIds = new uint256[](1);
         loanIds[0] = 1;
         kairos.repay(loanIds);
-        uint256 duration = 2 days;
-        uint256 lent = totalLent;
-        interestsToRepay = lent.mul(kairos.getLoan(1).interestPerSecond.mul(duration));
+        interestsToRepay = totalLent.mul(kairos.getLoan(1).interestPerSecond.mul(duration));
     }
 
     function execClaim() private {
