@@ -48,7 +48,7 @@ contract TestBorrowCheckers is Internal {
         args.offer = offer;
         args.amount = 1 ether;
         args.signature = getSignature(offer);
-        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, 1 ether - 1));
+        vm.expectRevert(abi.encodeWithSelector(RequestedAmountTooHigh.selector, 1 ether, 1 ether - 1, offer));
         this.checkOfferArgsExternal(args);
     }
 

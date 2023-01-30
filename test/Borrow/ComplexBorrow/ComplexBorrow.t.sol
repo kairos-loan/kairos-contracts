@@ -66,7 +66,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         assertEq(nft.balanceOf(BORROWER), 0);
         assertEq(nft2.balanceOf(BORROWER), 0);
         assertEq(nft.balanceOf(address(kairos)), 1);
-        assertEq(nft.balanceOf(address(kairos)), 1);
+        assertEq(nft2.balanceOf(address(kairos)), 1);
     }
 
     function checkLoans() private view {

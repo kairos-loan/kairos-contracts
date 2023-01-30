@@ -42,7 +42,7 @@ contract TestBorrowHandlers is Internal {
         offArgs.amount = 11 ether;
 
         vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountTooHigh.selector, offArgs.amount, offer.loanToValue)
+            abi.encodeWithSelector(RequestedAmountTooHigh.selector, offArgs.amount, offer.loanToValue, offer)
         );
         this.useOfferExternal(offArgs, collatState);
     }
