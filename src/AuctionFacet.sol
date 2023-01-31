@@ -4,10 +4,10 @@ pragma solidity 0.8.17;
 import {IAuctionFacet} from "../interface/IAuctionFacet.sol";
 import {BuyArgs, NFToken, Ray} from "./DataStructure/Objects.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
-import {LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "./DataStructure/Errors.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
+import {ERC20TransferFailed, LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
@@ -74,7 +74,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
 
         toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
         if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
-            revert LoanAlreadyRepaid(args.loanId);
+            revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
         }
         loan.payment.paid = toPay;
         loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
