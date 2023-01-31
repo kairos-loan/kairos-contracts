@@ -1,5 +1,5 @@
 import { Nft } from "@kairos-loan/chain-types"
-import { deploy } from "./deploy"
+import { deploy } from "./deployFunc"
 
 async function main() {
   await deploy("NFT", ["Kairos Test Doodles", "K-DOOD"])
