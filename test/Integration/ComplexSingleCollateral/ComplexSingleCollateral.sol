@@ -101,7 +101,7 @@ contract TestComplexSingleCollateral is SingleCollatPreExecFuncs {
         assertEq(money.balanceOf(address(kairos)), 0);
 
         assertEq(nft.balanceOf(BORROWER), 0, "borrower nft bal pb after borrow");
-        assertEq(nft.balanceOf(address(kairos)), 1, "this nft bal pb after borrow");
+        assertEq(nft.balanceOf(address(kairos)), 1, "kairos nft bal pb after borrow");
     }
 
     function checkBalancesAfterRepay(uint256 interestsToRepay) private {
@@ -111,7 +111,7 @@ contract TestComplexSingleCollateral is SingleCollatPreExecFuncs {
         assertEq(money.balanceOf(address(kairos)), totalLent + interestsToRepay);
 
         assertEq(nft.balanceOf(BORROWER), 1, "borrower nft bal pb after repay");
-        assertEq(nft.balanceOf(address(kairos)), 0, "this nft bal pb after repay");
+        assertEq(nft.balanceOf(address(kairos)), 0, "kairos nft bal pb after repay");
     }
 
     function checkBalancesAfterClaim(uint256 interestsToRepay) private {
