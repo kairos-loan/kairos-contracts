@@ -22,7 +22,9 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         d.m1InitialBalance = money.balanceOf(address(this));
         d.m2InitialBalance = money2.balanceOf(address(this));
 
-        prepareSigners();
+        prepareSigners(2 ether, 2 ether, 0 ether);
+        getFlooz(signer, money2, 2 ether);
+        getJpeg(BORROWER, nft2);
         d = initOffers(d);
         d = initOfferArgs(d);
         d = initBorrowArgs(d);
