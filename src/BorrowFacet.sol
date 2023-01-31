@@ -2,15 +2,14 @@
 pragma solidity 0.8.17;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {IBorrowFacet} from "../interface/IBorrowFacet.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import {BorrowHandlers} from "./BorrowLogic/BorrowHandlers.sol";
-import {BorrowArgs, NFToken, Offer, OfferArgs} from "./DataStructure/Objects.sol";
-import {Signature} from "./Signature.sol";
+import {BorrowArgs, NFToken, OfferArgs} from "./DataStructure/Objects.sol";
 
 /// @notice public facing methods for borrowing
 /// @dev contract handles all borrowing logic through inheritance
-contract BorrowFacet is IBorrowFacet, BorrowHandlers {
+contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     // todo #19 add reentrency check
     // todo #20 process supplier coins
     // todo #21 support supplier signed approval
@@ -24,6 +23,7 @@ contract BorrowFacet is IBorrowFacet, BorrowHandlers {
     /// @param data abi encoded arguments for the loan
     /// @return selector `this.onERC721Received.selector` ERC721-compliant response, signaling compatibility
     /// @dev param data must be of format OfferArgs[]
+    /// @inheritdoc IERC721Receiver
     function onERC721Received(
         address,
         address from,
@@ -45,9 +45,5 @@ contract BorrowFacet is IBorrowFacet, BorrowHandlers {
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             useCollateral(args[i].args, msg.sender, args[i].nft);
         }
-    }
-
-    function offerDigest(Offer memory offer) public view override(IBorrowFacet, Signature) returns (bytes32) {
-        return Signature.offerDigest(offer);
     }
 }

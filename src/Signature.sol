@@ -22,7 +22,7 @@ abstract contract Signature is EIP712 {
     /// @notice computes EIP-712 compliant digest of a loan offer
     /// @param offer the loan offer signed/to sign by a supplier
     /// @return digest the digest
-    function offerDigest(Offer memory offer) public view virtual returns (bytes32) {
+    function offerDigest(Offer memory offer) public view returns (bytes32) {
         return _hashTypedDataV4(typeHashOffer(offer));
     }
 
