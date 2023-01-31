@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {IClaimFacet} from "../interface/IClaimFacet.sol";
-import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
+import {BorrowerAlreadyClaimed, ERC20TransferFailed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
@@ -66,7 +66,9 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             }
             loan.payment.borrowerClaimed = true;
             sentTemp = loan.payment.liquidated ? loan.payment.paid.mul(ONE.sub(loan.shareLent)) : 0;
-            require(loan.assetLent.transfer(msg.sender, sentTemp), "ERC20 transfer failed");
+            if (!loan.assetLent.transfer(msg.sender, sentTemp)) {
+                revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
+            }
             if (sentTemp > 0) {
                 emit Claim(msg.sender, sentTemp, loanIds[i]);
             }
@@ -80,8 +82,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
-        /* Should be more precise but breaks tests
-        sent = loan.payment.paid.mul(provision.share).div(loan.shareLent); */
+        // todo #178 explore why precision improvement breaks tests
         require(loan.assetLent.transfer(msg.sender, sent), "ERC20 transfer failed");
     }
 
@@ -97,6 +98,8 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             ? loan.payment.paid.mul(provision.share).div(loan.shareLent)
             : loan.payment.paid.mul(provision.share);
 
-        require(loan.assetLent.transfer(msg.sender, sent), "ERC20 transfer failed");
+        if (!loan.assetLent.transfer(msg.sender, sent)) {
+            revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
+        }
     }
 }

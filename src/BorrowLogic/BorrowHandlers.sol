@@ -8,7 +8,7 @@ import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Glob
 import {RayMath} from "../utils/RayMath.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
 import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
-import {InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
+import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
@@ -53,10 +53,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             collatState.minOfferDuration = args.offer.duration;
         }
 
-        require(
-            collatState.assetLent.transferFrom(signer, collatState.from, args.amount),
-            "ERC20 transfer failed"
-        );
+        if (!collatState.assetLent.transferFrom(signer, collatState.from, args.amount)) {
+            revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
+        }
+
         // todo #35 verify provision has expected values
         safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);

@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import {IRepayFacet} from "../interface/IRepayFacet.sol";
 import {Loan, Protocol} from "./DataStructure/Storage.sol";
-import {LoanAlreadyRepaid} from "./DataStructure/Errors.sol";
+import {ERC20TransferFailed, LoanAlreadyRepaid} from "./DataStructure/Errors.sol";
 import {protocolStorage} from "./DataStructure/Global.sol";
 import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
@@ -36,7 +36,9 @@ contract RepayFacet is IRepayFacet {
             }
             lent = loan.lent;
             toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate));
-            require(loan.assetLent.transferFrom(msg.sender, address(this), toRepay), "ERC20 transfer failed");
+            if (!loan.assetLent.transferFrom(msg.sender, address(this), toRepay)) {
+                revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
+            }
             loan.payment.paid = toRepay;
             loan.payment.borrowerClaimed = true;
             loan.collateral.implem.safeTransferFrom(address(this), loan.borrower, loan.collateral.id);
