@@ -21,7 +21,7 @@ abstract contract BorrowCheckers is Signature {
             revert OfferHasExpired(args.offer, args.offer.expirationDate);
         }
         if (args.amount > args.offer.loanToValue) {
-            revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue);
+            revert RequestedAmountTooHigh(args.amount, args.offer.loanToValue, args.offer);
         }
 
         return signer;

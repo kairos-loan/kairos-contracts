@@ -22,7 +22,9 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         d.m1InitialBalance = money.balanceOf(address(this));
         d.m2InitialBalance = money2.balanceOf(address(this));
 
-        prepareSigners();
+        prepareSigners(2 ether, 2 ether, 0 ether);
+        getFlooz(signer, money2, 2 ether);
+        getJpeg(BORROWER, nft2);
         d = initOffers(d);
         d = initOfferArgs(d);
         d = initBorrowArgs(d);
@@ -66,7 +68,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         assertEq(nft.balanceOf(BORROWER), 0);
         assertEq(nft2.balanceOf(BORROWER), 0);
         assertEq(nft.balanceOf(address(kairos)), 1);
-        assertEq(nft.balanceOf(address(kairos)), 1);
+        assertEq(nft2.balanceOf(address(kairos)), 1);
     }
 
     function checkLoans() private view {

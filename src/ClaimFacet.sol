@@ -36,6 +36,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             if (!_isApprovedOrOwner(msg.sender, positionIds[i])) {
                 revert ERC721CallerIsNotOwnerNorApproved();
             }
+            _burn(positionIds[i]);
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
@@ -44,7 +45,6 @@ contract ClaimFacet is IClaimFacet, SafeMint {
                 : sendInterests(loan, provision);
             emit Claim(msg.sender, sentTemp, loanId);
             sent += sentTemp;
-            _burn(positionIds[i]);
         }
     }
 
@@ -81,9 +81,10 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     /// @param provision liquidity provision for this loan
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
-        sent = loan.payment.paid.mul(provision.share.div(loan.shareLent));
+        Ray shareOfTotalLent = provision.amount.div(loan.lent);
         // todo #178 explore why precision improvement breaks tests
-        require(loan.assetLent.transfer(msg.sender, sent), "ERC20 transfer failed");
+        sent = provision.amount + (loan.payment.paid - loan.lent).mul(shareOfTotalLent);
+        loan.assetLent.transfer(msg.sender, sent);
     }
 
     /// @notice sends liquidation share due to `msg.sender` as a supplier

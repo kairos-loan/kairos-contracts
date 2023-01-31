@@ -59,4 +59,12 @@ contract External is SetUp, ERC721Holder {
         vm.prank(to);
         implem.approve(address(kairos), tokenId);
     }
+
+    function prepareSigners(uint256 signer1Amount, uint256 signer2Amount, uint256 borrowerAmount) internal {
+        getFlooz(signer, money, signer1Amount);
+        getFlooz(signer2, money, signer2Amount);
+        getFlooz(BORROWER, money, borrowerAmount);
+
+        getJpeg(BORROWER, nft);
+    }
 }
