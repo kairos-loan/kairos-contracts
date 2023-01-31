@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import {IBorrowFacet} from "../interface/IBorrowFacet.sol";
 
 import {BorrowHandlers} from "./BorrowLogic/BorrowHandlers.sol";
@@ -45,9 +46,5 @@ contract BorrowFacet is IBorrowFacet, BorrowHandlers {
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             useCollateral(args[i].args, msg.sender, args[i].nft);
         }
-    }
-
-    function offerDigest(Offer memory offer) public view override(IBorrowFacet, Signature) returns (bytes32) {
-        return Signature.offerDigest(offer);
     }
 }

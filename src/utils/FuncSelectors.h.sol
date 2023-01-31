@@ -1,19 +1,22 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {DiamondERC721} from "../SupplyPositionLogic/DiamondERC721.sol";
 import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
 import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC165} from "diamond/contracts/interfaces/IERC165.sol";
 import {OwnershipFacet} from "diamond/contracts/facets/OwnershipFacet.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import {IAuctionFacet} from "../../interface/IAuctionFacet.sol";
 import {IBorrowFacet} from "../../interface/IBorrowFacet.sol";
 import {IClaimFacet} from "../../interface/IClaimFacet.sol";
 import {IProtocolFacet} from "../../interface/IProtocolFacet.sol";
 import {IRepayFacet} from "../../interface/IRepayFacet.sol";
+import {ISignature} from "../../interface/ISignature.sol";
+
 import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
+import {DiamondERC721} from "../SupplyPositionLogic/DiamondERC721.sol";
 
 /* solhint-disable func-visibility */
 
@@ -53,8 +56,8 @@ function cutFS() pure returns (bytes4[] memory) {
 function borrowFS() pure returns (bytes4[] memory) {
     bytes4[] memory functionSelectors = new bytes4[](3);
 
-    functionSelectors[0] = IBorrowFacet.onERC721Received.selector;
-    functionSelectors[1] = IBorrowFacet.offerDigest.selector;
+    functionSelectors[0] = IERC721Receiver.onERC721Received.selector;
+    functionSelectors[1] = ISignature.offerDigest.selector;
     functionSelectors[2] = IBorrowFacet.borrow.selector;
 
     return functionSelectors;

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {IBorrowHandlers} from "../../interface/IBorrowHandlers.sol";
+
 import {BorrowCheckers} from "./BorrowCheckers.sol";
 import {CollateralState, NFToken, OfferArgs, Ray} from "../DataStructure/Objects.sol";
 import {Loan, Payment, Protocol, Provision} from "../DataStructure/Storage.sol";
@@ -11,7 +13,7 @@ import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
 import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
-abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
+abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 

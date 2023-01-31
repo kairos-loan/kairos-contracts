@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+
+import {IBorrowCheckers} from "../../interface/IBorrowCheckers.sol";
+
 import {Signature} from "../Signature.sol";
 import {NFTokenUtils} from "../utils/NFTokenUtils.sol";
 import {Offer, OfferArgs, NFToken} from "../../src/DataStructure/Objects.sol";
 import {BadCollateral, OfferHasExpired, RequestedAmountTooHigh} from "../../src/DataStructure/Errors.sol";
-import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /// @notice handles checks to verify validity of a loan request
-abstract contract BorrowCheckers is Signature {
+abstract contract BorrowCheckers is IBorrowCheckers, Signature {
     using NFTokenUtils for NFToken;
 
     /// @notice checks arguments validity for usage of one Offer
