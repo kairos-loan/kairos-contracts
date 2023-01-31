@@ -12,7 +12,7 @@ struct BorrowData {
     Offer signer2Offer;
 }
 
-contract FullLoanPreExecFuncs is External {
+contract SingleCollatPreExecFuncs is External {
     function initOfferArgs(
         BorrowData memory d,
         uint256 oargs1Amount,

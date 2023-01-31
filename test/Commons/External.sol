@@ -64,7 +64,6 @@ contract External is SetUp, ERC721Holder {
         getFlooz(signer, money, signer1Amount);
         getFlooz(signer2, money, signer2Amount);
         getFlooz(BORROWER, money, borrowerAmount);
-        getFlooz(address(this), money, 10 ether);
 
         getJpeg(BORROWER, nft);
     }
