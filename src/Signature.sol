@@ -3,11 +3,13 @@ pragma solidity 0.8.17;
 
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
+import {ISignature} from "../interface/ISignature.sol";
+
 import {NFToken} from "./DataStructure/Objects.sol";
 import {Offer} from "./DataStructure/Objects.sol";
 
 /// @notice handles signature verification
-abstract contract Signature is EIP712 {
+abstract contract Signature is ISignature, EIP712 {
     bytes32 internal constant OFFER_TYPEHASH =
         keccak256(
             "Offer(address assetToLend,uint256 loanToValue,uint256 duration,"
@@ -22,7 +24,7 @@ abstract contract Signature is EIP712 {
     /// @notice computes EIP-712 compliant digest of a loan offer
     /// @param offer the loan offer signed/to sign by a supplier
     /// @return digest the digest
-    function offerDigest(Offer memory offer) public view virtual returns (bytes32) {
+    function offerDigest(Offer memory offer) public view returns (bytes32) {
         return _hashTypedDataV4(typeHashOffer(offer));
     }
 
