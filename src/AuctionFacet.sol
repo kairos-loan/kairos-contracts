@@ -72,7 +72,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
             _burn(args.positionIds[i]);
         }
 
-        toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
+        toPay = price(loan.lent, shareToPay, timeSinceLiquidable);
         if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
             revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
         }
@@ -83,11 +83,11 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     }
 
     /// @notice gets price calculated following a linear dutch auction
-    /// @param lent amount lent in the loan
-    /// @param shareLent share of the loan lent by the caller
+    /// @param lent total amount lent in the loan
+    /// @param shareToPay share of the collateral to pay, I.e share of the loan not owned by caller
     /// @param timeElapsed time elapsed since the collateral is liquidable
     /// @return price computed price
-    function price(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns (uint256) {
+    function price(uint256 lent, Ray shareToPay, uint256 timeElapsed) internal view returns (uint256) {
         Protocol storage proto = protocolStorage();
 
         // todo : explore attack vectors based on small values messing with calculus
@@ -95,6 +95,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
             ? ZERO
             : ONE.sub(timeElapsed.div(proto.auctionDuration));
         uint256 totalToPay = lent.mul(proto.auctionPriceFactor).mul(decreasingFactor);
-        return totalToPay.div(shareLent);
+        return totalToPay.mul(shareToPay);
     }
 }

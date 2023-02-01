@@ -84,8 +84,8 @@ contract TestAuction is External {
         for (uint8 i = 0; i < nbOfAuctions; i++) {
             assertEq(nft.ownerOf(i + 1), signer);
         }
-        assertEq(money.balanceOf(signer), 0);
-        assertEq(money.balanceOf(address(kairos)), nbOfAuctions * 1 ether);
+        assertEq(money.balanceOf(signer), 0, "incorrect balance of signer");
+        assertEq(money.balanceOf(address(kairos)), nbOfAuctions * 1 ether, "incorrect balance of kairos");
     }
 
     function getLoan() internal view override returns (Loan memory loan) {

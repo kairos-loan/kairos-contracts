@@ -9,33 +9,47 @@ import {RayMath} from "../../src/utils/RayMath.sol";
 contract TestAuction is Internal {
     using RayMath for Ray;
     using RayMath for uint256;
-    uint256 private lent = 1 ether;
+    uint256 private lent = 1 ether; // amount lent by the lender (not total of loan)
 
-    function testInitialAuctionPrice() public {
-        assertEq(price(lent, ONE.div(2), 0), 2 * lent.mul(protocolStorage().auctionPriceFactor)); // totalLent = 2 ether
+    function testInitialPrice() public {
+        uint256 shareDivider = 2;
+        assertEq(
+            price(lent, ONE.div(shareDivider), 0),
+            lent.mul(protocolStorage().auctionPriceFactor) / shareDivider
+        ); // totalLent = 2 ether
     }
 
-    function testAuctionPrice() public {
-        Ray shareLent = ONE.div(3);
-        uint256 timeElapsed = protocolStorage().auctionDuration / 2;
+    function testPrice() public {
+        uint256 shareDivider = 3;
+        uint256 auctionDurationDivider = 3;
+        Ray shareToPay = ONE.div(shareDivider);
+        uint256 timeElapsed = protocolStorage().auctionDuration / auctionDurationDivider;
         assertEq(
-            price(lent, shareLent, timeElapsed),
-            (3 * lent.mul(protocolStorage().auctionPriceFactor)) / 2
+            price(lent, shareToPay, timeElapsed),
+            (lent.mul(protocolStorage().auctionPriceFactor) / shareDivider).mul(
+                ONE.sub(ONE.div(auctionDurationDivider))
+            )
         ); // totalLent = 3 ether
 
-        timeElapsed /= 2; // 1/4 of the auction duration
+        auctionDurationDivider = auctionDurationDivider * 2;
+        timeElapsed /= 2;
         assertEq(
-            price(lent, shareLent, timeElapsed),
-            (((3 * lent.mul(protocolStorage().auctionPriceFactor))) * 3) / 4
+            price(lent, shareToPay, timeElapsed),
+            (lent.mul(protocolStorage().auctionPriceFactor) / shareDivider).mul(
+                ONE.sub(ONE.div(auctionDurationDivider))
+            )
         );
     }
 
-    function testFinalAuctionPrice() public {
-        Ray shareLent = ONE.div(2);
+    function testFinalPrice() public {
+        Ray shareToPay = ONE.div(3);
         uint256 timeElapsed = protocolStorage().auctionDuration;
-        assertEq(price(lent, shareLent, timeElapsed), 0 ether);
+        assertEq(price(lent, shareToPay, timeElapsed), 0 ether);
 
         timeElapsed = protocolStorage().auctionDuration + 1;
-        assertEq(price(lent, shareLent, timeElapsed), 0 ether);
+        assertEq(price(lent, shareToPay, timeElapsed), 0 ether);
+
+        timeElapsed = protocolStorage().auctionDuration + 2 weeks;
+        assertEq(price(lent, shareToPay, timeElapsed), 0 ether);
     }
 }
