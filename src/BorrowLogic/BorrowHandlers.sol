@@ -9,7 +9,6 @@ import {Loan, Payment, Protocol, Provision} from "../DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
 import {RayMath} from "../utils/RayMath.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
-import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
 import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
