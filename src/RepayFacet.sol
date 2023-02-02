@@ -18,7 +18,6 @@ contract RepayFacet {
 
     // todo #17 : propose erc777 onReceive hook for repayment ?
     // todo #16 : implement minimal repayment
-    // todo #15 : analysis on possible reentrency
     /// @notice repay one or multiple loans, gives collaterals back
     /// @dev repay on behalf is activated, the collateral goes to the original borrower
     /// @param loanIds identifiers of loans to repay
@@ -30,7 +29,7 @@ contract RepayFacet {
 
         for (uint8 i; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
-            if (loan.payment.paid > 0) {
+            if (loan.payment.paid > 0 || loan.payment.borrowerClaimed) {
                 revert LoanAlreadyRepaid(loanIds[i]);
             }
             lent = loan.lent;
