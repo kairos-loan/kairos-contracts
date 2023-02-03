@@ -9,34 +9,34 @@ import {RayMath} from "../../src/utils/RayMath.sol";
 contract TestAuction is Internal {
     using RayMath for Ray;
     using RayMath for uint256;
-    uint256 private lent = 1 ether; // amount lent by the lender (not total of loan)
+    uint256 private lent = 1 ether; // total amount lent in the loan
 
     function testInitialPrice() public {
-        uint256 shareDivider = 2;
-        assertEq(
-            price(lent, ONE.div(shareDivider), 0),
-            lent.mul(protocolStorage().auctionPriceFactor) / shareDivider
-        ); // totalLent = 2 ether
+        Ray shareToPay = ONE.div(2);
+        assertEq(price(lent, shareToPay, 0), lent.mul(protocolStorage().auctionPriceFactor).mul(shareToPay));
     }
 
     function testPrice() public {
-        uint256 shareDivider = 3;
-        uint256 auctionDurationDivider = 3;
-        Ray shareToPay = ONE.div(shareDivider);
+        Ray shareToPay = ONE.div(11);
+        uint256 auctionDurationDivider = 13;
         uint256 timeElapsed = protocolStorage().auctionDuration / auctionDurationDivider;
         assertEq(
             price(lent, shareToPay, timeElapsed),
-            (lent.mul(protocolStorage().auctionPriceFactor) / shareDivider).mul(
-                ONE.sub(ONE.div(auctionDurationDivider))
+            (
+                lent.mul(protocolStorage().auctionPriceFactor).mul(shareToPay).mul(
+                    ONE.sub(timeElapsed.div(protocolStorage().auctionDuration))
+                )
             )
-        ); // totalLent = 3 ether
+        );
 
         auctionDurationDivider = auctionDurationDivider * 2;
         timeElapsed /= 2;
         assertEq(
             price(lent, shareToPay, timeElapsed),
-            (lent.mul(protocolStorage().auctionPriceFactor) / shareDivider).mul(
-                ONE.sub(ONE.div(auctionDurationDivider))
+            (
+                lent.mul(protocolStorage().auctionPriceFactor).mul(shareToPay).mul(
+                    ONE.sub(timeElapsed.div(protocolStorage().auctionDuration))
+                )
             )
         );
     }
