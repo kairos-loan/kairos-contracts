@@ -63,6 +63,7 @@ contract DeployLocal is Script, External {
         Offer memory offer = getOffer();
 
         money.mint(100 ether);
+        money.mint(100 ether, frontTester);
         money.approve(address(kairos), 100 ether);
         nft.mintOne();
         nft.approve(address(kairos), 1);
