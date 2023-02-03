@@ -4,7 +4,8 @@ pragma solidity 0.8.17;
 import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
-import {ONE, Ray, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {ONE, RAY, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 
@@ -77,8 +78,8 @@ contract ClaimFacet is SafeMint {
     /// @param provision liquidity provision for this loan
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
-        Ray shareOfTotalLent = provision.amount.div(loan.lent);
-        sent = provision.amount + (loan.payment.paid - loan.lent).mul(shareOfTotalLent);
+        uint256 interests = loan.payment.paid - loan.lent;
+        sent = provision.amount + (interests * (provision.amount)) / (loan.lent);
         loan.assetLent.transfer(msg.sender, sent);
     }
 
