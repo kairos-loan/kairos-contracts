@@ -40,39 +40,15 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @notice handles buying one NFT
     /// @param args arguments on what and how to buy
     function useLoan(BuyArgs memory args) internal {
-        // todo #14 cut in multiple functions
-        Protocol storage proto = protocolStorage();
-        SupplyPosition storage sp = supplyPositionStorage();
-        Loan storage loan = proto.loan[args.loanId];
-        Ray shareToPay = ONE;
-
-        if (args.to == loan.borrower) {
-            loan.payment.borrowerBought = true;
-            shareToPay = loan.shareLent;
-        }
-
+        Loan storage loan = protocolStorage().loan[args.loanId];
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
-        uint256 toPay;
-        Provision storage provision;
 
         if (loan.payment.paid != 0 || loan.payment.liquidated) {
             revert LoanAlreadyRepaid(args.loanId);
         }
         loan.payment.liquidated = true;
 
-        for (uint8 i = 0; i < args.positionIds.length; i++) {
-            provision = sp.provision[args.positionIds[i]];
-            shareToPay = shareToPay.sub(provision.share);
-            if (!_isApprovedOrOwner(msg.sender, args.positionIds[i])) {
-                revert ERC721CallerIsNotOwnerNorApproved();
-            }
-            if (provision.loanId != args.loanId) {
-                revert SupplyPositionDoesntBelongToTheLoan(args.positionIds[i], args.loanId);
-            }
-            _burn(args.positionIds[i]);
-        }
-
-        toPay = price(loan.lent, shareToPay, timeSinceLiquidable);
+        uint256 toPay = price(loan.lent, getShareToPay(args, loan), timeSinceLiquidable);
         if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
             revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
         }
@@ -80,6 +56,33 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
 
         emit Buy(args.loanId, abi.encode(args));
+    }
+
+    /// @notice computes the share of the NFT to pay and burn the used supply positions
+    /// @param args arguments on what and how to buy
+    /// @param loan loan to buy collateral from
+    /// @return shareToPay share of the loan to pay
+    function getShareToPay(BuyArgs memory args, Loan storage loan) internal returns (Ray shareToPay) {
+        SupplyPosition storage sp = supplyPositionStorage();
+        Provision storage provision;
+        shareToPay = ONE;
+        if (args.to == loan.borrower) {
+            loan.payment.borrowerBought = true;
+            shareToPay = loan.shareLent;
+        }
+
+        for (uint8 i = 0; i < args.positionIds.length; i++) {
+            uint256 positionId = args.positionIds[i];
+            provision = sp.provision[positionId];
+            if (!_isApprovedOrOwner(msg.sender, positionId)) {
+                revert ERC721CallerIsNotOwnerNorApproved();
+            }
+            if (provision.loanId != args.loanId) {
+                revert SupplyPositionDoesntBelongToTheLoan(positionId, args.loanId);
+            }
+            shareToPay = shareToPay.sub(provision.share);
+            _burn(positionId);
+        }
     }
 
     /// @notice gets price calculated following a linear dutch auction
