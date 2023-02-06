@@ -24,7 +24,7 @@ contract TestRepay is External {
         uint256 toRepay = nbOfRepays * (uint256(1 ether * 2 weeks).mul(getTranche(0)) + 1 ether);
         uint256 currTokenId;
 
-        for (uint8 i; i < nbOfRepays; i++) {
+        for (uint8 i = 0; i < nbOfRepays; i++) {
             loanIds[i] = i + 1;
             currTokenId = nft.mintOneTo(address(kairos));
             Loan memory loan = getLoan();

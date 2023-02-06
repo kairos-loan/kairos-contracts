@@ -6,7 +6,7 @@ import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 import {supplyPositionStorage} from "../DataStructure/Global.sol";
 import {SupplyPosition} from "../DataStructure/Storage.sol";
-import {ERC721ApproveToCaller, ERC721InvalidTokenId, ERC721TokenAlreadyMinted, ERC721MintToTheZeroAddress, ERC721TransferToIncorrectOwner, ERC721TransferToNonERC721ReceiverImplementer, ERC721TransferToTheZeroAddress} from "../DataStructure/ERC721Errors.sol";
+import {ERC721ApproveToCaller, ERC721InvalidTokenId, ERC721TokenAlreadyMinted, ERC721MintToTheZeroAddress, ERC721TransferFromIncorrectOwner, ERC721TransferToNonERC721ReceiverImplementer, ERC721TransferToTheZeroAddress} from "../DataStructure/ERC721Errors.sol";
 
 /// @notice internal logic for DiamondERC721 adapted fo usage with diamond storage
 abstract contract NFTUtils {
@@ -17,6 +17,32 @@ abstract contract NFTUtils {
     function emitApproval(address owner, address approved, uint256 tokenId) internal virtual;
 
     function emitApprovalForAll(address owner, address operator, bool approved) internal virtual;
+
+    function _checkOnERC721Received(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) internal returns (bool) {
+        if (to.isContract()) {
+            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (
+                bytes4 retval
+            ) {
+                return retval == IERC721Receiver.onERC721Received.selector;
+            } catch (bytes memory reason) {
+                if (reason.length == 0) {
+                    revert ERC721TransferToNonERC721ReceiverImplementer();
+                } else {
+                    /* solhint-disable-next-line no-inline-assembly */
+                    assembly {
+                        revert(add(32, reason), mload(reason))
+                    }
+                }
+            }
+        } else {
+            return true;
+        }
+    }
 
     function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal {
         _transfer(from, to, tokenId);
@@ -70,7 +96,7 @@ abstract contract NFTUtils {
         SupplyPosition storage sp = supplyPositionStorage();
 
         if (_ownerOf(tokenId) != from) {
-            revert ERC721TransferToIncorrectOwner();
+            revert ERC721TransferFromIncorrectOwner();
         }
         if (to == address(0)) {
             revert ERC721TransferToTheZeroAddress();
@@ -101,32 +127,6 @@ abstract contract NFTUtils {
         }
         sp.operatorApproval[owner][operator] = approved;
         emitApprovalForAll(owner, operator, approved);
-    }
-
-    function _checkOnERC721Received(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal returns (bool) {
-        if (to.isContract()) {
-            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (
-                bytes4 retval
-            ) {
-                return retval == IERC721Receiver.onERC721Received.selector;
-            } catch (bytes memory reason) {
-                if (reason.length == 0) {
-                    revert ERC721TransferToNonERC721ReceiverImplementer();
-                } else {
-                    /* solhint-disable-next-line no-inline-assembly */
-                    assembly {
-                        revert(add(32, reason), mload(reason))
-                    }
-                }
-            }
-        } else {
-            return true;
-        }
     }
 
     function _exists(uint256 tokenId) internal view returns (bool) {

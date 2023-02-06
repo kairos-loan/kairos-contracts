@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {IAuctionFacet} from "../interface/IAuctionFacet.sol";
 import {BuyArgs, NFToken, Ray} from "./DataStructure/Objects.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
-import {LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "./DataStructure/Errors.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
+import {ERC20TransferFailed, LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
-contract AuctionFacet is SafeMint {
+contract AuctionFacet is IAuctionFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
@@ -22,7 +23,7 @@ contract AuctionFacet is SafeMint {
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
     function buy(BuyArgs[] memory args) external {
-        for (uint8 i; i < args.length; i++) {
+        for (uint8 i = 0; i < args.length; i++) {
             useLoan(args[i]);
         }
     }
@@ -59,7 +60,7 @@ contract AuctionFacet is SafeMint {
         }
         loan.payment.liquidated = true;
 
-        for (uint8 i; i < args.positionIds.length; i++) {
+        for (uint8 i = 0; i < args.positionIds.length; i++) {
             provision = sp.provision[args.positionIds[i]];
             shareToPay = shareToPay.sub(provision.share);
             if (!_isApprovedOrOwner(msg.sender, args.positionIds[i])) {
@@ -71,8 +72,10 @@ contract AuctionFacet is SafeMint {
             _burn(args.positionIds[i]);
         }
 
-        toPay = price(loan.lent, loan.shareLent, timeSinceLiquidable).mul(shareToPay);
-        loan.assetLent.transferFrom(msg.sender, address(this), toPay);
+        toPay = price(loan.lent, shareToPay, timeSinceLiquidable);
+        if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
+            revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
+        }
         loan.payment.paid = toPay;
         loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
 
@@ -80,19 +83,18 @@ contract AuctionFacet is SafeMint {
     }
 
     /// @notice gets price calculated following a linear dutch auction
-    /// @param lent amount lent in the loan
-    /// @param shareLent share of the loan lent by the caller
+    /// @param lent total amount lent in the loan
+    /// @param shareToPay share of the collateral to pay, I.e share of the loan not owned by caller
     /// @param timeElapsed time elapsed since the collateral is liquidable
     /// @return price computed price
-    function price(uint256 lent, Ray shareLent, uint256 timeElapsed) internal view returns (uint256) {
+    function price(uint256 lent, Ray shareToPay, uint256 timeElapsed) internal view returns (uint256) {
         Protocol storage proto = protocolStorage();
 
         // todo : explore attack vectors based on small values messing with calculus
-        uint256 loanToValue = lent.div(shareLent);
-        uint256 initialPrice = loanToValue.mul(proto.auctionPriceFactor);
         Ray decreasingFactor = timeElapsed >= proto.auctionDuration
             ? ZERO
             : ONE.sub(timeElapsed.div(proto.auctionDuration));
-        return initialPrice.mul(decreasingFactor);
+        uint256 totalToPay = lent.mul(proto.auctionPriceFactor).mul(decreasingFactor);
+        return totalToPay.mul(shareToPay);
     }
 }

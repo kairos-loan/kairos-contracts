@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
+import {IClaimFacet} from "../interface/IClaimFacet.sol";
+import {BorrowerAlreadyClaimed, ERC20TransferFailed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
-import {ONE, Ray, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 
 /// @notice claims supplier and borrower rights on loans or supply positions
-contract ClaimFacet is SafeMint {
+contract ClaimFacet is IClaimFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
@@ -30,7 +32,7 @@ contract ClaimFacet is SafeMint {
         uint256 loanId;
         uint256 sentTemp;
 
-        for (uint8 i; i < positionIds.length; i++) {
+        for (uint8 i = 0; i < positionIds.length; i++) {
             if (!_isApprovedOrOwner(msg.sender, positionIds[i])) {
                 revert ERC721CallerIsNotOwnerNorApproved();
             }
@@ -54,7 +56,7 @@ contract ClaimFacet is SafeMint {
         Loan storage loan;
         uint256 sentTemp;
 
-        for (uint8 i; i < loanIds.length; i++) {
+        for (uint8 i = 0; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
             if (loan.borrower != msg.sender) {
                 revert NotBorrowerOfTheLoan(loanIds[i]);
@@ -64,7 +66,9 @@ contract ClaimFacet is SafeMint {
             }
             loan.payment.borrowerClaimed = true;
             sentTemp = loan.payment.liquidated ? loan.payment.paid.mul(ONE.sub(loan.shareLent)) : 0;
-            loan.assetLent.transfer(msg.sender, sentTemp);
+            if (!loan.assetLent.transfer(msg.sender, sentTemp)) {
+                revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
+            }
             if (sentTemp > 0) {
                 emit Claim(msg.sender, sentTemp, loanIds[i]);
             }
@@ -78,8 +82,11 @@ contract ClaimFacet is SafeMint {
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         Ray shareOfTotalLent = provision.amount.div(loan.lent);
+        // todo #178 explore why precision improvement breaks tests
         sent = provision.amount + (loan.payment.paid - loan.lent).mul(shareOfTotalLent);
-        loan.assetLent.transfer(msg.sender, sent);
+        if (!loan.assetLent.transfer(msg.sender, sent)) {
+            revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
+        }
     }
 
     /// @notice sends liquidation share due to `msg.sender` as a supplier
@@ -91,8 +98,11 @@ contract ClaimFacet is SafeMint {
         Provision storage provision
     ) internal returns (uint256 sent) {
         sent = loan.payment.borrowerBought
-            ? loan.payment.paid.mul(provision.share.div(loan.shareLent))
+            ? loan.payment.paid.mul(provision.share).div(loan.shareLent)
             : loan.payment.paid.mul(provision.share);
-        loan.assetLent.transfer(msg.sender, sent);
+
+        if (!loan.assetLent.transfer(msg.sender, sent)) {
+            revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
+        }
     }
 }

@@ -25,8 +25,8 @@ struct Protocol {
 /// @notice Issued Loan (corresponding to one collateral)
 /// @param assetLent currency lent
 /// @param lent total amount lent
-/// @param startDate timestamp of the borrowing transaction
 /// @param shareLent between 0 and 1, the share of the collateral value lent
+/// @param startDate timestamp of the borrowing transaction
 /// @param endDate timestamp after which sale starts & repay is impossible
 /// @param interestPerSecond share of the amount lent added to the debt per second
 /// @param borrower borrowing account

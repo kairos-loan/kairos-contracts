@@ -2,11 +2,11 @@
 pragma solidity 0.8.17;
 
 import {BigKairos} from "./BigKairos.sol";
-import {CollateralState, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
-import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {CollateralState, NFToken, Offer, OfferArgs, Ray} from "../../src/DataStructure/Objects.sol";
+import {Loan, Protocol, Provision} from "../../src/DataStructure/Storage.sol";
 import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";
-import {protocolStorage, ONE, Ray} from "../../src/DataStructure/Global.sol";
+import {protocolStorage, ONE} from "../../src/DataStructure/Global.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 import {TestCommons} from "./TestCommons.sol";
 
@@ -16,8 +16,10 @@ contract Internal is TestCommons, BigKairos {
 
     constructor() {
         bytes memory randoCode = hex"01";
-
-        protocolStorage().tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
+        Protocol storage proto = protocolStorage();
+        proto.tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
+        proto.auctionPriceFactor = ONE.mul(3);
+        proto.auctionDuration = 3 days;
         money = Money(address(bytes20(keccak256("mock address money"))));
         vm.etch(address(money), randoCode);
         vm.label(address(money), "money");
@@ -67,6 +69,10 @@ contract Internal is TestCommons, BigKairos {
         Provision storage provision
     ) internal returns (uint256) {
         return sendShareOfSaleAsSupplier(loan, provision);
+    }
+
+    function priceExternal(uint256 lent, Ray shareLent, uint256 timeElapsed) external view returns (uint256) {
+        return price(lent, shareLent, timeElapsed);
     }
 
     function sentInterestsIn(Loan storage loan, Provision storage provision) internal returns (uint256) {

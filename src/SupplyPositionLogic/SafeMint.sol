@@ -15,6 +15,7 @@ contract SafeMint is NFTUtils {
     function safeMint(address to, Provision memory provision) internal returns (uint256 tokenId) {
         SupplyPosition storage sp = supplyPositionStorage();
 
+        // todo #174 Analyse possible reentrancy attack
         tokenId = ++sp.totalSupply;
         sp.provision[tokenId] = provision;
         _safeMint(to, tokenId);
