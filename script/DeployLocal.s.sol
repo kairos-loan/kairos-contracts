@@ -11,27 +11,33 @@ import {IKairos} from "../interface/IKairos.sol";
 import {Money} from "../src/mock/Money.sol";
 import {NFT} from "../src/mock/NFT.sol";
 import {Offer} from "../src/DataStructure/Objects.sol";
+import {Loan, Provision} from "../src/DataStructure/Storage.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, External {
+    address internal deployer;
+    address internal supplier;
+    uint256 internal constant TEST_KEY =
+        uint256(bytes32(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80));
+    address payable internal frontTester;
+
+    constructor() {
+        deployer = vm.addr(TEST_KEY);
+        supplier = vm.addr(KEY);
+        frontTester = payable(vm.envAddress("FRONT_TEST_ADDR"));
+    }
+
     /// @notice gives & approve 100 money tokens and 1 nft to the deployer
     /* solhint-disable-next-line function-max-lines */
     function run() public {
-        bytes memory emptyBytes;
         string memory toWrite = "{\n";
-        uint256 testKey = uint256(
-            bytes32(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80)
-        );
-        address deployer = vm.addr(testKey);
         vm.deal(deployer, 1000 ether);
-        address supplier = vm.addr(KEY);
 
-        vm.startBroadcast(testKey);
+        vm.startBroadcast(TEST_KEY);
 
         // for front testing
         helper = new DCHelperFacet();
         dcTarget = new DCTarget();
-        address payable frontTester = payable(vm.envAddress("FRONT_TEST_ADDR"));
         toWrite = addConst(toWrite, "frontTestAddr", vm.toString(frontTester));
         frontTester.transfer(10 ether);
         NFT frontNft = new NFT("Test Doodles", "TDood");
@@ -69,6 +75,7 @@ contract DeployLocal is Script, External {
         nft.approve(address(kairos), 1);
         frontNft.mintOneTo(address(kairos)); // mint mfers #2 as liquidable for front auction testing
         frontNft.mintOneTo(address(kairos)); // mint mfers #3 as liquidable for front auction testing
+        populateFrontLoans();
 
         vm.stopBroadcast();
 
@@ -82,6 +89,27 @@ contract DeployLocal is Script, External {
         toWrite = addLastConst(toWrite, "deployerAddr", vm.toString(deployer));
         toWrite = string.concat(toWrite, "}");
         vm.writeFile("./packages/shared/src/generated/deployment.json", toWrite);
+    }
+
+    function mintLoan(Loan memory loan) internal returns (uint256 loanId) {
+        bytes memory data = DCHelperFacet(address(kairos)).delegateCall(
+            address(dcTarget),
+            abi.encodeWithSelector(dcTarget.mintLoan.selector, loan)
+        );
+        loanId = abi.decode(data, (uint256));
+    }
+
+    function populateFrontLoans() internal {
+        Provision memory provision = getProvision();
+        provision.loanId = 1;
+        Loan memory loan = getLoan();
+        loan.supplyPositionIndex = mintPosition(deployer, provision);
+        loan.collateral.id = nft.mintOneTo(address(kairos));
+        loan.borrower = frontTester;
+        provision.loanId = mintLoan(loan) + 1;
+        loan.supplyPositionIndex = mintPosition(deployer, provision);
+        loan.collateral.id = nft.mintOneTo(address(kairos));
+        provision.loanId = mintLoan(loan) + 1;
     }
 
     /* solhint-disable quotes */

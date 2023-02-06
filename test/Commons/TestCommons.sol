@@ -17,6 +17,7 @@ abstract contract TestCommons is Loggers {
 
     uint256[] internal oneInArray;
     uint256[] internal emptyArray;
+    bytes internal emptyBytes;
     uint256 internal constant KEY = 0xA11CE;
     uint256 internal constant KEY2 = 0xB0B;
     address internal immutable signer;
