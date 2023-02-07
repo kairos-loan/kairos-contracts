@@ -16,7 +16,7 @@ contract TestBorrow is External {
         getFlooz(signer, money, getOfferArg(getOffer()).amount);
         uint256 tokenId = nft.mintOneTo(BORROWER);
 
-        bytes memory data = abi.encode(getOfferArg(getOffer()));
+        bytes memory data = abi.encode(getOfferArgs(getOffer()));
 
         vm.prank(BORROWER);
         nft.safeTransferFrom(BORROWER, address(kairos), tokenId, data);
