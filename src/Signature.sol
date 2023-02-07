@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
-import {ISignature} from "../interface/ISignature.sol";
+import {ISignature} from "./interface/ISignature.sol";
 
 import {NFToken} from "./DataStructure/Objects.sol";
 import {Offer} from "./DataStructure/Objects.sol";

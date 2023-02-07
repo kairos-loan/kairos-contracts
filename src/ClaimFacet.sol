@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {IClaimFacet} from "../interface/IClaimFacet.sol";
+import {IClaimFacet} from "./interface/IClaimFacet.sol";
 import {BorrowerAlreadyClaimed, ERC20TransferFailed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";

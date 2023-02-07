@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {IBorrowHandlers} from "../../interface/IBorrowHandlers.sol";
+import {IBorrowHandlers} from "../interface/IBorrowHandlers.sol";
 
 import {BorrowCheckers} from "./BorrowCheckers.sol";
 import {CollateralState, NFToken, OfferArg, Ray} from "../DataStructure/Objects.sol";

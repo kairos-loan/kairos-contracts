@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-import {IBorrowCheckers} from "../../interface/IBorrowCheckers.sol";
+import {IBorrowCheckers} from "../interface/IBorrowCheckers.sol";
 
 import {Signature} from "../Signature.sol";
 import {NFTokenUtils} from "../utils/NFTokenUtils.sol";

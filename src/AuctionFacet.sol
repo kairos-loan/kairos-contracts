@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {IAuctionFacet} from "../interface/IAuctionFacet.sol";
+import {IAuctionFacet} from "./interface/IAuctionFacet.sol";
 import {BuyArg, NFToken, Ray} from "./DataStructure/Objects.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {RayMath} from "./utils/RayMath.sol";
