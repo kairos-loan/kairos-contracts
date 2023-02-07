@@ -5,7 +5,7 @@
 rm -rf /usr/app/packages/shared/src/generated/deployment.json
 
 # Start blockchain node
-anvil --silent --block-time 1 --allow-origin "*" --host 0.0.0.0 > out/anvil-logs.txt & PID_ANVIL=$!
+anvil --silent --block-time 1 --timestamp $(date +%s) --allow-origin "*" --host 0.0.0.0 > out/anvil-logs.txt & PID_ANVIL=$!
 
 # Wait install state to be ready
 /usr/bin/wait

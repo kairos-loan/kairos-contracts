@@ -15,6 +15,7 @@ contract DCTarget is BigKairos {
         tokenId = safeMint(to, provision);
     }
 
+    /// @notice stores a new loan with a new id and emit a borrow event
     function mintLoan(Loan memory loan) external returns (uint256 loanId) {
         loanId = ++protocolStorage().nbOfLoans;
         emit Borrow(loanId, abi.encode(loan));
