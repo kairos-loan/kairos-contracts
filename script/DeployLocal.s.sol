@@ -10,7 +10,7 @@ import {External} from "../test/Commons/External.sol";
 import {IKairos} from "../interface/IKairos.sol";
 import {Money} from "../src/mock/Money.sol";
 import {NFT} from "../src/mock/NFT.sol";
-import {Offer} from "../src/DataStructure/Objects.sol";
+import {Offer, NFToken, BuyArgs} from "../src/DataStructure/Objects.sol";
 import {Loan, Provision} from "../src/DataStructure/Storage.sol";
 
 /// @dev deploy script intended for local testing
@@ -97,17 +97,38 @@ contract DeployLocal is Script, External {
         loanId = abi.decode(data, (uint256));
     }
 
+    function updateLoanPositionAndCollateral(
+        Provision memory provision,
+        Loan memory loan,
+        NFT nft
+    ) internal returns (Loan memory) {
+        loan.supplyPositionIndex = mintPosition(deployer, provision);
+        loan.collateral = NFToken({id: nft.mintOneTo(address(kairos)), implem: nft});
+        return loan;
+    }
+
     function populateFrontLoans(NFT frontNft) internal {
         Provision memory provision = getProvision();
         provision.loanId = 1;
         Loan memory loan = getLoan();
-        loan.supplyPositionIndex = mintPosition(deployer, provision);
-        loan.collateral.id = frontNft.mintOneTo(address(kairos));
         loan.borrower = frontTester;
-        provision.loanId = mintLoan(loan) + 1;
-        loan.supplyPositionIndex = mintPosition(deployer, provision);
-        loan.collateral.id = frontNft.mintOneTo(address(kairos));
-        provision.loanId = mintLoan(loan) + 1;
+
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        provision.loanId = mintLoan(loan) + 1; // mfer 2 active to repay in 2 weeks
+
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        provision.loanId = mintLoan(loan) + 1; // mfer 3 active to repay in 2 weeks
+
+        loan.startDate = block.timestamp - 2 weeks;
+        loan.endDate = block.timestamp - 1 days;
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        provision.loanId = mintLoan(loan) + 1; // mfer 4 in active auction
+
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        uint256 toLiquidateLoanId = mintLoan(loan);
+        BuyArgs[] memory buyArgs = new BuyArgs[](1);
+        buyArgs[0] = BuyArgs({loanId: toLiquidateLoanId, to: frontTester, positionIds: emptyArray});
+        kairos.buy(buyArgs); // mfer 5 liquidated (and collateral given back to front tester)
     }
 
     /* solhint-disable quotes */
