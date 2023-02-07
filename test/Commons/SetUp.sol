@@ -43,7 +43,6 @@ contract SetUp is TestCommons, ContractsCreator {
         vm.label(address(money), "money");
         money2 = new Money();
         vm.label(address(money2), "money2");
-        vm.warp(2 * 365 days);
     }
 
     function testFacetCuts() internal view returns (IDiamond.FacetCut[] memory) {

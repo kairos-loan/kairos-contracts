@@ -40,7 +40,9 @@ abstract contract TestCommons is Loggers {
         vm.label(signer2, "signer2");
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
         erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
-        vm.warp(365 days);
+        if (block.timestamp < 365 days) {
+            vm.warp(365 days);
+        }
     }
 
     function getOfferDigest(Offer memory offer) internal virtual returns (bytes32);

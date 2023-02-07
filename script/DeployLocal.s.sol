@@ -73,9 +73,7 @@ contract DeployLocal is Script, External {
         money.approve(address(kairos), 100 ether);
         nft.mintOne();
         nft.approve(address(kairos), 1);
-        frontNft.mintOneTo(address(kairos)); // mint mfers #2 as liquidable for front auction testing
-        frontNft.mintOneTo(address(kairos)); // mint mfers #3 as liquidable for front auction testing
-        populateFrontLoans();
+        populateFrontLoans(frontNft);
 
         vm.stopBroadcast();
 
@@ -99,16 +97,16 @@ contract DeployLocal is Script, External {
         loanId = abi.decode(data, (uint256));
     }
 
-    function populateFrontLoans() internal {
+    function populateFrontLoans(NFT frontNft) internal {
         Provision memory provision = getProvision();
         provision.loanId = 1;
         Loan memory loan = getLoan();
         loan.supplyPositionIndex = mintPosition(deployer, provision);
-        loan.collateral.id = nft.mintOneTo(address(kairos));
+        loan.collateral.id = frontNft.mintOneTo(address(kairos));
         loan.borrower = frontTester;
         provision.loanId = mintLoan(loan) + 1;
         loan.supplyPositionIndex = mintPosition(deployer, provision);
-        loan.collateral.id = nft.mintOneTo(address(kairos));
+        loan.collateral.id = frontNft.mintOneTo(address(kairos));
         provision.loanId = mintLoan(loan) + 1;
     }
 
