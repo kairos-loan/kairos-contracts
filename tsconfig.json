@@ -6,6 +6,6 @@
     "rootDir": ".",
     "types": ["mocha"]
   },
-  "include": ["ts-script", "hardhat.config.ts"],
+  "include": ["scripts/ts", "hardhat.config.ts"],
   "files": ["hardhat.config.ts"]
 }

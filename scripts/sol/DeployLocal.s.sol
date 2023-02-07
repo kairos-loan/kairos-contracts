@@ -3,15 +3,15 @@ pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 
-import {DCHelperFacet} from "../test/Commons/DCHelperFacet.sol";
-import {DCTarget} from "../test/Commons/DCTarget.sol";
+import {DCHelperFacet} from "../../test/Commons/DCHelperFacet.sol";
+import {DCTarget} from "../../test/Commons/DCTarget.sol";
 import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
-import {External} from "../test/Commons/External.sol";
-import {IKairos} from "../interface/IKairos.sol";
-import {Money} from "../src/mock/Money.sol";
-import {NFT} from "../src/mock/NFT.sol";
-import {Offer, NFToken, BuyArg} from "../src/DataStructure/Objects.sol";
-import {Loan, Provision} from "../src/DataStructure/Storage.sol";
+import {External} from "../../test/Commons/External.sol";
+import {IKairos} from "../../src/interface/IKairos.sol";
+import {Money} from "../../src/mock/Money.sol";
+import {NFT} from "../../src/mock/NFT.sol";
+import {Offer, NFToken, BuyArg} from "../../src/DataStructure/Objects.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, External {
@@ -86,7 +86,7 @@ contract DeployLocal is Script, External {
         toWrite = addConst(toWrite, "supplierAddr", vm.toString(supplier));
         toWrite = addLastConst(toWrite, "deployerAddr", vm.toString(deployer));
         toWrite = string.concat(toWrite, "}");
-        vm.writeFile("./packages/shared/src/generated/deployment.json", toWrite);
+        vm.writeFile("./out/deployment.json", toWrite);
     }
 
     function mintLoan(Loan memory loan) internal returns (uint256 loanId) {

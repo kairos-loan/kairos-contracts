@@ -3,11 +3,11 @@ pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 
-import {IKairos} from "../../interface/IKairos.sol";
-import {IClaimFacet} from "../../interface/IClaimFacet.sol";
-import {IAuctionFacet} from "../../interface/IAuctionFacet.sol";
+import {IKairos} from "../../../src/interface/IKairos.sol";
+import {IClaimFacet} from "../../../src/interface/IClaimFacet.sol";
+import {IAuctionFacet} from "../../../src/interface/IAuctionFacet.sol";
 import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
-import {claimFS, auctionFS} from "../../src/utils/FuncSelectors.h.sol";
+import {claimFS, auctionFS} from "../../../src/utils/FuncSelectors.h.sol";
 
 // for goerli adding two missing facets
 contract AddDeployedFacets is Script {
