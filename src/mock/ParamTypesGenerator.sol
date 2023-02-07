@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {Loan} from "../DataStructure/Storage.sol";
-import {NFToken, Offer, OfferArgs} from "../DataStructure/Objects.sol";
+import {NFToken, Offer, OfferArg} from "../DataStructure/Objects.sol";
 
 /* solhint-disable no-empty-blocks */
 
@@ -15,5 +15,5 @@ contract ParamTypesGenerator {
 
     function loanParam(Loan memory loan) external {}
 
-    function offerArgArrParam(OfferArgs[] memory args) external {}
+    function offerArgArrParam(OfferArg[] memory args) external {}
 }

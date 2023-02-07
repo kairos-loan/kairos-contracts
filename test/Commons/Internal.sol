@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {BigKairos} from "./BigKairos.sol";
-import {CollateralState, NFToken, Offer, OfferArgs, Ray} from "../../src/DataStructure/Objects.sol";
+import {CollateralState, NFToken, Offer, OfferArg, Ray} from "../../src/DataStructure/Objects.sol";
 import {Loan, Protocol, Provision} from "../../src/DataStructure/Storage.sol";
 import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";
@@ -35,22 +35,22 @@ contract Internal is TestCommons, BigKairos {
     }
 
     function useOfferExternal(
-        OfferArgs memory args,
+        OfferArg memory args,
         CollateralState memory collatState
     ) external returns (CollateralState memory) {
         return useOffer(args, collatState);
     }
 
     function useCollateralExternal(
-        OfferArgs[] memory args,
+        OfferArg[] memory args,
         address from,
         NFToken memory nft
     ) external returns (Loan memory) {
         return useCollateral(args, from, nft);
     }
 
-    function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
-        return checkOfferArgs(args);
+    function checkOfferArgExternal(OfferArg memory args) external view returns (address) {
+        return checkOfferArg(args);
     }
 
     function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {

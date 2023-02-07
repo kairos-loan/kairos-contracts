@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import {IBorrowHandlers} from "../../interface/IBorrowHandlers.sol";
 
 import {BorrowCheckers} from "./BorrowCheckers.sol";
-import {CollateralState, NFToken, OfferArgs, Ray} from "../DataStructure/Objects.sol";
+import {CollateralState, NFToken, OfferArg, Ray} from "../DataStructure/Objects.sol";
 import {Loan, Payment, Protocol, Provision} from "../DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
 import {RayMath} from "../utils/RayMath.sol";
@@ -26,10 +26,10 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     /// @param collatState tracked state of the matching of the collateral
     /// @return collateralState updated `collatState` after usage of the offer
     function useOffer(
-        OfferArgs memory args,
+        OfferArg memory args,
         CollateralState memory collatState
     ) internal returns (CollateralState memory) {
-        address signer = checkOfferArgs(args);
+        address signer = checkOfferArg(args);
         Ray shareMatched;
 
         if (args.offer.assetToLend != collatState.assetLent) {
@@ -70,7 +70,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     /// @param nft collateral to use
     /// @return loan the loan created backed by provided collateral
     function useCollateral(
-        OfferArgs[] memory args,
+        OfferArg[] memory args,
         address from,
         NFToken memory nft
     ) internal returns (Loan memory loan) {

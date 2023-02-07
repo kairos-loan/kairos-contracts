@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {External} from "../Commons/External.sol";
-import {OfferArgs, Ray} from "../../src/DataStructure/Objects.sol";
+import {OfferArg, Ray} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 
 /// @notice tests of entire loan lifecycles
@@ -17,7 +17,7 @@ contract TestIntegration is External {
         uint256 amountBorrowed = 1 ether;
         getFlooz(signer, money, amountBorrowed);
         uint256 signerInitialBalance = money.balanceOf(signer);
-        OfferArgs[] memory offerArgs = getOfferArgs(getOffer());
+        OfferArg[] memory offerArgs = getOfferArgs();
         uint256 tokenId = nft.mintOneTo(BORROWER);
         vm.prank(BORROWER);
         nft.safeTransferFrom(BORROWER, address(kairos), tokenId, abi.encode(offerArgs));

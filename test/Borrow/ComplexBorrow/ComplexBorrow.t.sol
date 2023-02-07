@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {ComplexBorrowData, ComplexBorrowPreExecFuncs} from "./PreExecFuncs.sol";
-import {BorrowArgs, NFToken, Ray} from "../../../src/DataStructure/Objects.sol";
+import {BorrowArg, NFToken, Ray} from "../../../src/DataStructure/Objects.sol";
 import {Loan, Payment, Provision} from "../../../src/DataStructure/Storage.sol";
 import {ONE} from "../../../src/DataStructure/Global.sol";
 import {RayMath} from "../../../src/utils/RayMath.sol";
@@ -26,8 +26,8 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         getFlooz(signer, money2, 2 ether);
         getJpeg(BORROWER, nft2);
         d = initOffers(d);
-        d = initOfferArgs(d);
-        d = initBorrowArgs(d);
+        d = initOfferArg(d);
+        d = initBorrowArg(d);
 
         execBorrowAndCheckSupplyPos(d);
         checkBalances(d);
@@ -35,7 +35,7 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
     }
 
     function execBorrowAndCheckSupplyPos(ComplexBorrowData memory d) private {
-        BorrowArgs[] memory batchbargs = new BorrowArgs[](2);
+        BorrowArg[] memory batchbargs = new BorrowArg[](2);
         batchbargs[0] = d.bargs1;
         batchbargs[1] = d.bargs2;
 

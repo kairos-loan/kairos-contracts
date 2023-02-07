@@ -7,7 +7,7 @@ import {IBorrowCheckers} from "../../interface/IBorrowCheckers.sol";
 
 import {Signature} from "../Signature.sol";
 import {NFTokenUtils} from "../utils/NFTokenUtils.sol";
-import {Offer, OfferArgs, NFToken} from "../../src/DataStructure/Objects.sol";
+import {Offer, OfferArg, NFToken} from "../../src/DataStructure/Objects.sol";
 import {BadCollateral, OfferHasExpired, RequestedAmountTooHigh} from "../../src/DataStructure/Errors.sol";
 
 /// @notice handles checks to verify validity of a loan request
@@ -17,7 +17,7 @@ abstract contract BorrowCheckers is IBorrowCheckers, Signature {
     /// @notice checks arguments validity for usage of one Offer
     /// @param args arguments for the Offer
     /// @return signer computed signer of `args.signature` according to `args.offer`
-    function checkOfferArgs(OfferArgs memory args) internal view returns (address) {
+    function checkOfferArg(OfferArg memory args) internal view returns (address) {
         address signer = ECDSA.recover(offerDigest(args.offer), args.signature);
 
         if (block.timestamp > args.offer.expirationDate) {

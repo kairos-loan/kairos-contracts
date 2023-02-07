@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {BorrowData, SingleCollatPreExecFuncs} from "./PreExecFuncs.sol";
-import {BorrowArgs, Ray} from "../../../src/DataStructure/Objects.sol";
+import {BorrowArg, Ray} from "../../../src/DataStructure/Objects.sol";
 import {RequestedAmountTooHigh} from "../../../src/DataStructure/Errors.sol";
 import {RayMath} from "../../../src/utils/RayMath.sol";
 
@@ -24,8 +24,8 @@ contract TestComplexSingleCollateral is SingleCollatPreExecFuncs {
         BorrowData memory d; // d as data
         prepareSigners(10 ether, 10 ether, 10 ether);
         d = initOffers(d, 2 ether, 3 ether);
-        d = initOfferArgs(d, lentFromSigner1, lentFromSigner2);
-        d = initBorrowArgs(d);
+        d = initOfferArg(d, lentFromSigner1, lentFromSigner2);
+        d = initBorrowArg(d);
         execBorrow(d);
         skip(duration);
         checkBalancesAfterBorrow();
@@ -40,8 +40,8 @@ contract TestComplexSingleCollateral is SingleCollatPreExecFuncs {
         BorrowData memory d;
         prepareSigners(10 ether, 10 ether, 10 ether);
         d = initOffers(d, 2 ether, 3 ether);
-        d = initOfferArgs(d, 1 ether, 2 ether);
-        d = initBorrowArgs(d);
+        d = initOfferArg(d, 1 ether, 2 ether);
+        d = initBorrowArg(d);
         vm.expectRevert(
             abi.encodeWithSelector(RequestedAmountTooHigh.selector, 2 ether, 3 ether / 2, d.signer2Offer)
         );
@@ -56,8 +56,8 @@ contract TestComplexSingleCollateral is SingleCollatPreExecFuncs {
         BorrowData memory d; // d as data
         prepareSigners(10 ether, 10 ether, 10 ether);
         d = initOffers(d, 2 ether, 3 ether);
-        d = initOfferArgs(d, lentFromSigner1, lentFromSigner2);
-        d = initBorrowArgs(d);
+        d = initOfferArg(d, lentFromSigner1, lentFromSigner2);
+        d = initBorrowArg(d);
         execBorrow(d);
         skip(20 days);
         checkBalancesAfterBorrow();
@@ -68,7 +68,7 @@ contract TestComplexSingleCollateral is SingleCollatPreExecFuncs {
     }
 
     function execBorrow(BorrowData memory d) private {
-        BorrowArgs[] memory batchbargs = new BorrowArgs[](1);
+        BorrowArg[] memory batchbargs = new BorrowArg[](1);
         batchbargs[0] = d.bargs;
         vm.prank(BORROWER);
         kairos.borrow(batchbargs);

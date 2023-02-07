@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {IAuctionFacet} from "../interface/IAuctionFacet.sol";
-import {BuyArgs, NFToken, Ray} from "./DataStructure/Objects.sol";
+import {BuyArg, NFToken, Ray} from "./DataStructure/Objects.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
@@ -22,7 +22,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
 
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
-    function buy(BuyArgs[] memory args) external {
+    function buy(BuyArg[] memory args) external {
         for (uint8 i = 0; i < args.length; i++) {
             useLoan(args[i]);
         }
@@ -39,7 +39,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
 
     /// @notice handles buying one NFT
     /// @param args arguments on what and how to buy
-    function useLoan(BuyArgs memory args) internal {
+    function useLoan(BuyArg memory args) internal {
         Loan storage loan = protocolStorage().loan[args.loanId];
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
 
@@ -62,7 +62,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @param args arguments on what and how to buy
     /// @param loan loan to buy collateral from
     /// @return shareToPay share of the loan to pay
-    function getShareToPay(BuyArgs memory args, Loan storage loan) internal returns (Ray shareToPay) {
+    function getShareToPay(BuyArg memory args, Loan storage loan) internal returns (Ray shareToPay) {
         SupplyPosition storage sp = supplyPositionStorage();
         Provision storage provision;
         shareToPay = ONE;

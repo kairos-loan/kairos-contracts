@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {BuyArgs, NFToken} from "../../src/DataStructure/Objects.sol";
+import {BuyArg, NFToken} from "../../src/DataStructure/Objects.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "../../src/DataStructure/ERC721Errors.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
@@ -20,7 +20,7 @@ contract TestAuction is External {
     function testLoanAlreadyRepaid() public {
         Loan memory loan = getLoan();
         loan.payment.paid = 1 ether;
-        BuyArgs[] memory args = storeAndGetArgs(loan);
+        BuyArg[] memory args = storeAndGetArgs(loan);
         vm.expectRevert(abi.encodeWithSelector(LoanAlreadyRepaid.selector, 1));
         kairos.buy(args);
     }
@@ -28,13 +28,13 @@ contract TestAuction is External {
     function testLoanAlreadyLiquidated() public {
         Loan memory loan = getLoan();
         loan.payment.liquidated = true;
-        BuyArgs[] memory args = storeAndGetArgs(loan);
+        BuyArg[] memory args = storeAndGetArgs(loan);
         vm.expectRevert(abi.encodeWithSelector(LoanAlreadyRepaid.selector, 1));
         kairos.buy(args);
     }
 
     function testErc721CallerIsNotOwnerNorApproved() public {
-        BuyArgs[] memory args = setupLoan();
+        BuyArg[] memory args = setupLoan();
         args[0].positionIds = oneInArray;
         mintPosition(signer2, getProvision());
         // nft.mintOneTo(address(kairos));
@@ -47,7 +47,7 @@ contract TestAuction is External {
         Provision memory provision = getProvision();
         provision.loanId = 2;
         mintPosition(signer, provision);
-        BuyArgs[] memory args = setupLoan();
+        BuyArg[] memory args = setupLoan();
         args[0].positionIds = oneInArray;
         vm.startPrank(signer);
         vm.expectRevert(
@@ -61,7 +61,7 @@ contract TestAuction is External {
     }
 
     function testPaidPrice() public {
-        BuyArgs[] memory args = new BuyArgs[](1);
+        BuyArg[] memory args = new BuyArg[](1);
         getFlooz(signer, money);
         uint256 balanceBefore = money.balanceOf(signer);
         nft.mintOneTo(address(kairos));
@@ -73,7 +73,7 @@ contract TestAuction is External {
     }
 
     function auctionN(uint256 nbOfAuctions) internal {
-        BuyArgs[] memory args = new BuyArgs[](nbOfAuctions);
+        BuyArg[] memory args = new BuyArg[](nbOfAuctions);
         getFlooz(signer, money, nbOfAuctions * 1 ether);
         for (uint8 i = 0; i < nbOfAuctions; i++) {
             nft.mintOneTo(address(kairos));
@@ -94,24 +94,24 @@ contract TestAuction is External {
         loan.endDate = block.timestamp - 2 days;
     }
 
-    function storeAndGetArgs(Loan memory loan, uint256 loanId) private returns (BuyArgs[] memory) {
-        BuyArgs[] memory args = new BuyArgs[](1);
+    function storeAndGetArgs(Loan memory loan, uint256 loanId) private returns (BuyArg[] memory) {
+        BuyArg[] memory args = new BuyArg[](1);
         store(loan, loanId);
-        args[0] = BuyArgs({loanId: loanId, to: signer, positionIds: emptyArray});
+        args[0] = BuyArg({loanId: loanId, to: signer, positionIds: emptyArray});
         return args;
     }
 
-    function storeAndGetArgs(Loan memory loan) private returns (BuyArgs[] memory) {
+    function storeAndGetArgs(Loan memory loan) private returns (BuyArg[] memory) {
         return storeAndGetArgs(loan, 1);
     }
 
-    function setupLoan(uint256 loanAndNftId) private returns (BuyArgs[] memory) {
+    function setupLoan(uint256 loanAndNftId) private returns (BuyArg[] memory) {
         Loan memory loan = getLoan();
         loan.collateral = NFToken({implem: nft, id: loanAndNftId});
         return storeAndGetArgs(loan, loanAndNftId);
     }
 
-    function setupLoan() private returns (BuyArgs[] memory) {
+    function setupLoan() private returns (BuyArg[] memory) {
         return setupLoan(1);
     }
 }
