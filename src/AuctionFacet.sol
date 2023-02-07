@@ -58,7 +58,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         emit Buy(args.loanId, abi.encode(args));
     }
 
-    /// @notice computes the share of the NFT to pay and burn the used supply positions
+    /// @notice computes the share of the NFT to pay and burns the used supply positions
     /// @param args arguments on what and how to buy
     /// @param loan loan to buy collateral from
     /// @return shareToPay share of the loan to pay
