@@ -10,7 +10,7 @@ import {External} from "../test/Commons/External.sol";
 import {IKairos} from "../interface/IKairos.sol";
 import {Money} from "../src/mock/Money.sol";
 import {NFT} from "../src/mock/NFT.sol";
-import {Offer, NFToken, BuyArgs} from "../src/DataStructure/Objects.sol";
+import {Offer, NFToken, BuyArg} from "../src/DataStructure/Objects.sol";
 import {Loan, Provision} from "../src/DataStructure/Storage.sol";
 
 /// @dev deploy script intended for local testing
@@ -126,8 +126,8 @@ contract DeployLocal is Script, External {
 
         loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
         uint256 toLiquidateLoanId = mintLoan(loan);
-        BuyArgs[] memory buyArgs = new BuyArgs[](1);
-        buyArgs[0] = BuyArgs({loanId: toLiquidateLoanId, to: frontTester, positionIds: emptyArray});
+        BuyArg[] memory buyArgs = new BuyArg[](1);
+        buyArgs[0] = BuyArg({loanId: toLiquidateLoanId, to: frontTester, positionIds: emptyArray});
         kairos.buy(buyArgs); // mfer 5 liquidated (and collateral given back to front tester)
     }
 
