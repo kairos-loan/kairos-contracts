@@ -2,7 +2,17 @@
   "name": "@kairos-loan/contracts",
   "version": "0.1.0",
   "scripts": {
-    "deploy-mocks": "export $(grep -v '^#' .env | xargs) && forge script contracts/script/DeployNftAndMoney.s.sol -vvvv --chain 420 --verify --rpc-url $GOERLI_URL --broadcast"
+    "build": "forge build --extra-output-files abi",
+    "start": "anvil --silent --block-time 1 > out/anvil-logs.txt & yarn deploy:local &",
+    "lint": "solhint './**/*.sol' && eslint ./scripts/ts/**/*.ts",
+    "lint:fix": "solhint './**/*.sol' --fix && eslint ./scripts/ts/**/*.ts --fix",
+    "prettify": "prettier --write ./**/*.sol ./scripts/ts/**/*.ts",
+    "test": "forge test",
+    "slither": "sh scripts/sh/slither.sh",
+    "deploy:local": "cross-env $(grep -v '^#' .env | xargs) && forge script ./scripts/sol/DeployLocal.s.sol -f http://localhost:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+    "deploy:prod": "npx hardhat run scripts/ts/deploy.ts",
+    "deploy-tokens:goerli": "export $(grep -v '^#' .env | xargs) && forge script scripts/sol/deploy/DeployNftAndMoney.s.sol -vvvv --chain 420 --verify --rpc-url $GOERLI_URL --broadcast",
+    "deploy-tokens:prod": "npx hardhat run scripts/ts/deployNftAndMoney.ts"
   },
   "dependencies": {
     "@kairos-loan/chain-types": "workspace:*",

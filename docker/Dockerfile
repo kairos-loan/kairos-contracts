@@ -21,7 +21,8 @@ RUN apk add --no-cache wget\
   && chmod +x /usr/bin/solc \
   && apk del wget
 
-RUN npm install -g ts-node
+# Add global npm dependencies
+RUN npm install -g ts-node typechain
 
 WORKDIR  /usr/app
 
