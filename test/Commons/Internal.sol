@@ -35,10 +35,10 @@ contract Internal is TestCommons, BigKairos {
     }
 
     function useOfferExternal(
-        OfferArg memory args,
+        OfferArg memory arg,
         CollateralState memory collatState
     ) external returns (CollateralState memory) {
-        return useOffer(args, collatState);
+        return useOffer(arg, collatState);
     }
 
     function useCollateralExternal(
@@ -49,8 +49,12 @@ contract Internal is TestCommons, BigKairos {
         return useCollateral(args, from, nft);
     }
 
-    function checkOfferArgExternal(OfferArg memory args) external view returns (address) {
-        return checkOfferArg(args);
+    function checkOfferArgExternal(OfferArg memory arg) external view returns (address) {
+        return checkOfferArg(arg);
+    }
+
+    function priceExternal(uint256 lent, Ray shareLent, uint256 timeElapsed) external view returns (uint256) {
+        return price(lent, shareLent, timeElapsed);
     }
 
     function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {
@@ -69,10 +73,6 @@ contract Internal is TestCommons, BigKairos {
         Provision storage provision
     ) internal returns (uint256) {
         return sendShareOfSaleAsSupplier(loan, provision);
-    }
-
-    function priceExternal(uint256 lent, Ray shareLent, uint256 timeElapsed) external view returns (uint256) {
-        return price(lent, shareLent, timeElapsed);
     }
 
     function sentInterestsIn(Loan storage loan, Provision storage provision) internal returns (uint256) {

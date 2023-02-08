@@ -19,7 +19,7 @@ struct ComplexBorrowData {
 }
 
 contract ComplexBorrowPreExecFuncs is External {
-    function initOfferArg(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
+    function initOfferArgs(ComplexBorrowData memory d) internal returns (ComplexBorrowData memory) {
         d.oargs1 = OfferArg({
             signature: getSignature(d.signer1Offer1),
             amount: 1 ether / 2, // 25%
@@ -69,7 +69,7 @@ contract ComplexBorrowPreExecFuncs is External {
         return d;
     }
 
-    function initBorrowArg(ComplexBorrowData memory d) internal view returns (ComplexBorrowData memory) {
+    function initBorrowArgs(ComplexBorrowData memory d) internal view returns (ComplexBorrowData memory) {
         OfferArg[] memory offerArgs1 = new OfferArg[](2);
         offerArgs1[0] = d.oargs1;
         offerArgs1[1] = d.oargs2;

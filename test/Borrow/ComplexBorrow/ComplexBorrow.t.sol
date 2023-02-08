@@ -26,8 +26,8 @@ contract TestComplexBorrow is ComplexBorrowPreExecFuncs {
         getFlooz(signer, money2, 2 ether);
         getJpeg(BORROWER, nft2);
         d = initOffers(d);
-        d = initOfferArg(d);
-        d = initBorrowArg(d);
+        d = initOfferArgs(d);
+        d = initBorrowArgs(d);
 
         execBorrowAndCheckSupplyPos(d);
         checkBalances(d);
