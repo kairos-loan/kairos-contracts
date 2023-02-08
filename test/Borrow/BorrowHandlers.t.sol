@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {CollateralState, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
+import {CollateralState, NFToken, Offer, OfferArgs, Ray} from "../../src/DataStructure/Objects.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Internal} from "../Commons/Internal.sol";
 import {Loan} from "../../src/DataStructure/Storage.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 import {RequestedAmountTooHigh, InconsistentAssetRequests} from "../../src/DataStructure/Errors.sol";
-import {ONE, Ray, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
+import {ONE, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
 import {TestCommons} from "../Commons/TestCommons.sol";
 
 contract TestBorrowHandlers is Internal {
@@ -81,7 +81,7 @@ contract TestBorrowHandlers is Internal {
     function testMultipleUseCollateral() public {
         OfferArgs[] memory offerArgs = new OfferArgs[](10);
 
-        for (uint8 i; i < 10; i++) {
+        for (uint8 i = 0; i < 10; i++) {
             offerArgs[i] = getOfferArg(getOffer());
         }
 

@@ -7,6 +7,7 @@ import {NFToken, Offer} from "./Objects.sol";
 
 error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId); // 0x9a295ec5
 error BadCollateral(Offer offer, NFToken providedNft); // 0xd8ef221b
+error ERC20TransferFailed(IERC20 token, address from, address to); // 0x62fe41f3
 error OfferHasExpired(Offer offer, uint256 expirationDate); // 0x065a5c3b
 error RequestedAmountIsNull(Offer offer); // 0x8ea5f1d7
 error RequestedAmountTooHigh(uint256 requested, uint256 offered, Offer offer);

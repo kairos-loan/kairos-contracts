@@ -5,7 +5,7 @@ import {BadCollateral, RequestedAmountIsNull} from "../../src/DataStructure/Erro
 import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
-import {Ray} from "../../src/DataStructure/Global.sol";
+import {Ray} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 
 contract TestBorrow is External {
@@ -41,9 +41,7 @@ contract TestBorrow is External {
         borrowArgs[0].args[0].amount = 0;
 
         vm.prank(BORROWER);
-        vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountIsNull.selector, borrowArgs[0].args[0].offer)
-        );
+        vm.expectRevert(abi.encodeWithSelector(RequestedAmountIsNull.selector, borrowArgs[0].args[0].offer));
         kairos.borrow(borrowArgs);
     }
 
@@ -62,7 +60,7 @@ contract TestBorrow is External {
 
         getFlooz(signer, money, nbOfLoans * getOfferArg().amount);
 
-        for (uint8 i; i < nbOfLoans; i++) {
+        for (uint8 i = 0; i < nbOfLoans; i++) {
             OfferArgs[] memory offerArgs = new OfferArgs[](1);
             currentTokenId = getJpeg(BORROWER, nft);
             offer = getOffer();
@@ -82,7 +80,7 @@ contract TestBorrow is External {
         assertEq(money.balanceOf(signer), 0);
         assertEq(money.balanceOf(BORROWER), nbOfLoans * getOfferArg().amount);
         assertEq(nft.balanceOf(address(kairos)), nbOfLoans);
-        for (uint8 i; i < nbOfLoans; i++) {
+        for (uint8 i = 0; i < nbOfLoans; i++) {
             assertEq(nft.ownerOf(i + 1), address(kairos));
         }
     }

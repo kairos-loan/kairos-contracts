@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {IBorrowHandlers} from "../../interface/IBorrowHandlers.sol";
+
 import {BorrowCheckers} from "./BorrowCheckers.sol";
 import {CollateralState, NFToken, OfferArgs, Ray} from "../DataStructure/Objects.sol";
 import {Loan, Payment, Protocol, Provision} from "../DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
 import {RayMath} from "../utils/RayMath.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
-import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
-import {InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
+import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
-abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
+abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 
@@ -54,7 +55,10 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             collatState.minOfferDuration = args.offer.duration;
         }
 
-        collatState.assetLent.transferFrom(signer, collatState.from, args.amount);
+        if (!collatState.assetLent.transferFrom(signer, collatState.from, args.amount)) {
+            revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
+        }
+
         // todo #35 verify provision has expected values
         safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);
@@ -82,7 +86,7 @@ abstract contract BorrowHandlers is BorrowCheckers, SafeMint {
             nft: nft,
             loanId: ++proto.nbOfLoans // returns incremented value (also increments in storage)
         });
-        for (uint8 i; i < args.length; i++) {
+        for (uint8 i = 0; i < args.length; i++) {
             collatState = useOffer(args[i], collatState);
             lent += args[i].amount;
         }

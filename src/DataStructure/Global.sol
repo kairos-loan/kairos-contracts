@@ -4,8 +4,8 @@ pragma solidity 0.8.17;
 import {Protocol, SupplyPosition} from "./Storage.sol";
 import {Ray} from "./Objects.sol";
 
-bytes32 constant PROTOCOL_SP = keccak256("eth.kairos.protocol");
-bytes32 constant SUPPLY_SP = keccak256("eth.kairos.supply-position");
+bytes32 constant PROTOCOL_SP = keccak256("eth.kairos.protocol.v0.1");
+bytes32 constant SUPPLY_SP = keccak256("eth.kairos.supply-position.v0.1");
 
 uint256 constant RAY = 1e27;
 Ray constant ONE = Ray.wrap(RAY);

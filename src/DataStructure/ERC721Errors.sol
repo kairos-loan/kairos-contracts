@@ -9,6 +9,6 @@ error ERC721CallerIsNotOwnerNorApproved();
 error ERC721TransferToNonERC721ReceiverImplementer();
 error ERC721MintToTheZeroAddress();
 error ERC721TokenAlreadyMinted();
-error ERC721TransferToIncorrectOwner();
+error ERC721TransferFromIncorrectOwner();
 error ERC721TransferToTheZeroAddress();
 error ERC721ApproveToCaller();

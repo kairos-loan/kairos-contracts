@@ -2,15 +2,16 @@
 pragma solidity 0.8.17;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+
+import {IBorrowFacet} from "../interface/IBorrowFacet.sol";
 
 import {BorrowHandlers} from "./BorrowLogic/BorrowHandlers.sol";
-import {BorrowArgs, NFToken, OfferArgs} from "./DataStructure/Objects.sol";
-import {SupplyPosition} from "./DataStructure/Storage.sol";
+import {BorrowArgs, NFToken, Offer, OfferArgs} from "./DataStructure/Objects.sol";
+import {Signature} from "./Signature.sol";
 
 /// @notice public facing methods for borrowing
 /// @dev contract handles all borrowing logic through inheritance
-contract BorrowFacet is IERC721Receiver, BorrowHandlers {
+contract BorrowFacet is IBorrowFacet, BorrowHandlers {
     // todo #19 add reentrency check
     // todo #20 process supplier coins
     // todo #21 support supplier signed approval
@@ -24,7 +25,6 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @param data abi encoded arguments for the loan
     /// @return selector `this.onERC721Received.selector` ERC721-compliant response, signaling compatibility
     /// @dev param data must be of format OfferArgs[]
-    /// @inheritdoc IERC721Receiver
     function onERC721Received(
         address,
         address from,
@@ -42,7 +42,7 @@ contract BorrowFacet is IERC721Receiver, BorrowHandlers {
     /// @notice take loans, take ownership of NFTs specified as collateral, sends borrowed money to caller
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArgs[] calldata args) external {
-        for (uint8 i; i < args.length; i++) {
+        for (uint8 i = 0; i < args.length; i++) {
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             useCollateral(args[i].args, msg.sender, args[i].nft);
         }

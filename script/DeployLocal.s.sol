@@ -10,28 +10,34 @@ import {External} from "../test/Commons/External.sol";
 import {IKairos} from "../interface/IKairos.sol";
 import {Money} from "../src/mock/Money.sol";
 import {NFT} from "../src/mock/NFT.sol";
-import {Offer} from "../src/DataStructure/Objects.sol";
+import {Offer, NFToken, BuyArgs} from "../src/DataStructure/Objects.sol";
+import {Loan, Provision} from "../src/DataStructure/Storage.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, External {
+    address internal deployer;
+    address internal supplier;
+    uint256 internal constant TEST_KEY =
+        uint256(bytes32(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80));
+    address payable internal frontTester;
+
+    constructor() {
+        deployer = vm.addr(TEST_KEY);
+        supplier = vm.addr(KEY);
+        frontTester = payable(vm.envAddress("FRONT_TEST_ADDR"));
+    }
+
     /// @notice gives & approve 100 money tokens and 1 nft to the deployer
     /* solhint-disable-next-line function-max-lines */
     function run() public {
-        bytes memory emptyBytes;
         string memory toWrite = "{\n";
-        uint256 testKey = uint256(
-            bytes32(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80)
-        );
-        address deployer = vm.addr(testKey);
         vm.deal(deployer, 1000 ether);
-        address supplier = vm.addr(KEY);
 
-        vm.startBroadcast(testKey);
+        vm.startBroadcast(TEST_KEY);
 
         // for front testing
         helper = new DCHelperFacet();
         dcTarget = new DCTarget();
-        address payable frontTester = payable(vm.envAddress("FRONT_TEST_ADDR"));
         toWrite = addConst(toWrite, "frontTestAddr", vm.toString(frontTester));
         frontTester.transfer(10 ether);
         NFT frontNft = new NFT("Test Doodles", "TDood");
@@ -67,8 +73,7 @@ contract DeployLocal is Script, External {
         money.approve(address(kairos), 100 ether);
         nft.mintOne();
         nft.approve(address(kairos), 1);
-        frontNft.mintOneTo(address(kairos)); // mint mfers #2 as liquidable for front auction testing
-        frontNft.mintOneTo(address(kairos)); // mint mfers #3 as liquidable for front auction testing
+        populateFrontLoans(frontNft);
 
         vm.stopBroadcast();
 
@@ -82,6 +87,48 @@ contract DeployLocal is Script, External {
         toWrite = addLastConst(toWrite, "deployerAddr", vm.toString(deployer));
         toWrite = string.concat(toWrite, "}");
         vm.writeFile("./packages/shared/src/generated/deployment.json", toWrite);
+    }
+
+    function mintLoan(Loan memory loan) internal returns (uint256 loanId) {
+        bytes memory data = DCHelperFacet(address(kairos)).delegateCall(
+            address(dcTarget),
+            abi.encodeWithSelector(dcTarget.mintLoan.selector, loan)
+        );
+        loanId = abi.decode(data, (uint256));
+    }
+
+    function updateLoanPositionAndCollateral(
+        Provision memory provision,
+        Loan memory loan,
+        NFT nft
+    ) internal returns (Loan memory) {
+        loan.supplyPositionIndex = mintPosition(deployer, provision);
+        loan.collateral = NFToken({id: nft.mintOneTo(address(kairos)), implem: nft});
+        return loan;
+    }
+
+    function populateFrontLoans(NFT frontNft) internal {
+        Provision memory provision = getProvision();
+        provision.loanId = 1;
+        Loan memory loan = getLoan();
+        loan.borrower = frontTester;
+
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        provision.loanId = mintLoan(loan) + 1; // mfer 2 active to repay in 2 weeks
+
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        provision.loanId = mintLoan(loan) + 1; // mfer 3 active to repay in 2 weeks
+
+        loan.startDate = block.timestamp - 2 weeks;
+        loan.endDate = block.timestamp - 1 days;
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        provision.loanId = mintLoan(loan) + 1; // mfer 4 in active auction
+
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        uint256 toLiquidateLoanId = mintLoan(loan);
+        BuyArgs[] memory buyArgs = new BuyArgs[](1);
+        buyArgs[0] = BuyArgs({loanId: toLiquidateLoanId, to: frontTester, positionIds: emptyArray});
+        kairos.buy(buyArgs); // mfer 5 liquidated (and collateral given back to front tester)
     }
 
     /* solhint-disable quotes */

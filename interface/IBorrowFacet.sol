@@ -1,17 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {BorrowArgs, Offer} from "../src/DataStructure/Objects.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-interface IBorrowFacet {
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 tokenId,
-        bytes memory data
-    ) external returns (bytes4);
+import {IBorrowHandlers} from "./IBorrowHandlers.sol";
 
+import {BorrowArgs} from "../src/DataStructure/Objects.sol";
+
+interface IBorrowFacet is IBorrowHandlers, IERC721Receiver {
     function borrow(BorrowArgs[] calldata args) external;
-
-    function offerDigest(Offer memory _offer) external view returns (bytes32);
 }
