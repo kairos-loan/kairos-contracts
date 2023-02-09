@@ -22,7 +22,7 @@ while sleep 1; do
 
     echo "Start to generate types"
     cd packages/chain-types
-    yarn generate
+    typechain --target ethers-v5 --out-dir ./out/tc ../contracts/out/foundry/BigKairos.sol/BigKairos.json ../contracts/out/foundry/ERC20.sol/ERC20.json ../contracts/out/foundry/ParamTypesGenerator.sol/ParamTypesGenerator.json ../contracts/out/foundry/DCHelperFacet.sol/DCHelperFacet.json ../contracts/out/foundry/DCTarget.sol/DCTarget.json ../contracts/out/foundry/Money.sol/Money.json ../contracts/out/foundry/NFT.sol/NFT.json
     cd ../..
 
     echo "Start to deploy contract"
