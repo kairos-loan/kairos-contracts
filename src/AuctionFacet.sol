@@ -7,7 +7,7 @@ import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
-import {ERC20TransferFailed, LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "./DataStructure/Errors.sol";
+import {ERC20TransferFailed, LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan, CollateralIsNotLiquidableYet} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
@@ -41,7 +41,11 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @param args arguments on what and how to buy
     function useLoan(BuyArg memory args) internal {
         Loan storage loan = protocolStorage().loan[args.loanId];
-        uint256 timeSinceLiquidable = block.timestamp - loan.endDate; // reverts if asset is not yet liquidable
+
+        if (block.timestamp > loan.endDate) {
+            revert CollateralIsNotLiquidableYet(loan.endDate);
+        }
+        uint256 timeSinceLiquidable = block.timestamp - loan.endDate;
 
         if (loan.payment.paid != 0 || loan.payment.liquidated) {
             revert LoanAlreadyRepaid(args.loanId);
