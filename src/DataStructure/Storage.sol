@@ -6,18 +6,26 @@ import {NFToken, Ray} from "./Objects.sol";
 
 /// @notice type definitions of data permanently stored
 
+/// @notice Parameters affecting liquidations by dutch auctions. The current auction parameters
+///         are assigned to new loans at borrow time and can't be modified during the loan life.
+/// @param duration number of seconds after the auction start when the price hits 0
+/// @param priceFactor multiplier of the mean tvl used as start price for the auction
+struct Auction {
+    uint256 duration;
+    Ray priceFactor;
+}
+
 /// @notice General protocol
-/// @param auctionDuration number of seconds after the auction start when the price hits 0
 /// @param nbOfLoans total number of loans ever issued (active and ended)
-/// @param auctionPriceFactor multiplier of the mean tvl used as start price for the auction
+/// @param nbOfTranches total number of interest rates tranches ever created (active and inactive)
+/// @param auctionParams - sets auctions duration and initial prices
 /// @param tranche interest rate of tranche of provided id, in multiplier per second
 ///         I.e lent * time since loan start * tranche = interests to repay
 /// @param loan - of id -
 struct Protocol {
-    // todo #71 add admin methods to tweak parameters
-    uint256 auctionDuration;
     uint256 nbOfLoans;
-    Ray auctionPriceFactor;
+    uint256 nbOfTranches;
+    Auction auction;
     mapping(uint256 => Ray) tranche;
     mapping(uint256 => Loan) loan;
 }
@@ -28,6 +36,7 @@ struct Protocol {
 /// @param shareLent between 0 and 1, the share of the collateral value lent
 /// @param startDate timestamp of the borrowing transaction
 /// @param endDate timestamp after which sale starts & repay is impossible
+/// @param auction duration and price factor of the collateral auction in case of liquidation
 /// @param interestPerSecond share of the amount lent added to the debt per second
 /// @param borrower borrowing account
 /// @param collateral NFT asset used as collateral
@@ -40,6 +49,7 @@ struct Loan {
     Ray shareLent;
     uint256 startDate;
     uint256 endDate;
+    Auction auction;
     Ray interestPerSecond;
     address borrower;
     NFToken collateral;

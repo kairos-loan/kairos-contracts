@@ -19,7 +19,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     /// @notice one loan has been initiated
     /// @param loanId id of the loan
     /// @param loan the loan created
-    event Borrow(uint256 loanId, bytes loan);
+    event Borrow(uint256 indexed loanId, bytes loan);
 
     /// @notice handles usage of a loan offer to borrow from
     /// @param args arguments for the usage of this offer
@@ -98,6 +98,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: endDate,
+            auctionDuration: proto.auctionDuration,
             interestPerSecond: proto.tranche[0], // todo #27 adapt rate to the offers
             borrower: from,
             collateral: nft,
