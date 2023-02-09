@@ -5,7 +5,7 @@ import {IClaimFacet} from "../interface/IClaimFacet.sol";
 import {BorrowerAlreadyClaimed, ERC20TransferFailed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
-import {ONE, RAY, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
+import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
 import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
