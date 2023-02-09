@@ -15,7 +15,7 @@ type Ray is uint256;
 /// @param loanId loan identifier
 /// @param to address that will receive the collateral
 /// @param positionIds eventual supply positions to burn to reduce totally or partially the sale price
-struct BuyArgs {
+struct BuyArg {
     uint256 loanId;
     address to;
     uint256[] positionIds;
@@ -24,9 +24,9 @@ struct BuyArgs {
 /// @notice Arguments to borrow from one collateral
 /// @param nft asset to use as collateral
 /// @param args arguments for the borrow parameters of the offers to use with the collateral
-struct BorrowArgs {
+struct BorrowArg {
     NFToken nft;
-    OfferArgs[] args;
+    OfferArg[] args;
 }
 
 /// @notice Arguments for the borrow parameters of an offer
@@ -34,7 +34,7 @@ struct BorrowArgs {
 /// @param signature - of the offer
 /// @param amount - to borrow from this offer
 /// @param offer intended for usage in the loan
-struct OfferArgs {
+struct OfferArg {
     bytes signature;
     uint256 amount;
     Offer offer;

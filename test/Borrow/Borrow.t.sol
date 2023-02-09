@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {BadCollateral, RequestedAmountIsNull} from "../../src/DataStructure/Errors.sol";
-import {BorrowArgs, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
+import {BorrowArg, NFToken, Offer, OfferArg} from "../../src/DataStructure/Objects.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
 import {Ray} from "../../src/DataStructure/Objects.sol";
@@ -24,7 +24,7 @@ contract TestBorrow is External {
 
     function testWrongNFTAddress() public {
         Offer memory offer = getOffer();
-        OfferArgs[] memory offArgs = getOfferArgs(offer);
+        OfferArg[] memory offArgs = getOfferArgs(offer);
         bytes memory data = abi.encode(offArgs);
         uint256 tokenId = nft2.mintOneTo(BORROWER);
 
@@ -37,7 +37,7 @@ contract TestBorrow is External {
 
     function testNullBorrowAmount() public {
         getJpeg(BORROWER, nft);
-        BorrowArgs[] memory borrowArgs = getBorrowArgs();
+        BorrowArg[] memory borrowArgs = getBorrowArgs();
         borrowArgs[0].args[0].amount = 0;
 
         vm.prank(BORROWER);
@@ -54,23 +54,23 @@ contract TestBorrow is External {
     }
 
     function borrowNTimes(uint8 nbOfLoans) internal {
-        BorrowArgs[] memory borrowArgs = new BorrowArgs[](nbOfLoans);
+        BorrowArg[] memory borrowArgs = new BorrowArg[](nbOfLoans);
         Offer memory offer;
         uint256 currentTokenId;
 
         getFlooz(signer, money, nbOfLoans * getOfferArg().amount);
 
         for (uint8 i = 0; i < nbOfLoans; i++) {
-            OfferArgs[] memory offerArgs = new OfferArgs[](1);
+            OfferArg[] memory offerArgs = new OfferArg[](1);
             currentTokenId = getJpeg(BORROWER, nft);
             offer = getOffer();
             offer.collateral.id = currentTokenId;
-            offerArgs[0] = OfferArgs({
+            offerArgs[0] = OfferArg({
                 signature: getSignature(offer),
                 amount: getOfferArg().amount,
                 offer: offer
             });
-            borrowArgs[i] = BorrowArgs({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
+            borrowArgs[i] = BorrowArg({nft: NFToken({id: currentTokenId, implem: nft}), args: offerArgs});
         }
 
         vm.prank(BORROWER);

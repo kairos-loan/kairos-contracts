@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {BorrowArgs, CollateralState, NFToken, Offer, OfferArgs} from "../../src/DataStructure/Objects.sol";
+import {BorrowArg, CollateralState, NFToken, Offer, OfferArg} from "../../src/DataStructure/Objects.sol";
 import {getSelector} from "../../src/utils/FuncSelectors.h.sol";
 import {Loan, Payment, Provision} from "../../src/DataStructure/Storage.sol";
 import {Loggers} from "./Loggers.sol";
@@ -73,27 +73,27 @@ abstract contract TestCommons is Loggers {
             });
     }
 
-    function getOfferArg() internal returns (OfferArgs memory) {
+    function getOfferArg() internal returns (OfferArg memory) {
         return getOfferArg(getOffer());
     }
 
-    function getOfferArg(Offer memory offer) internal returns (OfferArgs memory arg) {
-        arg = OfferArgs({signature: getSignature(offer), amount: offer.loanToValue / 10, offer: offer});
+    function getOfferArg(Offer memory offer) internal returns (OfferArg memory arg) {
+        arg = OfferArg({signature: getSignature(offer), amount: offer.loanToValue / 10, offer: offer});
     }
 
-    function getOfferArgs() internal returns (OfferArgs[] memory) {
+    function getOfferArgs() internal returns (OfferArg[] memory) {
         return getOfferArgs(getOffer());
     }
 
-    function getOfferArgs(Offer memory offer) internal returns (OfferArgs[] memory) {
-        OfferArgs[] memory ret = new OfferArgs[](1);
+    function getOfferArgs(Offer memory offer) internal returns (OfferArg[] memory) {
+        OfferArg[] memory ret = new OfferArg[](1);
         ret[0] = getOfferArg(offer);
         return ret;
     }
 
-    function getBorrowArgs() internal returns (BorrowArgs[] memory) {
-        BorrowArgs[] memory args = new BorrowArgs[](1);
-        args[0] = BorrowArgs({nft: getNft(), args: getOfferArgs()});
+    function getBorrowArgs() internal returns (BorrowArg[] memory) {
+        BorrowArg[] memory args = new BorrowArg[](1);
+        args[0] = BorrowArg({nft: getNft(), args: getOfferArgs()});
         return args;
     }
 

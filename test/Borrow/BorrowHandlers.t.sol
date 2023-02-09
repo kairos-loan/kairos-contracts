@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {CollateralState, NFToken, Offer, OfferArgs, Ray} from "../../src/DataStructure/Objects.sol";
+import {CollateralState, NFToken, Offer, OfferArg, Ray} from "../../src/DataStructure/Objects.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Internal} from "../Commons/Internal.sol";
 import {Loan} from "../../src/DataStructure/Storage.sol";
@@ -19,7 +19,7 @@ contract TestBorrowHandlers is Internal {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
         offer.assetToLend = money2;
-        OfferArgs memory offArgs = getOfferArg(offer);
+        OfferArg memory offArgs = getOfferArg(offer);
 
         vm.expectRevert(abi.encodeWithSelector(InconsistentAssetRequests.selector, money, money2));
         this.useOfferExternal(offArgs, collatState);
@@ -37,7 +37,7 @@ contract TestBorrowHandlers is Internal {
     function testRequestedAmountTooHigh() public {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
-        OfferArgs memory offArgs = getOfferArg(offer);
+        OfferArg memory offArgs = getOfferArg(offer);
 
         offArgs.amount = 11 ether;
 
@@ -49,7 +49,7 @@ contract TestBorrowHandlers is Internal {
 
     function testUseCollateralNominal() public returns (Loan memory loan) {
         Offer memory offer = getOffer();
-        OfferArgs[] memory offArgs = getOfferArgs(offer);
+        OfferArg[] memory offArgs = getOfferArgs(offer);
         NFToken memory nft = getNft();
 
         vm.mockCall(
@@ -64,7 +64,7 @@ contract TestBorrowHandlers is Internal {
     function testUseOfferReturn() public {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
-        OfferArgs memory offArgs = getOfferArg(offer);
+        OfferArg memory offArgs = getOfferArg(offer);
         vm.mockCall(
             address(money),
             abi.encodeWithSelector(IERC20.transferFrom.selector, signer, BORROWER, offArgs.amount),
@@ -79,7 +79,7 @@ contract TestBorrowHandlers is Internal {
     }
 
     function testMultipleUseCollateral() public {
-        OfferArgs[] memory offerArgs = new OfferArgs[](10);
+        OfferArg[] memory offerArgs = new OfferArg[](10);
 
         for (uint8 i = 0; i < 10; i++) {
             offerArgs[i] = getOfferArg(getOffer());
