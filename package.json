@@ -4,8 +4,8 @@
   "scripts": {
     "build": "forge build --extra-output-files abi",
     "start": "anvil --silent --block-time 1 > out/anvil-logs.txt & yarn deploy:local &",
-    "lint": "solhint './**/*.sol' && eslint ./scripts/ts/**/*.ts",
-    "lint:fix": "solhint './**/*.sol' --fix && eslint ./scripts/ts/**/*.ts --fix",
+    "lint": "solhint './src/**/*.sol ./scripts/sol/**/*.sol' -c ../../.solhint.json && eslint ./scripts/ts/**/*.ts",
+    "lint:fix": "solhint './src/**/*.sol ./scripts/sol/**/*.sol' -c ../../.solhint.json --fix && eslint ./scripts/ts/**/*.ts --fix",
     "prettify": "prettier --write ./**/*.sol ./scripts/ts/**/*.ts",
     "test": "forge test",
     "slither": "sh scripts/sh/slither.sh",
