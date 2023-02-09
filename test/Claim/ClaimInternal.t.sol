@@ -3,14 +3,12 @@ pragma solidity 0.8.17;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
-import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";
+import {ERC20TransferFailed} from "../../src/DataStructure/Errors.sol";
 import {Internal} from "../Commons/Internal.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "../../src/DataStructure/Storage.sol";
-import {ONE, protocolStorage, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
+import {protocolStorage, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
 import {Ray} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
-import {console} from "forge-std/console.sol";
 
 contract TestClaim is Internal {
     using RayMath for Ray;
@@ -18,37 +16,73 @@ contract TestClaim is Internal {
 
     function testSendInterests() public {
         Protocol storage proto = protocolStorage();
+        Loan memory loan = proto.loan[0];
+        loan = getLoan();
+        loan.lent = 2 ether;
+        loan.payment.paid = (14 * loan.lent) / 10; // 40% interests;
+
+        SupplyPosition storage sp = supplyPositionStorage();
+        Provision memory provision = sp.provision[0];
+        provision = getProvision();
+        provision.amount = loan.lent / 2;
+
+        uint256 sentExpected = loan.payment.paid / 2;
+
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(money.transfer.selector, address(this), sentExpected),
+            abi.encode(false)
+        );
+        vm.expectRevert(
+            abi.encodeWithSelector(ERC20TransferFailed.selector, address(money), address(this), address(this))
+        );
+        this.sendInterestsExternal(loan, provision);
+
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(money.transfer.selector, address(this), sentExpected),
+            abi.encode(true)
+        );
+        assertEq(this.sendInterestsExternal(loan, provision), sentExpected);
+    }
+
+    function testSendInterestsWithLowLent() public {
+        Protocol storage proto = protocolStorage();
+        proto.loan[0] = getLoan();
+        Loan memory loan = proto.loan[0];
+        loan.lent = 2;
+        loan.payment.paid = (14 * loan.lent) / 10;
+
+        SupplyPosition storage sp = supplyPositionStorage();
+        Provision memory provision = sp.provision[0];
+        provision = getProvision();
+        provision.amount = 1;
+
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(money.transfer.selector, address(this), provision.amount),
+            abi.encode(true)
+        );
+        assertEq(this.sendInterestsExternal(loan, provision), provision.amount);
+    }
+
+    function testSendInterestsWithNulInterest() public {
+        Protocol storage proto = protocolStorage();
         proto.loan[0] = getLoan();
         Loan memory loan = proto.loan[0];
         loan.lent = 2 ether;
-        loan.payment.paid = loan.lent + 1;
+        loan.payment.paid = loan.lent;
 
         SupplyPosition storage sp = supplyPositionStorage();
-        sp.provision[0] = getProvision();
-        sp.provision[0].amount = 1 ether;
         Provision memory provision = sp.provision[0];
+        provision = getProvision();
+        provision.amount = loan.lent / 2;
 
-        // Ray shareOfTotalLent = provision.amount.div(loan.lent); // 1/1000
-        // console.log((loan.payment.paid - loan.lent).mul(shareOfTotalLent));
-        // uint256 sent = provision.amount + (loan.payment.paid - loan.lent).mul(shareOfTotalLent);
-        // console.log("sent1", sent);
-
-        uint256 interests = loan.payment.paid - loan.lent;
-        uint256 sent2 = provision.amount + (interests * (provision.amount)) / (loan.lent);
-
-        // console.log("sent2", sent);
-        // assert(sent == sent2);
-
-        // vm.expectCall(address(loan.assetLent), abi.encodeCall(loan.assetLent.transfer, (msg.sender, sent2)));
-        // loan.assetLent.transfer(msg.sender, sent2);
-
-        console.log(address(this));
-        console.log(address(money));
-
-        vm.expectCall(address(money), abi.encodeWithSelector(money.transfer.selector, address(this), sent2));
-
-        // money.transfer(address(this), 10);
-
-        this.sendInterestsExternal(loan, provision);
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(money.transfer.selector, address(this), provision.amount),
+            abi.encode(true)
+        );
+        assertEq(this.sendInterestsExternal(loan, provision), provision.amount);
     }
 }

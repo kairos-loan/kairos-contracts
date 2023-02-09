@@ -49,21 +49,20 @@ contract Internal is TestCommons, BigKairos {
         return useCollateral(args, from, nft);
     }
 
+    function sendInterestsExternal(Loan memory loan, Provision memory provision) external returns (uint256) {
+        Protocol storage proto = protocolStorage();
+        proto.loan[0] = loan;
+        SupplyPosition storage sp = supplyPositionStorage();
+        sp.provision[0] = provision;
+        return sendInterests(proto.loan[0], sp.provision[0]);
+    }
+
     function checkOfferArgsExternal(OfferArgs memory args) external view returns (address) {
         return checkOfferArgs(args);
     }
 
     function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {
         checkCollateral(offer, providedNft);
-    }
-
-    function sendInterestsExternal(Loan memory loan, Provision memory provision) external returns (uint256) {
-        Protocol storage proto = protocolStorage();
-        proto.loan[0] = loan;
-
-        SupplyPosition storage sp = supplyPositionStorage();
-        sp.provision[0] = provision;
-        return sendInterests(proto.loan[0], sp.provision[0]);
     }
 
     function sendShareOfSaleAsSupplierExternal(
