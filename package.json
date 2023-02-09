@@ -2,7 +2,9 @@
   "name": "@kairos-loan/contracts",
   "version": "0.1.0",
   "scripts": {
-    "build": "forge build --extra-output-files abi",
+    "build": "yarn build:foundry",
+    "build:foundry": "forge build --extra-output-files abi",
+    "build:hardhat": "hardhat compile",
     "start": "anvil --silent --block-time 1 > out/anvil-logs.txt & yarn deploy:local &",
     "lint": "solhint './src/**/*.sol ./scripts/sol/**/*.sol' -c ../../.solhint.json && eslint ./scripts/ts/**/*.ts",
     "lint:fix": "solhint './src/**/*.sol ./scripts/sol/**/*.sol' -c ../../.solhint.json --fix && eslint ./scripts/ts/**/*.ts --fix",
