@@ -49,7 +49,10 @@ contract Internal is TestCommons, BigKairos {
         return useCollateral(args, from, nft);
     }
 
-    function sendInterestsExternal(Loan memory loan, Provision memory provision) external returns (uint256) {
+    function sendInterestsExternal(
+        Loan memory loan,
+        Provision memory provision
+    ) external returns (uint256) {
         Protocol storage proto = protocolStorage();
         proto.loan[0] = loan;
         SupplyPosition storage sp = supplyPositionStorage();
@@ -61,7 +64,11 @@ contract Internal is TestCommons, BigKairos {
         return checkOfferArg(arg);
     }
 
-    function priceExternal(uint256 lent, Ray shareLent, uint256 timeElapsed) external view returns (uint256) {
+    function priceExternal(
+        uint256 lent,
+        Ray shareLent,
+        uint256 timeElapsed
+    ) external view returns (uint256) {
         return price(lent, shareLent, timeElapsed);
     }
 
@@ -76,7 +83,10 @@ contract Internal is TestCommons, BigKairos {
         return sendShareOfSaleAsSupplier(loan, provision);
     }
 
-    function sentInterestsIn(Loan storage loan, Provision storage provision) internal returns (uint256) {
+    function sentInterestsIn(
+        Loan storage loan,
+        Provision storage provision
+    ) internal returns (uint256) {
         return sendInterests(loan, provision);
     }
 

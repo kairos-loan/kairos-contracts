@@ -2,7 +2,8 @@
   "name": "kairos-loan-contracts",
   "version": "0.1.0",
   "scripts": {
-    "deploy-mocks": "export $(grep -v '^#' .env | xargs) && forge script contracts/script/DeployNftAndMoney.s.sol -vvvv --chain 420 --verify --rpc-url $GOERLI_URL --broadcast"
+    "deploy-mocks": "export $(grep -v '^#' .env | xargs) && forge script contracts/script/DeployNftAndMoney.s.sol -vvvv --chain 420 --verify --rpc-url $GOERLI_URL --broadcast",
+    "test": "forge test"
   },
   "dependencies": {
     "@kairos-loan/chain-types": "workspace:*",

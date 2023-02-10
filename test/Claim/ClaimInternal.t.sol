@@ -14,30 +14,25 @@ contract TestClaim is Internal {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    function testSendInterests() public {
+    Loan private loan;
+    Provision private provision;
+    uint256 private sentExpected;
+
+    function setUp() public {
         Protocol storage proto = protocolStorage();
-        Loan memory loan = proto.loan[0];
+        SupplyPosition storage sp = supplyPositionStorage();
+
         loan = getLoan();
         loan.lent = 2 ether;
         loan.payment.paid = (14 * loan.lent) / 10; // 40% interests;
-
-        SupplyPosition storage sp = supplyPositionStorage();
-        Provision memory provision = sp.provision[0];
+        proto.loan[0] = loan;
         provision = getProvision();
         provision.amount = loan.lent / 2;
+        sp.provision[0] = provision;
+        sentExpected = loan.payment.paid / 2;
+    }
 
-        uint256 sentExpected = loan.payment.paid / 2;
-
-        vm.mockCall(
-            address(money),
-            abi.encodeWithSelector(money.transfer.selector, address(this), sentExpected),
-            abi.encode(false)
-        );
-        vm.expectRevert(
-            abi.encodeWithSelector(ERC20TransferFailed.selector, address(money), address(this), address(this))
-        );
-        this.sendInterestsExternal(loan, provision);
-
+    function testSendInterests() public {
         vm.mockCall(
             address(money),
             abi.encodeWithSelector(money.transfer.selector, address(this), sentExpected),
@@ -46,16 +41,26 @@ contract TestClaim is Internal {
         assertEq(this.sendInterestsExternal(loan, provision), sentExpected);
     }
 
-    function testSendInterestsWithLowLent() public {
-        Protocol storage proto = protocolStorage();
-        proto.loan[0] = getLoan();
-        Loan memory loan = proto.loan[0];
-        loan.lent = 2;
-        loan.payment.paid = (14 * loan.lent) / 10;
+    function testFailedCurrencyTransferReverts() public {
+        protocolStorage().loan[0] = getLoan();
+        vm.mockCall(
+            address(money),
+            abi.encodeWithSelector(money.transfer.selector, address(this), sentExpected),
+            abi.encode(false)
+        );
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ERC20TransferFailed.selector,
+                address(money),
+                address(this),
+                address(this)
+            )
+        );
+        this.sendInterestsExternal(getLoan(), getProvision());
+    }
 
-        SupplyPosition storage sp = supplyPositionStorage();
-        Provision memory provision = sp.provision[0];
-        provision = getProvision();
+    function testSendInterestsWithLowLent() public {
+        loan.lent = 2;
         provision.amount = 1;
 
         vm.mockCall(
@@ -66,17 +71,8 @@ contract TestClaim is Internal {
         assertEq(this.sendInterestsExternal(loan, provision), provision.amount);
     }
 
-    function testSendInterestsWithNulInterest() public {
-        Protocol storage proto = protocolStorage();
-        proto.loan[0] = getLoan();
-        Loan memory loan = proto.loan[0];
-        loan.lent = 2 ether;
+    function testSendInterestsWithNoInterest() public {
         loan.payment.paid = loan.lent;
-
-        SupplyPosition storage sp = supplyPositionStorage();
-        Provision memory provision = sp.provision[0];
-        provision = getProvision();
-        provision.amount = loan.lent / 2;
 
         vm.mockCall(
             address(money),
