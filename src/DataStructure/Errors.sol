@@ -16,4 +16,4 @@ error LoanAlreadyRepaid(uint256 loanId); // 0xdae2c273
 error SupplyPositionDoesntBelongToTheLoan(uint256 positionId, uint256 loanId); // 0xf109be00
 error NotBorrowerOfTheLoan(uint256 loanId); // 0xc250ea5d
 error BorrowerAlreadyClaimed(uint256 loanId); // 0x16600edc
-error CollateralIsNotLiquidableYet(uint256 endDate);
+error CollateralIsNotLiquidableYet(uint256 endDate, uint256 loanId);

@@ -38,28 +38,29 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     }
 
     /// @notice handles buying one NFT
-    /// @param args arguments on what and how to buy
-    function useLoan(BuyArg memory args) internal {
-        Loan storage loan = protocolStorage().loan[args.loanId];
+    /// @param arg arguments on what and how to buy
+    function useLoan(BuyArg memory arg) internal {
+        Loan storage loan = protocolStorage().loan[arg.loanId];
 
-        if (block.timestamp > loan.endDate) {
-            revert CollateralIsNotLiquidableYet(loan.endDate);
+        if (block.timestamp < loan.endDate) {
+            // todo #344 test collateral is not liquidable yet
+            revert CollateralIsNotLiquidableYet(loan.endDate, arg.loanId);
         }
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate;
 
         if (loan.payment.paid != 0 || loan.payment.liquidated) {
-            revert LoanAlreadyRepaid(args.loanId);
+            revert LoanAlreadyRepaid(arg.loanId);
         }
         loan.payment.liquidated = true;
 
-        uint256 toPay = price(loan.lent, getShareToPay(args, loan), timeSinceLiquidable);
+        uint256 toPay = price(loan.lent, getShareToPay(arg, loan), timeSinceLiquidable);
         if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
             revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
         }
         loan.payment.paid = toPay;
-        loan.collateral.implem.safeTransferFrom(address(this), args.to, loan.collateral.id);
+        loan.collateral.implem.safeTransferFrom(address(this), arg.to, loan.collateral.id);
 
-        emit Buy(args.loanId, abi.encode(args));
+        emit Buy(arg.loanId, abi.encode(arg));
     }
 
     /// @notice computes the share of the NFT to pay and burns the used supply positions
