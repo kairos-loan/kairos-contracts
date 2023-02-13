@@ -18,3 +18,4 @@ error NotBorrowerOfTheLoan(uint256 loanId); // 0xc250ea5d
 error BorrowerAlreadyClaimed(uint256 loanId); // 0x16600edc
 error CallerIsNotOwner(address admin);
 error InvalidTranche(uint256 nbOfTranches);
+error CollateralIsNotLiquidableYet(uint256 endDate, uint256 loanId);
