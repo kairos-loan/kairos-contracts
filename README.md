@@ -15,7 +15,7 @@ Offers must be of [`Offer`](src/DataStructure/Objects.sol) type, and be signed b
 
 Borrowing can be achieved in two ways :
 
-1. Through sending an NFT to the contract, triggering [`onERC721Received()`](src/BorrowFacet.sol) callback (make sure to put [`OfferArgs[]`](src/DataStructure/Objects.sol)-formated arguments in the `data` field).
+1. Through sending an NFT to the contract, triggering [`onERC721Received()`](src/BorrowFacet.sol) callback (make sure to put [`OfferArg[]`](src/DataStructure/Objects.sol)-formatted arguments in the `data` field).
 2. By calling the [`borrow()`](src/BorrowFacet.sol) method. NFTs that will be used as collateral must have been approved to the contract before the call.
 
 In every case, the arguments should contain loan offers with their corresponding signatures issued by its suppliers. Those will be checked (signer address computed) and if valid, requested amount will be transferred directly from supplier to borrower. NFT provided as collateral will be taken in the protocol contract (kairos will support letting them in borrower's account soon) and a NFT representing the supply position is issued and sent to the supplier.  
@@ -25,7 +25,7 @@ From the contract's standpoint, a loan has only one collateral, but can have mul
 
 Interests on loans accrue linearly according to the [`getLoan(<id>).interestPerSecond`](src/ProtocolFacet.sol) rate fixed at issuance.
 
-## Repaying
+### Repaying
 
 The [`getLoan(<id>).endDate`](src/ProtocolFacet.sol) limit date is fixed at issuance and corresponding to the minimal value of [`Offer.duration`](src/DataStructure/Objects.sol) in offers used, added to the issuance date. After this date and if the loan is not repaid, the collateral is on sale for liquidation. Borrowers can repay at any time, even after limit date, as long as the collateral is not liquidated. Repay through [`repay()`](src/RepayFacet.sol). Give approval on your tokens used for repayment before the call.
 
@@ -59,14 +59,16 @@ No DAO fee is taken yet, but please note that it will be the case in the future.
 
 ### Imports style policy
 
-first import external dependencies (suchs as the ones from open zeppelin)  
+first import external dependencies (such as the ones from open zeppelin)  
 leave a blank line
 then import interfaces (if they are from this repo)  
 leave another blank line  
 finally import local code files
 
-### Remmaping
+### Remapping
+
 When we add a new dependency we should update:
+
 - [.vscode/settings.json](../../.vscode/settings.json#L26-L31)
 - [packages/contracts/scripts/sh/slither.sh](scripts/sh/slither.sh#L2)
 - [packages/contracts/foundry.toml](foundry.toml#L9-L14)
