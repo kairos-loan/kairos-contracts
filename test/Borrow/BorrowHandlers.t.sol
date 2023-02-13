@@ -101,5 +101,5 @@ contract TestBorrowHandlers is Internal {
         assertEq(testUseCollateralNominal(), loan);
     }
 
-    // todo #48 test use collateral puts loan at correct id
+    // todo #2 test use collateral puts loan at correct id
 }

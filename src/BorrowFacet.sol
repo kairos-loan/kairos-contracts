@@ -12,13 +12,9 @@ import {Signature} from "./Signature.sol";
 /// @notice public facing methods for borrowing
 /// @dev contract handles all borrowing logic through inheritance
 contract BorrowFacet is IBorrowFacet, BorrowHandlers {
-    // todo #19 add reentrency check
-    // todo #20 process supplier coins
-    // todo #21 support supplier signed approval
-    // todo #22 support contract signatures (erc1271)
-    // todo #23 check and implement protocol rules
-    // todo #24 allow receive money then hook to get the NFT
-    // todo #25 enforce minimal offer duration // useful ? if minimal interest // maybe max also
+    // todo #19 process supplier coins
+    // todo #18 support supplier signed approval
+    // todo #17 support contract signatures (erc1271)
     /// @notice borrow using sent NFT as collateral without needing approval through transfer callback
     /// @param from owner of the NFT sent according to the NFT implementation contract
     /// @param tokenId token identifier of the NFT sent according to the NFT implementation contract
@@ -38,7 +34,7 @@ contract BorrowFacet is IBorrowFacet, BorrowHandlers {
         return this.onERC721Received.selector;
     }
 
-    // todo #26 should return loan ids ?
+    // todo #13 should return loan ids ?
     /// @notice take loans, take ownership of NFTs specified as collateral, sends borrowed money to caller
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArg[] calldata args) external {

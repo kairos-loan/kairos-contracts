@@ -59,7 +59,6 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
         }
 
-        // todo #35 verify provision has expected values
         safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);
     }
@@ -74,7 +73,6 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         address from,
         NFToken memory nft
     ) internal returns (Loan memory loan) {
-        // todo #36 test returned loan
         Protocol storage proto = protocolStorage();
         uint256 lent;
         uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
@@ -98,14 +96,14 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: endDate,
-            interestPerSecond: proto.tranche[0], // todo #27 adapt rate to the offers
+            interestPerSecond: proto.tranche[0], // todo #12 adapt rate to the offers
             borrower: from,
             collateral: nft,
             supplyPositionIndex: supplyPositionIndex,
             payment: notPaid,
             nbOfPositions: uint8(args.length)
         });
-        proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
+        proto.loan[collatState.loanId] = loan;
         emit Borrow(collatState.loanId, abi.encode(loan));
     }
 }
