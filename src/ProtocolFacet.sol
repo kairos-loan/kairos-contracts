@@ -20,15 +20,17 @@ contract ProtocolFacet {
     ///         of a collateral on sale
     /// @return auctionDuration number of seconds after the auction start when the price hits 0
     /// @return nbOfLoans total number of loans ever issued (active and ended)
+    /// @return nbOfTranches total number of interest rates tranches ever created (active and inactive)
     function getParameters()
         external
         view
-        returns (Ray auctionPriceFactor, uint256 auctionDuration, uint256 nbOfLoans)
+        returns (Ray auctionPriceFactor, uint256 auctionDuration, uint256 nbOfLoans, uint256 nbOfTranches)
     {
         Protocol storage proto = protocolStorage();
-        auctionPriceFactor = proto.auctionPriceFactor;
-        auctionDuration = proto.auctionDuration;
+        auctionPriceFactor = proto.auction.priceFactor;
+        auctionDuration = proto.auction.duration;
         nbOfLoans = proto.nbOfLoans;
+        nbOfTranches = proto.nbOfTranches;
     }
 
     /// @notice get loan metadata

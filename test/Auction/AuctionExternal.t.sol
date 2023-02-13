@@ -37,7 +37,6 @@ contract TestAuction is External {
         BuyArg[] memory args = setupLoan();
         args[0].positionIds = oneInArray;
         mintPosition(signer2, getProvision());
-        // nft.mintOneTo(address(kairos));
         vm.startPrank(signer);
         vm.expectRevert(abi.encodeWithSelector(ERC721CallerIsNotOwnerNorApproved.selector));
         kairos.buy(args);
@@ -71,6 +70,8 @@ contract TestAuction is External {
         kairos.buy(args);
         assertEq(balanceBefore - money.balanceOf(signer), kairos.price(1));
     }
+
+    // todo #356 check paid price on buying nft in auction as a borrower / as a supplier
 
     function auctionN(uint256 nbOfAuctions) internal {
         BuyArg[] memory args = new BuyArg[](nbOfAuctions);

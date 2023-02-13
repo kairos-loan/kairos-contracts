@@ -5,11 +5,11 @@ import {IBorrowHandlers} from "../interface/IBorrowHandlers.sol";
 
 import {BorrowCheckers} from "./BorrowCheckers.sol";
 import {CollateralState, NFToken, OfferArg, Ray} from "../DataStructure/Objects.sol";
-import {Loan, Payment, Protocol, Provision} from "../DataStructure/Storage.sol";
+import {Loan, Payment, Protocol, Provision, Auction} from "../DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
 import {RayMath} from "../utils/RayMath.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
-import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
+import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh, InvalidTranche} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
@@ -29,6 +29,8 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         OfferArg memory args,
         CollateralState memory collatState
     ) internal returns (CollateralState memory) {
+        Protocol storage proto = protocolStorage();
+
         address signer = checkOfferArg(args);
         Ray shareMatched;
 
@@ -54,7 +56,9 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         if (args.offer.duration < collatState.minOfferDuration) {
             collatState.minOfferDuration = args.offer.duration;
         }
-
+        if (args.offer.tranche >= proto.nbOfTranches) {
+            revert InvalidTranche(proto.nbOfTranches);
+        }
         if (!collatState.assetLent.transferFrom(signer, collatState.from, args.amount)) {
             revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
         }
@@ -98,7 +102,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: endDate,
-            auctionDuration: proto.auctionDuration,
+            auction: Auction({duration: proto.auction.duration, priceFactor: proto.auction.priceFactor}),
             interestPerSecond: proto.tranche[0], // todo #27 adapt rate to the offers
             borrower: from,
             collateral: nft,

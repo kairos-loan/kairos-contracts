@@ -34,7 +34,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     function price(uint256 loanId) external view returns (uint256) {
         Loan storage loan = protocolStorage().loan[loanId];
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate;
-        return price(loan.lent, ONE, timeSinceLiquidable);
+        return price(ONE, timeSinceLiquidable, loan);
     }
 
     /// @notice handles buying one NFT
@@ -53,7 +53,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         }
         loan.payment.liquidated = true;
 
-        uint256 toPay = price(loan.lent, getShareToPay(arg, loan), timeSinceLiquidable);
+        uint256 toPay = price(getShareToPay(arg, loan), timeSinceLiquidable, loan);
         if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
             revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
         }
@@ -91,18 +91,15 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     }
 
     /// @notice gets price calculated following a linear dutch auction
-    /// @param lent total amount lent in the loan
     /// @param shareToPay share of the collateral to pay, I.e share of the loan not owned by caller
     /// @param timeElapsed time elapsed since the collateral is liquidable
+    /// @param loan - of which the collateral is being liquidated
     /// @return price computed price
-    function price(uint256 lent, Ray shareToPay, uint256 timeElapsed) internal view returns (uint256) {
-        Protocol storage proto = protocolStorage();
-
-        // todo : explore attack vectors based on small values messing with calculus
-        Ray decreasingFactor = timeElapsed >= proto.auctionDuration
+    function price(Ray shareToPay, uint256 timeElapsed, Loan storage loan) internal view returns (uint256) {
+        Ray decreasingFactor = timeElapsed >= loan.auction.duration
             ? ZERO
-            : ONE.sub(timeElapsed.div(proto.auctionDuration));
-        uint256 totalToPay = lent.mul(proto.auctionPriceFactor).mul(decreasingFactor);
+            : ONE.sub(timeElapsed.div(loan.auction.duration));
+        uint256 totalToPay = loan.lent.mul(loan.auction.priceFactor).mul(decreasingFactor);
         return totalToPay.mul(shareToPay);
     }
 }

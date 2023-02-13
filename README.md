@@ -31,11 +31,18 @@ The [`getLoan(<id>).endDate`](src/ProtocolFacet.sol) limit date is fixed at issu
 
 ### Buying in auction
 
-The [`buy()`](src/AuctionFacet.sol) method allows to take ownership of an NFT collateral in liquidation. The price is determined following a linear dutch auction, duration and initial price being fixed by [`getParameters().auctionDuration`](src/ProtocolFacet.sol) and [`getParameters().auctionPriceFactor`](src/ProtocolFacet.sol) (no oracle involved). The borrower and the suppliers of the corresponding loan experience reduced price according to the following principle : they don't pay twice for what they already provided. As a borrower if you didn't borrowed the full loan to value of the collateral, you only have to pay the share of the value you borrowed. As a supplier, provide your position ids in the arguments to burn them and pay only for the share you didn't already lent for. Give approval on your tokens used for purchase before the call.
+The [`buy()`](src/AuctionFacet.sol) method allows to take ownership of an NFT collateral in liquidation. The price is determined following a linear dutch auction, duration and initial price being fixed by [`getParameters().auction.duration`](src/ProtocolFacet.sol) and [`getParameters().auction.priceFactor`](src/ProtocolFacet.sol) (no oracle involved). The borrower and the suppliers of the corresponding loan experience reduced price according to the following principle : they don't pay twice for what they already provided. As a borrower if you didn't borrowed the full loan to value of the collateral, you only have to pay the share of the value you borrowed. As a supplier, provide your position ids in the arguments to burn them and pay only for the share you didn't already lent for. Give approval on your tokens used for purchase before the call.
 
 ### Claiming
 
 Call [`claim()`](src/ClaimFacet.sol) as a supplier to get back principal + interests on the amount you lent. Use the same method to get your share of a liquidation. As a borrower, you can claim the value of your liquidated collateral that you didn't borrow, call [`claimAsBorrower()`](src/ClaimFacet.sol).
+
+### Administration
+
+The protocol owner have the ability to change the two (duration and price factor) parameters of auctions at any time.
+The change is only applied for loans issued after the modification. Loans already issued will liquidate their
+collateral if necessary following the parameters active at the time of issuance. The protocol owner can also create new
+interest rate tranches for the lenders to supply on.
 
 ### Fees
 
@@ -66,7 +73,9 @@ leave another blank line
 finally import local code files
 
 ### Remmaping
+
 When we add a new dependency we should update:
+
 - [.vscode/settings.json](../../.vscode/settings.json#L26-L31)
 - [packages/contracts/scripts/sh/slither.sh](scripts/sh/slither.sh#L2)
 - [packages/contracts/foundry.toml](foundry.toml#L9-L14)
