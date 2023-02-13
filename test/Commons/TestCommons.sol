@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {RayMath} from "../../src/utils/RayMath.sol";
 import {BorrowArg, CollateralState, NFToken, Offer, OfferArg} from "../../src/DataStructure/Objects.sol";
 import {getSelector} from "../../src/utils/FuncSelectors.h.sol";
-import {Loan, Payment, Provision} from "../../src/DataStructure/Storage.sol";
+import {Loan, Payment, Provision, Auction} from "../../src/DataStructure/Storage.sol";
 import {Loggers} from "./Loggers.sol";
 import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";
@@ -11,6 +12,8 @@ import {ONE} from "../../src/DataStructure/Global.sol";
 import {Ray} from "../../src/DataStructure/Objects.sol";
 
 abstract contract TestCommons is Loggers {
+    using RayMath for Ray;
+
     error AssertionFailedLoanDontMatch();
     error AssertionFailedRayDontMatch(Ray expected, Ray actual);
     error AssertionFailedCollatStateDontMatch();
@@ -113,6 +116,7 @@ abstract contract TestCommons is Loggers {
                 shareLent: ONE,
                 startDate: block.timestamp - 2 weeks,
                 endDate: block.timestamp + 2 weeks,
+                auction: Auction({duration: 3 days, priceFactor: ONE.div(10).mul(4).div(365 days)}),
                 interestPerSecond: getTranche(0),
                 borrower: BORROWER,
                 collateral: getOffer().collateral,

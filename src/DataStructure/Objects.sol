@@ -62,7 +62,7 @@ struct CollateralState {
 /// @param loanToValue amount to lend per collateral
 /// @param duration in seconds, time before mandatory repayment after loan start
 /// @param expirationDate date after which the offer can't be used
-/// @param tranche identifies the interest rate tranche
+/// @param tranche identifier of the interest rate tranche
 /// @param collateral the NFT that can be used as collateral with this offer
 struct Offer {
     IERC20 assetToLend;

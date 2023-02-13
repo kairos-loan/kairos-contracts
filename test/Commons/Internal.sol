@@ -18,8 +18,8 @@ contract Internal is TestCommons, BigKairos {
         bytes memory randoCode = hex"01";
         Protocol storage proto = protocolStorage();
         proto.tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
-        proto.auctionPriceFactor = ONE.mul(3);
-        proto.auctionDuration = 3 days;
+        proto.auction.priceFactor = ONE.mul(3);
+        proto.auction.duration = 3 days;
         money = Money(address(bytes20(keccak256("mock address money"))));
         vm.etch(address(money), randoCode);
         vm.label(address(money), "money");

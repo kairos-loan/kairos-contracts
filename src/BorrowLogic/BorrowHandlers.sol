@@ -103,7 +103,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             startDate: block.timestamp,
             endDate: endDate,
             auction: Auction({duration: proto.auction.duration, priceFactor: proto.auction.priceFactor}),
-            interestPerSecond: proto.tranche[0], // todo #27 adapt rate to the offers
+            interestPerSecond: interestRate(args, lent),
             borrower: from,
             collateral: nft,
             supplyPositionIndex: supplyPositionIndex,
@@ -112,5 +112,22 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         });
         proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
         emit Borrow(collatState.loanId, abi.encode(loan));
+    }
+
+    /// @notice computes the interest rate applied to lent amount derived from multiple offers with different rates
+    /// @param args arguments for usage of one or multiple loan offers
+    /// @param lent total amount lent for this loan
+    /// @return interestPerSecond share of the amount lent added to the debt each second
+    function interestRate(
+        OfferArg[] memory args,
+        uint256 lent
+    ) internal view returns (Ray interestPerSecond) {
+        Protocol storage proto = protocolStorage();
+
+        for (uint8 i = 0; i < args.length; i++) {
+            interestPerSecond = interestPerSecond.add(
+                proto.tranche[args[i].offer.tranche].mul(args[i].amount.div(lent))
+            );
+        }
     }
 }
