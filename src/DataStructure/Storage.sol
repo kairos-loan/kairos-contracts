@@ -60,7 +60,7 @@ struct Payment {
     bool borrowerBought;
 }
 
-/// @notice storage for the ERC721 compliant supply position facets. Related NFTs represent supplier positions
+/// @notice storage for the ERC721 compliant supply position facet. Related NFTs represent supplier positions
 /// @param name - of the NFT collection
 /// @param symbol - of the NFT collection
 /// @param totalSupply number of supply position ever issued - not decreased on burn
