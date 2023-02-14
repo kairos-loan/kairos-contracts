@@ -62,6 +62,7 @@ contract TestClaim is Internal {
     function testSendInterestsWithLowLent() public {
         loan.lent = 2;
         provision.amount = 1;
+        loan.payment.paid = (14 * loan.lent) / 10;
 
         vm.mockCall(
             address(money),
