@@ -10,20 +10,20 @@ import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
 import {DiamondLoupeFacet} from "diamond/contracts/facets/DiamondLoupeFacet.sol";
 import {console} from "forge-std/console.sol";
 
-import {Ray} from "../../src/DataStructure/Objects.sol";
-import {RayMath} from "../../src/utils/RayMath.sol";
-import {ONE} from "../../src/DataStructure/Global.sol";
-import {IKairos} from "../../interface/IKairos.sol";
-import {External} from "../../test/Commons/External.sol";
-import {ContractsCreator} from "../../src/ContractsCreator.sol";
-import {AuctionFacet} from "../../src/AuctionFacet.sol";
-import {BorrowFacet} from "../../src/BorrowFacet.sol";
-import {ClaimFacet} from "../../src/ClaimFacet.sol";
-import {Initializer} from "../../src/Initializer.sol";
-import {ProtocolFacet} from "../../src/ProtocolFacet.sol";
-import {RepayFacet} from "../../src/RepayFacet.sol";
-import {SupplyPositionFacet} from "../../src/SupplyPositionFacet.sol";
-import {BetaSettersFacet} from "../../src/BetaSettersFacet.sol";
+import {Ray} from "../../../src/DataStructure/Objects.sol";
+import {RayMath} from "../../../src/utils/RayMath.sol";
+import {ONE} from "../../../src/DataStructure/Global.sol";
+import {IKairos} from "../../../src/interface/IKairos.sol";
+import {External} from "../../../test/Commons/External.sol";
+import {ContractsCreator} from "../../../src/ContractsCreator.sol";
+import {AuctionFacet} from "../../../src/AuctionFacet.sol";
+import {BorrowFacet} from "../../../src/BorrowFacet.sol";
+import {ClaimFacet} from "../../../src/ClaimFacet.sol";
+import {Initializer} from "../../../src/Initializer.sol";
+import {ProtocolFacet} from "../../../src/ProtocolFacet.sol";
+import {RepayFacet} from "../../../src/RepayFacet.sol";
+import {SupplyPositionFacet} from "../../../src/SupplyPositionFacet.sol";
+import {BetaSettersFacet} from "../../../src/BetaSettersFacet.sol";
 import {betaSettersFS} from "./AddBetaSettersAndChangeParams.s.sol";
 
 //                          format is dd_mm_yy_hh

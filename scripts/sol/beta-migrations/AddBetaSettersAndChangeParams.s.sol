@@ -2,13 +2,13 @@
 pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
-import {IKairos} from "../../interface/IKairos.sol";
+import {IKairos} from "../../../src/interface/IKairos.sol";
 import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
-import {claimFS, auctionFS} from "../../src/utils/FuncSelectors.h.sol";
-import {BetaSettersFacet} from "../../src/BetaSettersFacet.sol";
-import {Ray} from "../../src/DataStructure/Objects.sol";
-import {ONE} from "../../src/DataStructure/Global.sol";
-import {RayMath} from "../../src/utils/RayMath.sol";
+import {claimFS, auctionFS} from "../../../src/utils/FuncSelectors.h.sol";
+import {BetaSettersFacet} from "../../../src/BetaSettersFacet.sol";
+import {Ray} from "../../../src/DataStructure/Objects.sol";
+import {ONE} from "../../../src/DataStructure/Global.sol";
+import {RayMath} from "../../../src/utils/RayMath.sol";
 
 /* solhint-disable-next-line func-visibility */
 function betaSettersFS() pure returns (bytes4[] memory) {

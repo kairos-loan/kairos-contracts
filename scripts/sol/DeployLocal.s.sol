@@ -3,15 +3,15 @@ pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 
-import {DCHelperFacet} from "../test/Commons/DCHelperFacet.sol";
-import {DCTarget} from "../test/Commons/DCTarget.sol";
+import {DCHelperFacet} from "../../test/Commons/DCHelperFacet.sol";
+import {DCTarget} from "../../test/Commons/DCTarget.sol";
 import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
-import {External} from "../test/Commons/External.sol";
-import {IKairos} from "../interface/IKairos.sol";
-import {Money} from "../src/mock/Money.sol";
-import {NFT} from "../src/mock/NFT.sol";
-import {Offer, NFToken, BuyArg} from "../src/DataStructure/Objects.sol";
-import {Loan, Provision} from "../src/DataStructure/Storage.sol";
+import {External} from "../../test/Commons/External.sol";
+import {IKairos} from "../../src/interface/IKairos.sol";
+import {Money} from "../../src/mock/Money.sol";
+import {NFT} from "../../src/mock/NFT.sol";
+import {Offer, NFToken, BuyArg} from "../../src/DataStructure/Objects.sol";
+import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, External {
@@ -30,7 +30,7 @@ contract DeployLocal is Script, External {
     /// @notice gives & approve 100 money tokens and 1 nft to the deployer
     /* solhint-disable-next-line function-max-lines */
     function run() public {
-        string memory toWrite = "{\n";
+        string memory toWrite = "";
         vm.deal(deployer, 1000 ether);
 
         vm.startBroadcast(TEST_KEY);
@@ -38,21 +38,20 @@ contract DeployLocal is Script, External {
         // for front testing
         helper = new DCHelperFacet();
         dcTarget = new DCTarget();
-        toWrite = addConst(toWrite, "frontTestAddr", vm.toString(frontTester));
         frontTester.transfer(10 ether);
         NFT frontNft = new NFT("Test Doodles", "TDood");
         frontNft.mintOneTo(frontTester);
         frontNft.mintOneTo(frontTester); // mint doodle #2 as well
-        toWrite = addConst(toWrite, "testDoodlesAddr", vm.toString(address(frontNft)));
+        toWrite = addEnv(toWrite, "NFT_ADDR1", vm.toString(address(frontNft)));
         frontNft = new NFT("Test Azukis", "TAzuk");
         frontNft.setBaseURI(
             "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/"
         );
         frontNft.mintOneTo(frontTester);
-        toWrite = addConst(toWrite, "testAzukisAddr", vm.toString(address(frontNft)));
+        toWrite = addEnv(toWrite, "NFT_ADDR2", vm.toString(address(frontNft)));
         frontNft = new NFT("Test mfers", "TMfer");
         frontNft.mintOneTo(frontTester);
-        toWrite = addConst(toWrite, "testMfersAddr", vm.toString(address(frontNft)));
+        toWrite = addEnv(toWrite, "NFT_ADDR3", vm.toString(address(frontNft)));
         frontNft.setBaseURI("ipfs://QmWiQE65tmpYzcokCheQmng2DCM33DEhjXcPB6PanwpAZo/");
         // end for front testing
 
@@ -77,16 +76,15 @@ contract DeployLocal is Script, External {
 
         vm.stopBroadcast();
 
-        toWrite = addConst(toWrite, "dcTargetAddr", vm.toString(address(dcTarget)));
-        toWrite = addConst(toWrite, "kairosAddr", vm.toString(address(kairos)));
-        toWrite = addConst(toWrite, "signature", vm.toString(getSignature(offer)));
-        toWrite = addConst(toWrite, "moneyAddr", vm.toString(address(money)));
-        toWrite = addConst(toWrite, "offerExpirationDate", vm.toString(offer.expirationDate));
-        toWrite = addConst(toWrite, "nftAddr", vm.toString(address(nft)));
-        toWrite = addConst(toWrite, "supplierAddr", vm.toString(supplier));
-        toWrite = addLastConst(toWrite, "deployerAddr", vm.toString(deployer));
-        toWrite = string.concat(toWrite, "}");
-        vm.writeFile("./packages/shared/src/generated/deployment.json", toWrite);
+        toWrite = addEnv(toWrite, "DC_TARGET_ADDR", vm.toString(address(dcTarget)));
+        toWrite = addEnv(toWrite, "KAIROS_ADDR", vm.toString(address(kairos)));
+        toWrite = addEnv(toWrite, "SIGNATURE", vm.toString(getSignature(offer)));
+        toWrite = addEnv(toWrite, "WETH_ADDR", vm.toString(address(money)));
+        toWrite = addEnv(toWrite, "OFFER_EXPIRATION_DATE", vm.toString(offer.expirationDate));
+        toWrite = addEnv(toWrite, "TEST_NFT_ADDR", vm.toString(address(nft)));
+        toWrite = addEnv(toWrite, "SUPPLIER_ADDR", vm.toString(supplier));
+        toWrite = addEnv(toWrite, "DEPLOYER_ADDR", vm.toString(deployer));
+        vm.writeFile("./out/deployment.env", toWrite);
     }
 
     function mintLoan(Loan memory loan) internal returns (uint256 loanId) {
@@ -133,27 +131,14 @@ contract DeployLocal is Script, External {
 
     /* solhint-disable quotes */
 
-    function addConst(
+    function addEnv(
         string memory written,
         string memory name,
         string memory const
     ) internal pure returns (string memory toWrite) {
-        toWrite = string.concat(written, ' "');
-        toWrite = string.concat(toWrite, name);
-        toWrite = string.concat(toWrite, '": "');
+        toWrite = string.concat(written, name);
+        toWrite = string.concat(toWrite, '=');
         toWrite = string.concat(toWrite, const);
-        toWrite = string.concat(toWrite, '",\n');
-    }
-
-    function addLastConst(
-        string memory written,
-        string memory name,
-        string memory const
-    ) internal pure returns (string memory toWrite) {
-        toWrite = string.concat(written, ' "');
-        toWrite = string.concat(toWrite, name);
-        toWrite = string.concat(toWrite, '": "');
-        toWrite = string.concat(toWrite, const);
-        toWrite = string.concat(toWrite, '"\n');
+        toWrite = string.concat(toWrite, '\n');
     }
 }

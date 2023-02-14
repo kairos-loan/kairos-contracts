@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {BuyArg} from "../src/DataStructure/Objects.sol";
+import {BuyArg} from "../DataStructure/Objects.sol";
 
 interface IAuctionFacet {
     function buy(BuyArg[] memory args) external;

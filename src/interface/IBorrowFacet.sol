@@ -5,7 +5,7 @@ import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Recei
 
 import {IBorrowHandlers} from "./IBorrowHandlers.sol";
 
-import {BorrowArg} from "../src/DataStructure/Objects.sol";
+import {BorrowArg} from "../DataStructure/Objects.sol";
 
 interface IBorrowFacet is IBorrowHandlers, IERC721Receiver {
     function borrow(BorrowArg[] calldata args) external;

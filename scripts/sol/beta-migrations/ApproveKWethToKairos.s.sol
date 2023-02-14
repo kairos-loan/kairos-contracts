@@ -3,8 +3,8 @@ pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 
-import {IKairos} from "../../interface/IKairos.sol";
-import {TestCurrency} from "../../src/mock/TestCurrency.sol";
+import {IKairos} from "../../../src/interface/IKairos.sol";
+import {TestCurrency} from "../../../src/mock/TestCurrency.sol";
 
 contract ApproveKWethToKairos is Script {
     function run() public {

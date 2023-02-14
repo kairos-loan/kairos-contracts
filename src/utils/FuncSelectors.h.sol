@@ -8,12 +8,12 @@ import {IERC165} from "diamond/contracts/interfaces/IERC165.sol";
 import {OwnershipFacet} from "diamond/contracts/facets/OwnershipFacet.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-import {IAuctionFacet} from "../../interface/IAuctionFacet.sol";
-import {IBorrowFacet} from "../../interface/IBorrowFacet.sol";
-import {IClaimFacet} from "../../interface/IClaimFacet.sol";
-import {IProtocolFacet} from "../../interface/IProtocolFacet.sol";
-import {IRepayFacet} from "../../interface/IRepayFacet.sol";
-import {ISignature} from "../../interface/ISignature.sol";
+import {IAuctionFacet} from "../interface/IAuctionFacet.sol";
+import {IBorrowFacet} from "../interface/IBorrowFacet.sol";
+import {IClaimFacet} from "../interface/IClaimFacet.sol";
+import {IProtocolFacet} from "../interface/IProtocolFacet.sol";
+import {IRepayFacet} from "../interface/IRepayFacet.sol";
+import {ISignature} from "../interface/ISignature.sol";
 
 import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
 import {DiamondERC721} from "../SupplyPositionLogic/DiamondERC721.sol";

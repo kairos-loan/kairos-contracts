@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {Ray} from "../src/DataStructure/Objects.sol";
-import {Loan} from "../src/DataStructure/Storage.sol";
+import {Ray} from "../DataStructure/Objects.sol";
+import {Loan} from "../DataStructure/Storage.sol";
 
 interface IProtocolFacet {
     function updateOffers() external returns (uint256 newNonce);

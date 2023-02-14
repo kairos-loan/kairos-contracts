@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {IRepayFacet} from "../interface/IRepayFacet.sol";
+import {IRepayFacet} from "./interface/IRepayFacet.sol";
 import {Loan, Protocol} from "./DataStructure/Storage.sol";
 import {ERC20TransferFailed, LoanAlreadyRepaid} from "./DataStructure/Errors.sol";
 import {protocolStorage} from "./DataStructure/Global.sol";

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {IOwnershipFacet} from "../interface/IOwnershipFacet.sol";
+import {IOwnershipFacet} from "./interface/IOwnershipFacet.sol";
 import {Ray} from "./DataStructure/Objects.sol";
 import {SupplyPosition, Protocol} from "./DataStructure/Storage.sol";
 import {protocolStorage} from "./DataStructure/Global.sol";

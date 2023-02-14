@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 
-import {TestCurrency} from "../../src/mock/TestCurrency.sol";
+import {TestCurrency} from "../../../src/mock/TestCurrency.sol";
 
 contract MintKWEthToSupplier is Script {
     function run() public {

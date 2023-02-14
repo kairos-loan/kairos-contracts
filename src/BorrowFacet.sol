@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import {IBorrowFacet} from "../interface/IBorrowFacet.sol";
+import {IBorrowFacet} from "./interface/IBorrowFacet.sol";
 
 import {BorrowHandlers} from "./BorrowLogic/BorrowHandlers.sol";
 import {BorrowArg, NFToken, Offer, OfferArg} from "./DataStructure/Objects.sol";
