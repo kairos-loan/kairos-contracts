@@ -14,10 +14,12 @@ import {TestCommons} from "./TestCommons.sol";
 contract Internal is TestCommons, BigKairos {
     using RayMath for Ray;
 
+    Loan internal testLoan;
+
     constructor() {
         bytes memory randoCode = hex"01";
         Protocol storage proto = protocolStorage();
-        proto.tranche[0] = ONE.div(10).mul(4).div(365 days); // 40% APR
+        proto.tranche[0] = apr40percent;
         proto.auction.priceFactor = ONE.mul(3);
         proto.auction.duration = 3 days;
         money = Money(address(bytes20(keccak256("mock address money"))));
@@ -34,6 +36,14 @@ contract Internal is TestCommons, BigKairos {
         vm.label(address(nft2), "nft2");
     }
 
+    function setUp() public virtual {
+        Protocol storage proto = protocolStorage();
+
+        testLoan.auction.duration = proto.auction.duration;
+        testLoan.auction.priceFactor = proto.auction.priceFactor;
+    }
+
+    /* solhint-disable-next-line ordering */
     function useOfferExternal(
         OfferArg memory arg,
         CollateralState memory collatState
@@ -53,30 +63,8 @@ contract Internal is TestCommons, BigKairos {
         return checkOfferArg(arg);
     }
 
-    function priceExternal(uint256 lent, Ray shareLent, uint256 timeElapsed) external view returns (uint256) {
-        return price(lent, shareLent, timeElapsed);
-    }
-
     function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {
         checkCollateral(offer, providedNft);
-    }
-
-    function sendInterestsExternal(
-        Loan storage loan,
-        Provision storage provision
-    ) internal returns (uint256) {
-        return sendInterests(loan, provision);
-    }
-
-    function sendShareOfSaleAsSupplierExternal(
-        Loan storage loan,
-        Provision storage provision
-    ) internal returns (uint256) {
-        return sendShareOfSaleAsSupplier(loan, provision);
-    }
-
-    function sentInterestsIn(Loan storage loan, Provision storage provision) internal returns (uint256) {
-        return sendInterests(loan, provision);
     }
 
     /// @dev use only in TestCommons

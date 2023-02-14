@@ -14,6 +14,8 @@ import {Ray} from "../../src/DataStructure/Objects.sol";
 abstract contract TestCommons is Loggers {
     using RayMath for Ray;
 
+    Ray internal immutable apr40percent;
+
     error AssertionFailedLoanDontMatch();
     error AssertionFailedRayDontMatch(Ray expected, Ray actual);
     error AssertionFailedCollatStateDontMatch();
@@ -34,6 +36,7 @@ abstract contract TestCommons is Loggers {
     NFT internal nft2;
 
     constructor() {
+        apr40percent = ONE.div(10).mul(4).div(365 days);
         oneInArray = new uint256[](1);
         oneInArray[0] = 1;
         signer = vm.addr(KEY);
@@ -106,6 +109,10 @@ abstract contract TestCommons is Loggers {
 
     function getTranche(uint256 trancheId) internal view virtual returns (Ray rate);
 
+    function getAuction() internal view returns (Auction memory) {
+        return Auction({duration: 3 days, priceFactor: apr40percent});
+    }
+
     /// @dev created as override helper, to modify only few elements in loan
     function _getLoan() internal view returns (Loan memory) {
         Payment memory payment;
@@ -116,7 +123,7 @@ abstract contract TestCommons is Loggers {
                 shareLent: ONE,
                 startDate: block.timestamp - 2 weeks,
                 endDate: block.timestamp + 2 weeks,
-                auction: Auction({duration: 3 days, priceFactor: ONE.div(10).mul(4).div(365 days)}),
+                auction: getAuction(),
                 interestPerSecond: getTranche(0),
                 borrower: BORROWER,
                 collateral: getOffer().collateral,
