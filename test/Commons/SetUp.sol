@@ -35,6 +35,7 @@ contract SetUp is TestCommons, ContractsCreator {
         });
         kairos = IKairos(address(new Diamond(getFacetCuts(), args)));
         kairos.diamondCut(testFacetCuts(), address(0), emptyBytes);
+        kairos.transferOwnership(OWNER);
         nft = new NFT("Test NFT", "TNFT");
         vm.label(address(nft), "nft");
         nft2 = new NFT("Test NFT2", "TNFT2");

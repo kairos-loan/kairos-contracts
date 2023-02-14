@@ -90,6 +90,7 @@ When we add a new dependency we should update:
 - [ ] add it to [contracts creator's](src/ContractsCreator.sol) `createContracts()`
 - [ ] add it to [contracts creator's](src/ContractsCreator.sol) `getFacetCuts()`
 - [ ] add it to [deployFunc's](scripts/ts/deployFunc.ts) facetNames
+- [ ] add it to [IKairos](src/interface/IKairos.sol)
 - [ ] add it to [BigKairos](test/Commons/BigKairos.sol)
 - [ ] add it to the docs
 

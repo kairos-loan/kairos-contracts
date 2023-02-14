@@ -28,6 +28,7 @@ abstract contract TestCommons is Loggers {
     address internal immutable signer;
     address internal immutable signer2;
     address internal constant BORROWER = address(bytes20(keccak256("borrower")));
+    address internal constant OWNER = address(bytes20(keccak256("owner")));
     bytes4 internal immutable erc721SafeTransferFromSelector;
     bytes4 internal immutable erc721SafeTransferFromDataSelector;
     Money internal money;
@@ -42,6 +43,7 @@ abstract contract TestCommons is Loggers {
         signer = vm.addr(KEY);
         signer2 = vm.addr(KEY2);
         vm.label(BORROWER, "borrower");
+        vm.label(OWNER, "owner");
         vm.label(signer, "signer");
         vm.label(signer2, "signer2");
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");

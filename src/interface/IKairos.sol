@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
 import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
 
+import {IAdminFacet} from "./IAdminFacet.sol";
 import {IAuctionFacet} from "./IAuctionFacet.sol";
 import {IBorrowFacet} from "./IBorrowFacet.sol";
 import {IClaimFacet} from "./IClaimFacet.sol";
@@ -16,6 +17,7 @@ import {ISupplyPositionFacet} from "./ISupplyPositionFacet.sol";
 interface IKairos is
     IDiamondLoupe,
     IDiamondCut,
+    IAdminFacet,
     IAuctionFacet,
     IBorrowFacet,
     IClaimFacet,
