@@ -72,6 +72,7 @@ abstract contract TestCommons is Loggers {
             CollateralState({
                 matched: Ray.wrap(0),
                 assetLent: getOffer().assetToLend,
+                tranche: 0,
                 minOfferDuration: getOffer().duration,
                 from: BORROWER,
                 nft: getOffer().collateral,

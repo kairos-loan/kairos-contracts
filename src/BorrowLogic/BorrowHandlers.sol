@@ -9,7 +9,8 @@ import {Loan, Payment, Protocol, Provision, Auction} from "../DataStructure/Stor
 import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
 import {RayMath} from "../utils/RayMath.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
-import {ERC20TransferFailed, InconsistentAssetRequests, RequestedAmountIsNull, RequestedAmountTooHigh, InvalidTranche} from "../DataStructure/Errors.sol";
+/* solhint-disable-next-line max-line-length */
+import {ERC20TransferFailed, InconsistentAssetRequests, InconsistentTranches, RequestedAmountIsNull, RequestedAmountTooHigh, InvalidTranche} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
@@ -22,49 +23,52 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     event Borrow(uint256 indexed loanId, bytes loan);
 
     /// @notice handles usage of a loan offer to borrow from
-    /// @param args arguments for the usage of this offer
+    /// @param arg arguments for the usage of this offer
     /// @param collatState tracked state of the matching of the collateral
     /// @return collateralState updated `collatState` after usage of the offer
     function useOffer(
-        OfferArg memory args,
+        OfferArg memory arg,
         CollateralState memory collatState
     ) internal returns (CollateralState memory) {
         Protocol storage proto = protocolStorage();
 
-        address signer = checkOfferArg(args);
+        address signer = checkOfferArg(arg);
         Ray shareMatched;
 
-        if (args.offer.assetToLend != collatState.assetLent) {
+        if (arg.offer.assetToLend != collatState.assetLent) {
             // all offers used for a collateral must refer to the same erc20
-            revert InconsistentAssetRequests(collatState.assetLent, args.offer.assetToLend);
+            revert InconsistentAssetRequests(collatState.assetLent, arg.offer.assetToLend);
         }
-        if (args.amount == 0) {
-            revert RequestedAmountIsNull(args.offer);
+        if (arg.offer.tranche != collatState.tranche) {
+            revert InconsistentTranches(collatState.tranche, arg.offer.tranche);
+        }
+        if (arg.amount == 0) {
+            revert RequestedAmountIsNull(arg.offer);
         }
 
-        checkCollateral(args.offer, collatState.nft);
-        shareMatched = args.amount.div(args.offer.loanToValue);
+        checkCollateral(arg.offer, collatState.nft);
+        shareMatched = arg.amount.div(arg.offer.loanToValue);
         collatState.matched = collatState.matched.add(shareMatched);
 
         if (collatState.matched.gt(ONE)) {
             revert RequestedAmountTooHigh(
-                args.amount,
-                args.offer.loanToValue.mul(ONE.sub(collatState.matched.sub(shareMatched))),
-                args.offer
+                arg.amount,
+                arg.offer.loanToValue.mul(ONE.sub(collatState.matched.sub(shareMatched))),
+                arg.offer
             );
         }
-        if (args.offer.duration < collatState.minOfferDuration) {
-            collatState.minOfferDuration = args.offer.duration;
+        if (arg.offer.duration < collatState.minOfferDuration) {
+            collatState.minOfferDuration = arg.offer.duration;
         }
-        if (args.offer.tranche >= proto.nbOfTranches) {
+        if (arg.offer.tranche >= proto.nbOfTranches) {
             revert InvalidTranche(proto.nbOfTranches);
         }
-        if (!collatState.assetLent.transferFrom(signer, collatState.from, args.amount)) {
+        if (!collatState.assetLent.transferFrom(signer, collatState.from, arg.amount)) {
             revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
         }
 
         // todo #35 verify provision has expected values
-        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
+        safeMint(signer, Provision({amount: arg.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);
     }
 
@@ -78,13 +82,13 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         address from,
         NFToken memory nft
     ) internal returns (Loan memory loan) {
-        // todo #36 test returned loan
         Protocol storage proto = protocolStorage();
         uint256 lent;
         uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
         CollateralState memory collatState = CollateralState({
             matched: Ray.wrap(0),
             assetLent: args[0].offer.assetToLend,
+            tranche: args[0].offer.tranche,
             minOfferDuration: type(uint256).max,
             from: from,
             nft: nft,
@@ -103,7 +107,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             startDate: block.timestamp,
             endDate: endDate,
             auction: Auction({duration: proto.auction.duration, priceFactor: proto.auction.priceFactor}),
-            interestPerSecond: interestRate(args, lent),
+            interestPerSecond: proto.tranche[collatState.tranche],
             borrower: from,
             collateral: nft,
             supplyPositionIndex: supplyPositionIndex,
@@ -112,22 +116,5 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         });
         proto.loan[collatState.loanId] = loan; // todo #37 test expected loan is created at expected id
         emit Borrow(collatState.loanId, abi.encode(loan));
-    }
-
-    /// @notice computes the interest rate applied to lent amount derived from multiple offers with different rates
-    /// @param args arguments for usage of one or multiple loan offers
-    /// @param lent total amount lent for this loan
-    /// @return interestPerSecond share of the amount lent added to the debt each second
-    function interestRate(
-        OfferArg[] memory args,
-        uint256 lent
-    ) internal view returns (Ray interestPerSecond) {
-        Protocol storage proto = protocolStorage();
-
-        for (uint8 i = 0; i < args.length; i++) {
-            interestPerSecond = interestPerSecond.add(
-                proto.tranche[args[i].offer.tranche].mul(args[i].amount.div(lent))
-            );
-        }
     }
 }

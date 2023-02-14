@@ -44,6 +44,7 @@ struct OfferArg {
 ///     with multiple offers
 /// @param matched proportion from 0 to 1 of the collateral value matched by offers
 /// @param assetLent - ERC20 that the protocol will send as loan
+/// @param tranche identifier of the interest rate tranche that will be used for the loan
 /// @param minOfferDuration minimal duration among offers used
 /// @param from original owner of the nft (borrower in most cases)
 /// @param nft the collateral asset
@@ -51,6 +52,7 @@ struct OfferArg {
 struct CollateralState {
     Ray matched;
     IERC20 assetLent;
+    uint256 tranche;
     uint256 minOfferDuration;
     address from;
     NFToken nft;

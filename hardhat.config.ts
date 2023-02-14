@@ -1,3 +1,4 @@
+import "@nomicfoundation/hardhat-foundry"
 import "@nomiclabs/hardhat-ethers"
 import * as tdly from "@tenderly/hardhat-tenderly"
 import "@typechain/hardhat"
@@ -23,11 +24,16 @@ const config: HardhatUserConfig = {
       optimizer: {
         enabled: true,
         runs: 1000
-      }
+      },
+      remappings: [
+        "@openzeppelin/=../../node_modules/@openzeppelin/",
+        "forge-std/=../../node_modules/forge-std/src/",
+        "ds-test/=../../node_modules/ds-test/src/",
+        "diamond/=../../node_modules/diamond/"
+      ]
     }
   },
   paths: {
-    sources: "./src",
     cache: "./out/hh/cache",
     artifacts: "./out/hh/artifacts"
   },

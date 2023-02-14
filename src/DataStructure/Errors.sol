@@ -12,6 +12,7 @@ error OfferHasExpired(Offer offer, uint256 expirationDate); // 0x065a5c3b
 error RequestedAmountIsNull(Offer offer); // 0x8ea5f1d7
 error RequestedAmountTooHigh(uint256 requested, uint256 offered, Offer offer);
 error InconsistentAssetRequests(IERC20 firstRequested, IERC20 requested); // 0x46aac2a9
+error InconsistentTranches(uint256 firstTrancheIdUsed, uint256 trancheIdFound);
 error LoanAlreadyRepaid(uint256 loanId); // 0xdae2c273
 error SupplyPositionDoesntBelongToTheLoan(uint256 positionId, uint256 loanId); // 0xf109be00
 error NotBorrowerOfTheLoan(uint256 loanId); // 0xc250ea5d

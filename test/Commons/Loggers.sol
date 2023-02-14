@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {CollateralState, Offer, Ray} from "../../src/DataStructure/Objects.sol";
-import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {Loan, Provision, Auction} from "../../src/DataStructure/Storage.sol";
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -13,6 +13,7 @@ contract Loggers is Test {
         console.log("lent                ", loan.lent);
         console.log("startDate           ", loan.startDate);
         console.log("endDate             ", loan.endDate);
+        logAuction(true, loan.auction);
         console.log("interestPerSecond   ", Ray.unwrap(loan.interestPerSecond));
         console.log("borrower            ", loan.borrower);
         console.log("collat implem       ", address(loan.collateral.implem));
@@ -61,6 +62,22 @@ contract Loggers is Test {
         console.log("from             ", collat.from);
         console.log("nft.id           ", collat.nft.id);
         console.log("loanId           ", collat.loanId);
-        console.log("~~~~~~~ end Collateral ", name, "         ~~~~~~~");
+        console.log("~~~~~~~ end Collateral State ", name, "   ~~~~~~~");
+    }
+
+    function logAuction(Auction memory auction, string memory name) internal view {
+        console.log("~~~~~~~ start Auction ", name, " ~~~~~~~");
+        logAuction(false, auction);
+        console.log("~~~~~~~ end Auction ", name, "   ~~~~~~~");
+    }
+
+    function logAuction(bool prefixed, Auction memory auction) internal view {
+        if (prefixed) {
+            console.log("auction.duration    ", auction.duration);
+            console.log("auction.priceFactor ", Ray.unwrap(auction.priceFactor));
+        } else {
+            console.log("duration    ", auction.duration);
+            console.log("priceFactor ", Ray.unwrap(auction.priceFactor));
+        }
     }
 }

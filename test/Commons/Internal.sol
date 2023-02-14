@@ -19,6 +19,7 @@ contract Internal is TestCommons, BigKairos {
     constructor() {
         bytes memory randoCode = hex"01";
         Protocol storage proto = protocolStorage();
+        proto.nbOfTranches = 1;
         proto.tranche[0] = apr40percent;
         proto.auction.priceFactor = ONE.mul(3);
         proto.auction.duration = 3 days;
