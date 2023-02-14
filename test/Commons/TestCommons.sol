@@ -111,7 +111,7 @@ abstract contract TestCommons is Loggers {
     function getTranche(uint256 trancheId) internal view virtual returns (Ray rate);
 
     function getAuction() internal view returns (Auction memory) {
-        return Auction({duration: 3 days, priceFactor: apr40percent});
+        return Auction({duration: 3 days, priceFactor: ONE.mul(3)});
     }
 
     /// @dev created as override helper, to modify only few elements in loan
