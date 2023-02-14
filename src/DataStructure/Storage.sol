@@ -14,7 +14,6 @@ import {NFToken, Ray} from "./Objects.sol";
 ///         I.e lent * time since loan start * tranche = interests to repay
 /// @param loan - of id -
 struct Protocol {
-    // todo #71 add admin methods to tweak parameters
     uint256 auctionDuration;
     uint256 nbOfLoans;
     Ray auctionPriceFactor;

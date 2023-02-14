@@ -43,7 +43,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         Loan storage loan = protocolStorage().loan[arg.loanId];
 
         if (block.timestamp < loan.endDate) {
-            // todo #344 test collateral is not liquidable yet
             revert CollateralIsNotLiquidableYet(loan.endDate, arg.loanId);
         }
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate;
@@ -98,7 +97,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     function price(uint256 lent, Ray shareToPay, uint256 timeElapsed) internal view returns (uint256) {
         Protocol storage proto = protocolStorage();
 
-        // todo : explore attack vectors based on small values messing with calculus
         Ray decreasingFactor = timeElapsed >= proto.auctionDuration
             ? ZERO
             : ONE.sub(timeElapsed.div(proto.auctionDuration));

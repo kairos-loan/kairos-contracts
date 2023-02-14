@@ -17,7 +17,6 @@ contract RepayFacet is IRepayFacet {
     /// @param loanId loan identifier
     event Repay(uint256 indexed loanId);
 
-    // todo #22 : propose erc777 onReceive hook for repayment ?
     /// @notice repay one or multiple loans, gives collaterals back
     /// @dev repay on behalf is activated, the collateral goes to the original borrower
     /// @param loanIds identifiers of loans to repay

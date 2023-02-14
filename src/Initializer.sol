@@ -40,6 +40,5 @@ contract Initializer {
         sp.name = "Kairos Supply Position";
         sp.symbol = "KSP";
         ds.supportedInterfaces[type(IERC721).interfaceId] = true;
-        // todo : add erc721 metadata support
     }
 }

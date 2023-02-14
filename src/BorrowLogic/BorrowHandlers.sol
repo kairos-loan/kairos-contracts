@@ -96,7 +96,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: endDate,
-            interestPerSecond: proto.tranche[0], // todo #12 adapt rate to the offers
+            interestPerSecond: proto.tranche[0],
             borrower: from,
             collateral: nft,
             supplyPositionIndex: supplyPositionIndex,
