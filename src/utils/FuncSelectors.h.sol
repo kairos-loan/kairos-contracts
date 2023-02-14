@@ -13,6 +13,7 @@ import {IBorrowFacet} from "../interface/IBorrowFacet.sol";
 import {IClaimFacet} from "../interface/IClaimFacet.sol";
 import {IProtocolFacet} from "../interface/IProtocolFacet.sol";
 import {IRepayFacet} from "../interface/IRepayFacet.sol";
+import {IAdminFacet} from "../interface/IAdminFacet.sol";
 import {ISignature} from "../interface/ISignature.sol";
 
 import {SupplyPositionFacet} from "../SupplyPositionFacet.sol";
@@ -116,6 +117,16 @@ function claimFS() pure returns (bytes4[] memory) {
 
     functionSelectors[0] = IClaimFacet.claim.selector;
     functionSelectors[1] = IClaimFacet.claimAsBorrower.selector;
+
+    return functionSelectors;
+}
+
+function adminFS() pure returns (bytes4[] memory) {
+    bytes4[] memory functionSelectors = new bytes4[](3);
+
+    functionSelectors[0] = IAdminFacet.setAuctionDuration.selector;
+    functionSelectors[1] = IAdminFacet.setAuctionPriceFactor.selector;
+    functionSelectors[2] = IAdminFacet.createTranche.selector;
 
     return functionSelectors;
 }

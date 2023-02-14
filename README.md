@@ -72,13 +72,26 @@ then import interfaces (if they are from this repo)
 leave another blank line  
 finally import local code files
 
-### Remmaping
+### Remappings
 
 When we add a new dependency we should update:
 
 - [.vscode/settings.json](../../.vscode/settings.json#L26-L31)
 - [packages/contracts/scripts/sh/slither.sh](scripts/sh/slither.sh#L2)
 - [packages/contracts/foundry.toml](foundry.toml#L9-L14)
+
+### Adding a facet
+
+- [ ] implement
+- [ ] test
+- [ ] natspec
+- [ ] interface
+- [ ] create its [function selector getters](src/utils/FuncSelectors.h.sol)
+- [ ] add it to [contracts creator's](src/ContractsCreator.sol) `createContracts()`
+- [ ] add it to [contracts creator's](src/ContractsCreator.sol) `getFacetCuts()`
+- [ ] add it to [deployFunc's](scripts/ts/deployFunc.ts) facetNames
+- [ ] add it to [BigKairos](test/Commons/BigKairos.sol)
+- [ ] add it to the docs
 
 It's working out of the box with hardhat if dependencies are under `node_modules`.
 The issue [#325](https://github.com/kairos-loan/monorepo/issues/325) is created to resolve this duplication.

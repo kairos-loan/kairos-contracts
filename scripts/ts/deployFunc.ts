@@ -12,6 +12,7 @@ const facetNames = [
   "SupplyPositionFacet",
   "ProtocolFacet",
   "AuctionFacet",
+  "AdminFacet",
   "ClaimFacet"
 ]
 

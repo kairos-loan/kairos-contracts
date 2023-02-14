@@ -7,6 +7,7 @@ import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
 import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";
 import {DiamondLoupeFacet} from "diamond/contracts/facets/DiamondLoupeFacet.sol";
 
+import {AdminFacet} from "./AdminFacet.sol";
 import {AuctionFacet} from "./AuctionFacet.sol";
 import {BorrowFacet} from "./BorrowFacet.sol";
 import {ClaimFacet} from "./ClaimFacet.sol";
@@ -14,7 +15,7 @@ import {Initializer} from "./Initializer.sol";
 import {ProtocolFacet} from "./ProtocolFacet.sol";
 import {RepayFacet} from "./RepayFacet.sol";
 import {SupplyPositionFacet} from "./SupplyPositionFacet.sol";
-import {auctionFS, claimFS, borrowFS, cutFS, loupeFS, protoFS, ownershipFS, repayFS, supplyPositionFS} from "./utils/FuncSelectors.h.sol";
+import {adminFS, auctionFS, claimFS, borrowFS, cutFS, loupeFS, protoFS, ownershipFS, repayFS, supplyPositionFS} from "./utils/FuncSelectors.h.sol";
 
 /// @notice handles uinitialized deployment of all contracts of the protocol and exposes facet cuts
 /// @dev for production, the 3 contracts imported from diamonds don't have to be redeployed as they are already
@@ -24,6 +25,7 @@ contract ContractsCreator {
     DiamondCutFacet internal cut;
     OwnershipFacet internal ownership;
     DiamondLoupeFacet internal loupe;
+    AdminFacet internal admin;
     BorrowFacet internal borrow;
     SupplyPositionFacet internal supplyPosition;
     ProtocolFacet internal protocol;
@@ -33,6 +35,7 @@ contract ContractsCreator {
 
     /// @notice deploys all contracts uninitialized
     function createContracts() internal {
+        admin = new AdminFacet();
         cut = new DiamondCutFacet();
         loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
@@ -49,7 +52,7 @@ contract ContractsCreator {
     /// @return facetCuts the list of facet cuts
     /* solhint-disable-next-line function-max-lines */
     function getFacetCuts() internal view returns (IDiamondCut.FacetCut[] memory) {
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](9);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](10);
 
         facetCuts[0] = IDiamond.FacetCut({
             facetAddress: address(loupe),
@@ -103,6 +106,12 @@ contract ContractsCreator {
             facetAddress: address(claim),
             action: IDiamond.FacetCutAction.Add,
             functionSelectors: claimFS()
+        });
+
+        facetCuts[9] = IDiamond.FacetCut({
+            facetAddress: address(admin),
+            action: IDiamond.FacetCutAction.Add,
+            functionSelectors: adminFS()
         });
 
         return facetCuts;
