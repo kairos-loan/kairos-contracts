@@ -5,13 +5,12 @@ import {Ray} from "../DataStructure/Objects.sol";
 import {Loan} from "../DataStructure/Storage.sol";
 
 interface IProtocolFacet {
-    function updateOffers() external returns (uint256 newNonce);
-
     function getRateOfTranche(uint256 id) external view returns (Ray rate);
 
-    function getParameters() external view returns (uint256, uint256, uint256);
+    function getParameters()
+        external
+        view
+        returns (Ray auctionPriceFactor, uint256 auctionDuration, uint256 nbOfLoans, uint256 nbOfTranches);
 
     function getLoan(uint256 id) external view returns (Loan memory);
-
-    function getSupplierNonce(address supplier) external view returns (uint256);
 }

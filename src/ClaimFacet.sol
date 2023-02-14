@@ -15,12 +15,6 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    /// @notice some liquidity has been claimed as principal plus interests or share of liquidation
-    /// @param claimant who received the liquidity
-    /// @param claimed amount sent
-    /// @param loanId loan identifier where the claim rights come from
-    event Claim(address indexed claimant, uint256 indexed claimed, uint256 indexed loanId);
-
     /// @notice claims principal plus interests or liquidation share due as a supplier
     /// @param positionIds identifiers of one or multiple supply position to burn
     /// @return sent amount sent

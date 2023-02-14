@@ -17,11 +17,6 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
 
-    /// @notice one loan has been initiated
-    /// @param loanId id of the loan
-    /// @param loan the loan created
-    event Borrow(uint256 indexed loanId, bytes loan);
-
     /// @notice handles usage of a loan offer to borrow from
     /// @param arg arguments for the usage of this offer
     /// @param collatState tracked state of the matching of the collateral

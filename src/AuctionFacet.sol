@@ -15,11 +15,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    /// @notice a NFT collateral has been sold as part of a liquidation
-    /// @param loanId identifier of the loan previously backed by the sold collateral
-    /// @param args arguments NFT sold
-    event Buy(uint256 indexed loanId, bytes args);
-
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
     function buy(BuyArg[] memory args) external {

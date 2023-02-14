@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {IProtocolFacet} from "./interface/IProtocolFacet.sol";
+
 import {Loan, Protocol} from "./DataStructure/Storage.sol";
 import {protocolStorage} from "./DataStructure/Global.sol";
 import {Ray} from "./DataStructure/Objects.sol";
 
 /// @notice external loupe functions exposing protocol storage and supplier nonce incrementer
-contract ProtocolFacet {
+contract ProtocolFacet is IProtocolFacet {
     /// @notice gets the rate of tranche `id`
     /// @param id rate identifier
     /// @return rate the rate of the tranche, as a Ray, multiplier per second of the amount to repay (non compounding)
