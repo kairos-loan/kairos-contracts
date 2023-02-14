@@ -85,13 +85,11 @@ function supplyPositionFS() pure returns (bytes4[] memory) {
 
 /// @notice protocol facet function selectors
 function protoFS() pure returns (bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](5);
+    bytes4[] memory functionSelectors = new bytes4[](3);
 
-    functionSelectors[0] = IProtocolFacet.updateOffers.selector;
-    functionSelectors[1] = IProtocolFacet.getRateOfTranche.selector;
-    functionSelectors[2] = IProtocolFacet.getParameters.selector;
-    functionSelectors[3] = IProtocolFacet.getLoan.selector;
-    functionSelectors[4] = IProtocolFacet.getSupplierNonce.selector;
+    functionSelectors[0] = IProtocolFacet.getRateOfTranche.selector;
+    functionSelectors[1] = IProtocolFacet.getParameters.selector;
+    functionSelectors[2] = IProtocolFacet.getLoan.selector;
 
     return functionSelectors;
 }
