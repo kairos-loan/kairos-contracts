@@ -100,6 +100,4 @@ contract TestBorrowHandlers is Internal {
         loan.endDate = block.timestamp + 2 weeks;
         assertEq(testUseCollateralNominal(), loan);
     }
-
-    // todo #48 test use collateral puts loan at correct id
 }

@@ -24,13 +24,22 @@ const {
 
 // adapted from https://github.com/mudgen/diamond-1-hardhat/blob/main/scripts/deploy.js
 
-let supplyPositionFacetAddress: string
-let facetCuts: any = []
+interface FacetCut {
+  facetAddress: string
+  action: string
+  functionSelectors: string[]
+}
 
-export async function deploy(
-  name: string,
-  arg?: Array<any>
-): Promise<depContract> {
+interface DiamondArgs {
+  owner: string
+  init: string
+  initCalldata: string
+}
+
+let supplyPositionFacetAddress: string
+let facetCuts: FacetCut[] = []
+
+export async function deploy(name: string, arg?: [FacetCut[], DiamondArgs]): Promise<depContract> {
   const ToDeploy = await ethers.getContractFactory(name)
 
   let toDeploy
@@ -71,14 +80,12 @@ export async function deployKairos() {
     initCalldata: initCall
   }
 
-  facetCuts = facetCuts.map((cut: any) => {
+  facetCuts = facetCuts.map((cut: FacetCut) => {
     const ret = { ...cut }
     if (cut.facetAddress === supplyPositionFacetAddress) {
-      ret.functionSelectors = cut.functionSelectors.filter(
-        (selector: string) => {
-          return selector !== ierc165SupportsInterfaceSelector
-        }
-      )
+      ret.functionSelectors = cut.functionSelectors.filter((selector: string) => {
+        return selector !== ierc165SupportsInterfaceSelector
+      })
     }
     return ret
   })

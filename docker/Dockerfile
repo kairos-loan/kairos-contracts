@@ -5,9 +5,6 @@ FROM ghcr.io/foundry-rs/foundry:latest as base
 # Git is already installed in base parent image
 RUN apk add --no-cache --update nodejs-current yarn npm entr
 
-# Install python for node
-RUN apk -Uuv add groff less python3 python3-dev g++ make
-
 # Add global npm dependencies
 RUN npm install -g ts-node typechain
 

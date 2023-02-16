@@ -38,7 +38,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         Loan storage loan = protocolStorage().loan[arg.loanId];
 
         if (block.timestamp < loan.endDate) {
-            // todo #344 test collateral is not liquidable yet
             revert CollateralIsNotLiquidableYet(loan.endDate, arg.loanId);
         }
         uint256 timeSinceLiquidable = block.timestamp - loan.endDate;

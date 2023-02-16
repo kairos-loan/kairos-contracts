@@ -75,9 +75,8 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     /// @param provision liquidity provision for this loan
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
-        Ray shareOfTotalLent = provision.amount.div(loan.lent);
-        // todo #178 explore why precision improvement breaks tests
-        sent = provision.amount + (loan.payment.paid - loan.lent).mul(shareOfTotalLent);
+        uint256 interests = loan.payment.paid - loan.lent;
+        sent = provision.amount + (interests * (provision.amount)) / loan.lent;
         if (!loan.assetLent.transfer(msg.sender, sent)) {
             revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
         }

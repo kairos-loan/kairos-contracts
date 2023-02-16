@@ -9,8 +9,6 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 /// @notice 27-decimals fixed point unsigned number
 type Ray is uint256;
 
-// todo #29 fix singular/plural forms of args
-
 /// @notice Arguments to buy the collateral of one loan
 /// @param loanId loan identifier
 /// @param to address that will receive the collateral
