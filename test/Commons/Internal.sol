@@ -3,10 +3,10 @@ pragma solidity 0.8.17;
 
 import {BigKairos} from "./BigKairos.sol";
 import {CollateralState, NFToken, Offer, OfferArg, Ray} from "../../src/DataStructure/Objects.sol";
-import {Loan, Protocol, Provision} from "../../src/DataStructure/Storage.sol";
+import {Loan, Protocol, Provision, SupplyPosition} from "../../src/DataStructure/Storage.sol";
 import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";
-import {protocolStorage, ONE} from "../../src/DataStructure/Global.sol";
+import {ONE, protocolStorage, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 import {TestCommons} from "./TestCommons.sol";
 
@@ -49,23 +49,31 @@ contract Internal is TestCommons, BigKairos {
         return useCollateral(args, from, nft);
     }
 
+    function sendInterestsExternal(
+        Loan memory loan,
+        Provision memory provision
+    ) external returns (uint256) {
+        Protocol storage proto = protocolStorage();
+        proto.loan[0] = loan;
+        SupplyPosition storage sp = supplyPositionStorage();
+        sp.provision[0] = provision;
+        return sendInterests(proto.loan[0], sp.provision[0]);
+    }
+
     function checkOfferArgExternal(OfferArg memory arg) external view returns (address) {
         return checkOfferArg(arg);
     }
 
-    function priceExternal(uint256 lent, Ray shareLent, uint256 timeElapsed) external view returns (uint256) {
+    function priceExternal(
+        uint256 lent,
+        Ray shareLent,
+        uint256 timeElapsed
+    ) external view returns (uint256) {
         return price(lent, shareLent, timeElapsed);
     }
 
     function checkCollateralExternal(Offer memory offer, NFToken memory providedNft) external pure {
         checkCollateral(offer, providedNft);
-    }
-
-    function sendInterestsExternal(
-        Loan storage loan,
-        Provision storage provision
-    ) internal returns (uint256) {
-        return sendInterests(loan, provision);
     }
 
     function sendShareOfSaleAsSupplierExternal(
@@ -75,7 +83,10 @@ contract Internal is TestCommons, BigKairos {
         return sendShareOfSaleAsSupplier(loan, provision);
     }
 
-    function sentInterestsIn(Loan storage loan, Provision storage provision) internal returns (uint256) {
+    function sentInterestsIn(
+        Loan storage loan,
+        Provision storage provision
+    ) internal returns (uint256) {
         return sendInterests(loan, provision);
     }
 
