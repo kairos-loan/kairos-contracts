@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {CollateralState, NFToken, Offer, OfferArg, Ray} from "../../src/DataStructure/Objects.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import {CollateralState, NFToken, Offer, OfferArg, Ray} from "../../src/DataStructure/Objects.sol";
 import {Internal} from "../Commons/Internal.sol";
 import {Loan} from "../../src/DataStructure/Storage.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
-import {RequestedAmountTooHigh, InconsistentAssetRequests} from "../../src/DataStructure/Errors.sol";
+import {RequestedAmountTooHigh, InconsistentAssetRequests, InconsistentTranches} from "../../src/DataStructure/Errors.sol";
 import {ONE, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
 import {TestCommons} from "../Commons/TestCommons.sol";
 
@@ -99,5 +100,15 @@ contract TestBorrowHandlers is Internal {
         loan.startDate = block.timestamp;
         loan.endDate = block.timestamp + 2 weeks;
         assertEq(testUseCollateralNominal(), loan);
+    }
+
+    function testConsistentOfferTranches() public {
+        CollateralState memory collatState = getCollateralState();
+        Offer memory offer = getOffer();
+        offer.tranche = 1;
+        OfferArg memory arg = getOfferArg(offer);
+
+        vm.expectRevert(abi.encodeWithSelector(InconsistentTranches.selector, 0, 1));
+        this.useOfferExternal(arg, collatState);
     }
 }

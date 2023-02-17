@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {CollateralState, Offer, Ray, NFToken} from "../../src/DataStructure/Objects.sol";
-import {Loan, Provision, Auction, Payment} from "../../src/DataStructure/Storage.sol";
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
+
+import {CollateralState, Offer, Ray, NFToken} from "../../src/DataStructure/Objects.sol";
+import {Loan, Provision, Auction, Payment} from "../../src/DataStructure/Storage.sol";
 
 contract Loggers is Test {
     function logLoan(Loan memory loan, string memory name) internal view {

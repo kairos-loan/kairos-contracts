@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {console} from "forge-std/console.sol";
+
 import {RayMath} from "../../src/utils/RayMath.sol";
 import {BorrowArg, CollateralState, NFToken, Offer, OfferArg} from "../../src/DataStructure/Objects.sol";
 import {getSelector} from "../../src/utils/FuncSelectors.h.sol";
@@ -100,10 +102,15 @@ abstract contract TestCommons is Loggers {
         return ret;
     }
 
-    function getBorrowArgs() internal returns (BorrowArg[] memory) {
+    /// @notice to modify the default offer, but not the collateral
+    function getBorrowArgs(Offer memory offer) internal returns (BorrowArg[] memory) {
         BorrowArg[] memory args = new BorrowArg[](1);
-        args[0] = BorrowArg({nft: getNft(), args: getOfferArgs()});
+        args[0] = BorrowArg({nft: getNft(), args: getOfferArgs(offer)});
         return args;
+    }
+
+    function getBorrowArgs() internal returns (BorrowArg[] memory) {
+        return getBorrowArgs(getOffer());
     }
 
     function getNft() internal view returns (NFToken memory ret) {
@@ -168,8 +175,10 @@ abstract contract TestCommons is Loggers {
             });
     }
 
-    function assertEq(Ray actual, Ray expected) internal pure {
+    function assertEq(Ray actual, Ray expected) internal view {
         if (Ray.unwrap(actual) != Ray.unwrap(expected)) {
+            console.log("expected ", Ray.unwrap(expected));
+            console.log("actual   ", Ray.unwrap(actual));
             revert AssertionFailedRayDontMatch(expected, actual);
         }
     }

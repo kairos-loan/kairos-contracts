@@ -39,7 +39,7 @@ contract AdminFacet is IAdminFacet {
     function createTranche(Ray newTranche) external onlyOwner returns (uint256 newTrancheId) {
         Protocol storage proto = protocolStorage();
 
-        newTrancheId = ++proto.nbOfTranches;
+        newTrancheId = proto.nbOfTranches++;
         proto.tranche[newTrancheId] = newTranche;
     }
 }
