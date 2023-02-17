@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
+import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
+
 import {ContractsCreator} from "../../src/ContractsCreator.sol";
 import {DCHelperFacet} from "./DCHelperFacet.sol";
 import {DCTarget} from "./DCTarget.sol";
-import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
 import {IDCHelperFacet} from "../../src/interface/IDCHelperFacet.sol";
-import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";
 import {IKairos} from "../../src/interface/IKairos.sol";
 import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";

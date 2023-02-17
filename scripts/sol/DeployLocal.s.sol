@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
+import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
 import {Script} from "forge-std/Script.sol";
 
 import {DCHelperFacet} from "../../test/Commons/DCHelperFacet.sol";
 import {DCTarget} from "../../test/Commons/DCTarget.sol";
-import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
 import {External} from "../../test/Commons/External.sol";
 import {IKairos} from "../../src/interface/IKairos.sol";
 import {Money} from "../../src/mock/Money.sol";
@@ -137,8 +137,8 @@ contract DeployLocal is Script, External {
         string memory const
     ) internal pure returns (string memory toWrite) {
         toWrite = string.concat(written, name);
-        toWrite = string.concat(toWrite, '=');
+        toWrite = string.concat(toWrite, "=");
         toWrite = string.concat(toWrite, const);
-        toWrite = string.concat(toWrite, '\n');
+        toWrite = string.concat(toWrite, "\n");
     }
 }
