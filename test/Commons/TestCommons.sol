@@ -47,9 +47,7 @@ abstract contract TestCommons is Loggers {
         vm.label(signer, "signer");
         vm.label(signer2, "signer2");
         erc721SafeTransferFromSelector = getSelector("safeTransferFrom(address,address,uint256)");
-        erc721SafeTransferFromDataSelector = getSelector(
-            "safeTransferFrom(address,address,uint256,bytes)"
-        );
+        erc721SafeTransferFromDataSelector = getSelector("safeTransferFrom(address,address,uint256,bytes)");
         if (block.timestamp < 365 days) {
             vm.warp(365 days);
         }
@@ -57,10 +55,7 @@ abstract contract TestCommons is Loggers {
 
     function getOfferDigest(Offer memory offer) internal virtual returns (bytes32);
 
-    function getSignatureFromKey(
-        Offer memory offer,
-        uint256 pKey
-    ) internal returns (bytes memory signature) {
+    function getSignatureFromKey(Offer memory offer, uint256 pKey) internal returns (bytes memory signature) {
         bytes32 digest = getOfferDigest(offer);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(pKey, digest);
         signature = bytes.concat(r, s, bytes1(v));
@@ -92,11 +87,7 @@ abstract contract TestCommons is Loggers {
     }
 
     function getOfferArg(Offer memory offer) internal returns (OfferArg memory arg) {
-        arg = OfferArg({
-            signature: getSignature(offer),
-            amount: offer.loanToValue / 10,
-            offer: offer
-        });
+        arg = OfferArg({signature: getSignature(offer), amount: offer.loanToValue / 10, offer: offer});
     }
 
     function getOfferArgs() internal returns (OfferArg[] memory) {
@@ -121,7 +112,7 @@ abstract contract TestCommons is Loggers {
 
     function getTranche(uint256 trancheId) internal view virtual returns (Ray rate);
 
-    function getAuction() internal view returns (Auction memory) {
+    function getAuction() internal pure returns (Auction memory) {
         return Auction({duration: 3 days, priceFactor: ONE.mul(3)});
     }
 
@@ -157,10 +148,7 @@ abstract contract TestCommons is Loggers {
         }
     }
 
-    function assertEq(
-        CollateralState memory actual,
-        CollateralState memory expected
-    ) internal view {
+    function assertEq(CollateralState memory actual, CollateralState memory expected) internal view {
         if (keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
             logCollateralState(expected, "expected");
             logCollateralState(actual, "actual  ");

@@ -11,6 +11,7 @@ contract Loggers is Test {
         console.log("~~~~~~~ start loan ", name, " ~~~~~~~");
         console.log("assetLent           ", address(loan.assetLent));
         console.log("lent                ", loan.lent);
+        console.log("shareLent           ", Ray.unwrap(loan.shareLent));
         console.log("startDate           ", loan.startDate);
         console.log("endDate             ", loan.endDate);
         logAuction(true, loan.auction);
@@ -68,7 +69,6 @@ contract Loggers is Test {
     }
 
     function logNft(string memory prefix, NFToken memory nft) internal view {
-        string memory suffixForLoan = bytes(prefix).length > 0 ? "" : " ";
         console.log("%simplem    %s", prefix, address(nft.implem));
         console.log("%sid        %s", prefix, nft.id);
     }
