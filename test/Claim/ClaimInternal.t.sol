@@ -18,7 +18,8 @@ contract TestClaim is Internal {
     Provision private provision;
     uint256 private sentExpected;
 
-    function setUp() public {
+    function setUp() public override {
+        super.setUp();
         Protocol storage proto = protocolStorage();
         SupplyPosition storage sp = supplyPositionStorage();
 
@@ -49,12 +50,7 @@ contract TestClaim is Internal {
             abi.encode(false)
         );
         vm.expectRevert(
-            abi.encodeWithSelector(
-                ERC20TransferFailed.selector,
-                address(money),
-                address(this),
-                address(this)
-            )
+            abi.encodeWithSelector(ERC20TransferFailed.selector, address(money), address(this), address(this))
         );
         this.sendInterestsExternal(getLoan(), getProvision());
     }

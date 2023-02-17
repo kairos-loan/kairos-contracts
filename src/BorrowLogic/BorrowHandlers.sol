@@ -62,12 +62,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
         }
 
-<<<<<<< HEAD
-        // todo #35 verify provision has expected values
         safeMint(signer, Provision({amount: arg.amount, share: shareMatched, loanId: collatState.loanId}));
-=======
-        safeMint(signer, Provision({amount: args.amount, share: shareMatched, loanId: collatState.loanId}));
->>>>>>> develop
         return (collatState);
     }
 
@@ -105,12 +100,8 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             shareLent: collatState.matched,
             startDate: block.timestamp,
             endDate: endDate,
-<<<<<<< HEAD
             auction: Auction({duration: proto.auction.duration, priceFactor: proto.auction.priceFactor}),
             interestPerSecond: proto.tranche[collatState.tranche],
-=======
-            interestPerSecond: proto.tranche[0],
->>>>>>> develop
             borrower: from,
             collateral: nft,
             supplyPositionIndex: supplyPositionIndex,

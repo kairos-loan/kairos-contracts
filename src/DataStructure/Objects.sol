@@ -76,6 +76,7 @@ struct Offer {
 /// @title Non Fungible Token
 /// @notice describes an ERC721 compliant token, can be used as single spec
 ///     I.e Collateral type accepting one specific NFT
+/// @dev found in storgae
 /// @param implem address of the NFT contract
 /// @param id token identifier
 struct NFToken {

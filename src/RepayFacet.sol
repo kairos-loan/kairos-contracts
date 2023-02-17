@@ -13,10 +13,6 @@ contract RepayFacet is IRepayFacet {
     using RayMath for Ray;
     using RayMath for uint256;
 
-    /// @notice a loan has been repaid with interests by its borrower
-    /// @param loanId loan identifier
-    event Repay(uint256 indexed loanId);
-
     /// @notice repay one or multiple loans, gives collaterals back
     /// @dev repay on behalf is activated, the collateral goes to the original borrower
     /// @param loanIds identifiers of loans to repay

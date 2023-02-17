@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import {CollateralState, Offer, Ray} from "../../src/DataStructure/Objects.sol";
-import {Loan, Provision, Auction} from "../../src/DataStructure/Storage.sol";
+import {CollateralState, Offer, Ray, NFToken} from "../../src/DataStructure/Objects.sol";
+import {Loan, Provision, Auction, Payment} from "../../src/DataStructure/Storage.sol";
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -16,12 +16,8 @@ contract Loggers is Test {
         logAuction(true, loan.auction);
         console.log("interestPerSecond   ", Ray.unwrap(loan.interestPerSecond));
         console.log("borrower            ", loan.borrower);
-        console.log("collat implem       ", address(loan.collateral.implem));
-        console.log("collat id           ", loan.collateral.id);
-        console.log("paid                ", loan.payment.paid);
-        console.log("liquidated          ", loan.payment.liquidated);
-        console.log("borrowerClaimed     ", loan.payment.borrowerClaimed);
-        console.log("borrowerBought      ", loan.payment.borrowerBought);
+        logNft("collateral.", loan.collateral);
+        logPayment(true, loan.payment);
         console.log("supplyPositionIndex:");
         if (loan.nbOfPositions >= 2) {
             console.log(
@@ -63,6 +59,32 @@ contract Loggers is Test {
         console.log("nft.id           ", collat.nft.id);
         console.log("loanId           ", collat.loanId);
         console.log("~~~~~~~ end Collateral State ", name, "   ~~~~~~~");
+    }
+
+    function logNft(NFToken memory nft, string memory name) internal view {
+        console.log("~~~~~~~ start NFT ", name, " ~~~~~~~");
+        logNft("", nft);
+        console.log("~~~~~~~ end NFT ", name, "   ~~~~~~~");
+    }
+
+    function logNft(string memory prefix, NFToken memory nft) internal view {
+        string memory suffixForLoan = bytes(prefix).length > 0 ? "" : " ";
+        console.log("%simplem    %s", prefix, address(nft.implem));
+        console.log("%sid        %s", prefix, nft.id);
+    }
+
+    function logPayment(Payment memory payment, string memory name) internal view {
+        console.log("~~~~~~~ start Payment ", name, " ~~~~~~~");
+        logPayment(false, payment);
+        console.log("~~~~~~~ end Payment ", name, "   ~~~~~~~");
+    }
+
+    function logPayment(bool prefixed, Payment memory payment) internal view {
+        string memory prefix = prefixed ? "payment." : "";
+        console.log("%spaid         %s", prefix, payment.paid);
+        console.log("%sliquidated   %s", prefix, payment.liquidated);
+        console.log("%sborrClaimed  %s", prefix, payment.borrowerClaimed);
+        console.log("%sborrBought   %s", prefix, payment.borrowerClaimed);
     }
 
     function logAuction(Auction memory auction, string memory name) internal view {
