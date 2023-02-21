@@ -117,16 +117,22 @@ contract DeployLocal is Script, External {
         loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
         provision.loanId = mintLoan(loan) + 1; // mfer 3 active to repay in 2 weeks
 
+        loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
+        uint256[] memory toRepayLoanIds = new uint256[](1);
+        toRepayLoanIds[0] = mintLoan(loan); // mfer 4 repaid loan
+        provision.loanId = toRepayLoanIds[0] + 1;
+        kairos.repay(toRepayLoanIds); // repaid by deployer on behalf of borrower
+
         loan.startDate = block.timestamp - 2 weeks;
         loan.endDate = block.timestamp - 1 days;
         loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
-        provision.loanId = mintLoan(loan) + 1; // mfer 4 in active auction
+        provision.loanId = mintLoan(loan) + 1; // mfer 5 in active auction
 
         loan = updateLoanPositionAndCollateral(provision, loan, frontNft);
         uint256 toLiquidateLoanId = mintLoan(loan);
         BuyArg[] memory buyArgs = new BuyArg[](1);
         buyArgs[0] = BuyArg({loanId: toLiquidateLoanId, to: frontTester, positionIds: emptyArray});
-        kairos.buy(buyArgs); // mfer 5 liquidated (and collateral given back to front tester)
+        kairos.buy(buyArgs); // mfer 6 liquidated (and collateral given back to front tester)
     }
 
     /* solhint-disable quotes */
