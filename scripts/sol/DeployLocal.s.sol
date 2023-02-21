@@ -12,7 +12,6 @@ import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";
 import {Offer, NFToken, BuyArg} from "../../src/DataStructure/Objects.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
-import {console} from "forge-std/console.sol";
 
 /// @dev deploy script intended for local testing
 contract DeployLocal is Script, External {
