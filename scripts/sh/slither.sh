@@ -11,8 +11,3 @@ slither src \
 	--solc-remaps "${REMAPS}" \
   --print function-summary \
   &> out/slither-functions-summary.txt
-
-# slither src \
-# 	--solc-remaps "${REMAPS}" \
-#   --print cfg \
-#   &> out/slither-functions-summary.txt
