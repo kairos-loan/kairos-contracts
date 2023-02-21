@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
 import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";

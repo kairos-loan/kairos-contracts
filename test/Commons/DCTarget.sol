@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {BigKairos} from "./BigKairos.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";

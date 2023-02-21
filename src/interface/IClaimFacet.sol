@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 interface IClaimFacet {
     /// @notice some liquidity has been claimed as principal plus interests or share of liquidation

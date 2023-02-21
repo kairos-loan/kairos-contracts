@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 // Derived from Nick Mudge's DiamondInit from the reference diamond implementation
 
