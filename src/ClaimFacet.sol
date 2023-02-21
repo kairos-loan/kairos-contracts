@@ -59,7 +59,11 @@ contract ClaimFacet is IClaimFacet, SafeMint {
                 revert BorrowerAlreadyClaimed(loanIds[i]);
             }
             loan.payment.borrowerClaimed = true;
-            sentTemp = loan.payment.liquidated ? loan.payment.paid.mul(ONE.sub(loan.shareLent)) : 0;
+            if (loan.payment.liquidated) {
+                sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent));
+            } else {
+                sentTemp = 0;
+            }
             if (!loan.assetLent.transfer(msg.sender, sentTemp)) {
                 revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
             }
