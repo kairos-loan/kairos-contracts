@@ -15,6 +15,7 @@ import {Initializer} from "./Initializer.sol";
 import {ProtocolFacet} from "./ProtocolFacet.sol";
 import {RepayFacet} from "./RepayFacet.sol";
 import {SupplyPositionFacet} from "./SupplyPositionFacet.sol";
+/* solhint-disable-next-line max-line-length */
 import {adminFS, auctionFS, claimFS, borrowFS, cutFS, loupeFS, protoFS, ownershipFS, repayFS, supplyPositionFS} from "./utils/FuncSelectors.h.sol";
 
 /// @notice handles uinitialized deployment of all contracts of the protocol and exposes facet cuts
