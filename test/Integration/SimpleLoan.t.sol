@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {External} from "../Commons/External.sol";
 import {OfferArg, Ray} from "../../src/DataStructure/Objects.sol";

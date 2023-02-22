@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {BadCollateral, RequestedAmountIsNull} from "../../src/DataStructure/Errors.sol";
 import {BorrowArg, NFToken, Offer, OfferArg} from "../../src/DataStructure/Objects.sol";

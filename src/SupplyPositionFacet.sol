@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {DiamondERC721} from "./SupplyPositionLogic/DiamondERC721.sol";
 import {ERC721InvalidTokenId} from "./DataStructure/ERC721Errors.sol";
