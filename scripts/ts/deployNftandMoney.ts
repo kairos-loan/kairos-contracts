@@ -7,12 +7,12 @@ async function main() {
   const azukMetaTx = await azuk.setBaseURI(
     "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/"
   )
-  await azukMetaTx.wait(6)
+  await azukMetaTx.wait(3)
   const mfers = (await deploy("NFT", ["Kairos Test Mfers", "K-MFER"])) as NFT
   const mferMetaTx = await mfers.setBaseURI(
     "ipfs://QmWiQE65tmpYzcokCheQmng2DCM33DEhjXcPB6PanwpAZo/"
   )
-  await mferMetaTx.wait(6)
+  await mferMetaTx.wait(3)
   await deploy("TestCurrency", ["Kairos Loan Beta Fake WEth", "KWETH"])
 }
 
