@@ -4,6 +4,8 @@ pragma solidity 0.8.17;
 import {ERC721, ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract NFT is ERC721Enumerable {
+    error MaxSupplyReached();
+
     string internal baseURI;
 
     /* solhint-disable-next-line no-empty-blocks */
@@ -12,11 +14,13 @@ contract NFT is ERC721Enumerable {
     }
 
     function mintOneTo(address to) public returns (uint256 createdId) {
+        checkMaxSupplyOnIncrement();
         createdId = totalSupply() + 1;
         _mint(to, createdId);
     }
 
     function mintOne() public returns (uint256 createdId) {
+        checkMaxSupplyOnIncrement();
         createdId = totalSupply() + 1;
         _safeMint(msg.sender, createdId);
     }
@@ -29,6 +33,12 @@ contract NFT is ERC721Enumerable {
 
     function setBaseURI(string memory newBaseURI) public {
         baseURI = newBaseURI;
+    }
+
+    function checkMaxSupplyOnIncrement() internal {
+        if (totalSupply() >= 10_000) {
+            revert MaxSupplyReached();
+        }
     }
 
     function _baseURI() internal view override returns (string memory) {
