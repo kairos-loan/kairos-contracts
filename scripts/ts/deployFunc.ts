@@ -39,7 +39,10 @@ interface DiamondArgs {
 let supplyPositionFacetAddress: string
 let facetCuts: FacetCut[] = []
 
-export async function deploy(name: string, arg?: [FacetCut[], DiamondArgs]): Promise<depContract> {
+export async function deploy(
+  name: string,
+  arg?: [FacetCut[], DiamondArgs] | [string, string]
+): Promise<depContract> {
   const ToDeploy = await ethers.getContractFactory(name)
 
   let toDeploy
