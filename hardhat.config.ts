@@ -6,7 +6,7 @@ import * as dotenv from "dotenv"
 import { HardhatUserConfig } from "hardhat/types/config"
 import { env } from "process"
 
-dotenv.config({ path: "../../.env" })
+dotenv.config({ path: ".env" })
 
 tdly.setup({ automaticVerifications: true })
 
@@ -18,7 +18,7 @@ const pKey: string = env.DEPLOYER_KEY as string
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.17",
+    version: "0.8.18",
     settings: {
       // viaIR: true, // removed bc tenderly verif chokes
       optimizer: {

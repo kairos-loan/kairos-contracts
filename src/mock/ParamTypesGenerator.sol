@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {Loan} from "../DataStructure/Storage.sol";
 import {NFToken, Offer, OfferArg} from "../DataStructure/Objects.sol";

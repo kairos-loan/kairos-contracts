@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {Diamond, DiamondArgs} from "diamond/contracts/Diamond.sol";
 import {IDiamond} from "diamond/contracts/interfaces/IDiamond.sol";

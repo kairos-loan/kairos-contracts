@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {IRepayFacet} from "./interface/IRepayFacet.sol";
 import {Loan, Protocol} from "./DataStructure/Storage.sol";

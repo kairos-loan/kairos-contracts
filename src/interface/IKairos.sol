@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {IDiamondLoupe} from "diamond/contracts/interfaces/IDiamondLoupe.sol";
 import {IDiamondCut} from "diamond/contracts/interfaces/IDiamondCut.sol";

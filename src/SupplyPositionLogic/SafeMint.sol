@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import {NFTUtils} from "./NFTUtils.sol";
 import {Provision, SupplyPosition} from "../DataStructure/Storage.sol";

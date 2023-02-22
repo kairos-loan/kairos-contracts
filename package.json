@@ -11,6 +11,7 @@
     "prettify": "prettier --write ./**/*.sol ./scripts/ts/**/*.ts",
     "test": "forge test",
     "slither": "sh scripts/sh/slither.sh",
+    "opensource": "cd ../.. && git subtree push --prefix packages/contracts git@github.com:kairos-loan/kairos-contracts.git main",
     "generate:doc": "forge doc --build",
     "generate:coverage": "forge coverage --report lcov",
     "deploy:local": "cross-env $(grep -v '^#' .env | xargs) && forge script ./scripts/sol/DeployLocal.s.sol -f http://localhost:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
