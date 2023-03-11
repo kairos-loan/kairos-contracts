@@ -25,14 +25,14 @@ contract RepayFacet is IRepayFacet {
         for (uint8 i = 0; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
             if (loan.payment.paid > 0 || loan.payment.borrowerClaimed) {
-                revert LoanAlreadyRepaid(loanIds[i]);
+                revert LoanAlreadyRepaid(loanIds[i]); // todo #412 LoanAlreadyRepaid incomplete coverage
             }
             lent = loan.lent;
             toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate));
             loan.payment.paid = toRepay;
             loan.payment.borrowerClaimed = true;
             if (!loan.assetLent.transferFrom(msg.sender, address(this), toRepay)) {
-                revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
+                revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this)); // todo #413 ERC20TransferFailed incomplete coverage
             }
             loan.collateral.implem.safeTransferFrom(address(this), loan.borrower, loan.collateral.id);
             emit Repay(loanIds[i]);

@@ -35,7 +35,7 @@ contract NFT is ERC721Enumerable {
         baseURI = newBaseURI;
     }
 
-    function checkMaxSupplyOnIncrement() internal {
+    function checkMaxSupplyOnIncrement() internal view {
         if (totalSupply() >= 10_000) {
             revert MaxSupplyReached();
         }
