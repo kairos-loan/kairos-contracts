@@ -62,12 +62,10 @@ struct Loan {
 /// @param paid amount sent on the tx closing the loan, non-zero value means loan's lifecycle is over
 /// @param liquidated this loan has been closed at the liquidation stage, the collateral has been sold
 /// @param borrowerClaimed borrower claimed his rights on this loan (either collateral or share of liquidation)
-/// @param borrowerBought borrower is the one who bought the collateral during the auction
 struct Payment {
     uint256 paid;
     bool liquidated;
     bool borrowerClaimed;
-    bool borrowerBought;
 }
 
 /// @notice storage for the ERC721 compliant supply position facet. Related NFTs represent supplier positions

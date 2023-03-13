@@ -55,7 +55,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             if (loan.borrower != msg.sender) {
                 revert NotBorrowerOfTheLoan(loanIds[i]);
             }
-            if (loan.payment.borrowerClaimed || loan.payment.borrowerBought) {
+            if (loan.payment.borrowerClaimed) {
                 revert BorrowerAlreadyClaimed(loanIds[i]);
             }
             loan.payment.borrowerClaimed = true;
@@ -94,9 +94,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
         Loan storage loan,
         Provision storage provision
     ) internal returns (uint256 sent) {
-        sent = loan.payment.borrowerBought
-            ? loan.payment.paid.mul(provision.share).div(loan.shareLent)
-            : loan.payment.paid.mul(provision.share);
+        sent = loan.payment.paid.mul(provision.share);
 
         if (!loan.assetLent.transfer(msg.sender, sent)) {
             revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
