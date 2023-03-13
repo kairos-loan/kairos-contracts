@@ -44,7 +44,6 @@ contract TestClaim is External {
 
         Loan memory loan = getLoan();
         loan.payment.borrowerClaimed = true;
-        loan.payment.borrowerBought = true;
         store(loan, 1);
         loanIds[0] = 1;
         vm.prank(BORROWER);

@@ -8,7 +8,7 @@ import {RayMath} from "./utils/RayMath.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
 // solhint-disable-next-line max-line-length
-import {ERC20TransferFailed, LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan, CollateralIsNotLiquidableYet} from "./DataStructure/Errors.sol";
+import {ERC20TransferFailed, LoanAlreadyRepaid, CollateralIsNotLiquidableYet} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date

@@ -5,7 +5,7 @@ import {BuyArg, NFToken} from "../../src/DataStructure/Objects.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "../../src/DataStructure/ERC721Errors.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
-import {LoanAlreadyRepaid, SupplyPositionDoesntBelongToTheLoan} from "../../src/DataStructure/Errors.sol";
+import {LoanAlreadyRepaid} from "../../src/DataStructure/Errors.sol";
 
 contract TestAuction is External {
     // test simplest case of auction
@@ -35,27 +35,10 @@ contract TestAuction is External {
 
     function testErc721CallerIsNotOwnerNorApproved() public {
         BuyArg[] memory args = setupLoan();
-        args[0].positionIds = oneInArray;
+        // args[0].positionIds = oneInArray;
         mintPosition(signer2, getProvision());
         vm.startPrank(signer);
         vm.expectRevert(abi.encodeWithSelector(ERC721CallerIsNotOwnerNorApproved.selector));
-        kairos.buy(args);
-    }
-
-    function testSupplyPositionDoesntBelongToTheLoan() public {
-        Provision memory provision = getProvision();
-        provision.loanId = 2;
-        mintPosition(signer, provision);
-        BuyArg[] memory args = setupLoan();
-        args[0].positionIds = oneInArray;
-        vm.startPrank(signer);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                SupplyPositionDoesntBelongToTheLoan.selector,
-                args[0].positionIds[0],
-                args[0].loanId
-            )
-        );
         kairos.buy(args);
     }
 
@@ -98,7 +81,7 @@ contract TestAuction is External {
     function storeAndGetArgs(Loan memory loan, uint256 loanId) private returns (BuyArg[] memory) {
         BuyArg[] memory args = new BuyArg[](1);
         store(loan, loanId);
-        args[0] = BuyArg({loanId: loanId, to: signer, positionIds: emptyArray});
+        args[0] = BuyArg({loanId: loanId, to: signer});
         return args;
     }
 

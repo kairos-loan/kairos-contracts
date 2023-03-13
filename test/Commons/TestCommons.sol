@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+// solhint-disable no-console
 import {console} from "forge-std/console.sol";
 
 import {RayMath} from "../../src/utils/RayMath.sol";

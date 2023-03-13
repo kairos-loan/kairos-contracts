@@ -14,8 +14,6 @@ import {TestCommons} from "./TestCommons.sol";
 contract Internal is TestCommons, BigKairos {
     using RayMath for Ray;
 
-    Loan internal testLoan;
-
     constructor() {
         bytes memory randoCode = hex"01";
         Protocol storage proto = protocolStorage();
@@ -35,13 +33,6 @@ contract Internal is TestCommons, BigKairos {
         nft2 = NFT(address(bytes20(keccak256("mock address nft2"))));
         vm.etch(address(nft2), randoCode);
         vm.label(address(nft2), "nft2");
-    }
-
-    function setUp() public virtual {
-        Protocol storage proto = protocolStorage();
-
-        testLoan.auction.duration = proto.auction.duration;
-        testLoan.auction.priceFactor = proto.auction.priceFactor;
     }
 
     /* solhint-disable-next-line ordering */

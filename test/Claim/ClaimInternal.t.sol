@@ -18,8 +18,7 @@ contract TestClaim is Internal {
     Provision private provision;
     uint256 private sentExpected;
 
-    function setUp() public override {
-        super.setUp();
+    function setUp() public {
         Protocol storage proto = protocolStorage();
         SupplyPosition storage sp = supplyPositionStorage();
 
