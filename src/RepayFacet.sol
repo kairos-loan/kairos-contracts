@@ -28,7 +28,7 @@ contract RepayFacet is IRepayFacet {
                 revert LoanAlreadyRepaid(loanIds[i]); // todo #412 LoanAlreadyRepaid incomplete coverage
             }
             lent = loan.lent;
-            toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate));
+            toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate)); // todo #419 check torepay overflow
             loan.payment.paid = toRepay;
             loan.payment.borrowerClaimed = true;
             if (!loan.assetLent.transferFrom(msg.sender, address(this), toRepay)) {

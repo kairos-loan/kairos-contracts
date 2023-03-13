@@ -7,7 +7,7 @@ import {Loan, Protocol} from "./DataStructure/Storage.sol";
 import {protocolStorage} from "./DataStructure/Global.sol";
 import {Ray} from "./DataStructure/Objects.sol";
 
-/// @notice external loupe functions exposing protocol storage and supplier nonce incrementer
+/// @notice external loupe functions exposing protocol storage
 contract ProtocolFacet is IProtocolFacet {
     /// @notice gets the rate of tranche `id`
     /// @param id rate identifier
