@@ -22,7 +22,8 @@ contract TestAuction is Internal {
     }
 
     function testInitialPrice() public {
-        assertEq(price(0), lent.mul(protocolStorage().auction.priceFactor));
+        setTimeElapsed(0);
+        assertEq(price(testLoanId), lent.mul(protocolStorage().auction.priceFactor));
     }
 
     function testPrice() public {
@@ -30,8 +31,8 @@ contract TestAuction is Internal {
 
         uint256 initialPrice = lent.mul(proto.auction.priceFactor);
 
-        // setTimeElapsed(proto.auction.duration / 2);
-        // assertEq(price(testLoanId), initialPrice / 2);
+        setTimeElapsed(proto.auction.duration / 2);
+        assertEq(price(testLoanId), initialPrice / 2);
 
         setTimeElapsed(proto.auction.duration / 3);
         assertEq(price(testLoanId), (initialPrice / 3) * 2);

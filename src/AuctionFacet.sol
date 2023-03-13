@@ -29,7 +29,11 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @return price computed price
     function price(uint256 loanId) public view returns (uint256) {
         Loan storage loan = protocolStorage().loan[loanId];
-        uint256 timeSinceLiquidable = block.timestamp - loan.endDate;
+        uint256 loanEndDate = loan.endDate;
+        if (block.timestamp < loanEndDate) {
+            revert CollateralIsNotLiquidableYet(loanEndDate, loanId);
+        }
+        uint256 timeSinceLiquidable = block.timestamp - loanEndDate;
         Ray decreasingFactor = timeSinceLiquidable >= loan.auction.duration
             ? ZERO
             : ONE.sub(timeSinceLiquidable.div(loan.auction.duration));

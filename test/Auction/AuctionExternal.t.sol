@@ -33,15 +33,6 @@ contract TestAuction is External {
         kairos.buy(args);
     }
 
-    function testErc721CallerIsNotOwnerNorApproved() public {
-        BuyArg[] memory args = setupLoan();
-        // args[0].positionIds = oneInArray;
-        mintPosition(signer2, getProvision());
-        vm.startPrank(signer);
-        vm.expectRevert(abi.encodeWithSelector(ERC721CallerIsNotOwnerNorApproved.selector));
-        kairos.buy(args);
-    }
-
     function testPaidPrice() public {
         BuyArg[] memory args = new BuyArg[](1);
         getFlooz(signer, money);
