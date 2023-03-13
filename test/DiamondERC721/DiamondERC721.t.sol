@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.18;
 
-import {MockERC721} from "./MockERC721.sol";
+import {Test} from "forge-std/Test.sol";
 
 import {IERC721Receiver} from "../../src/SupplyPositionLogic/DiamondERC721.sol";
 
-import {Test} from "forge-std/Test.sol";
+import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";
+import {MockERC721} from "./MockERC721.sol";
 
 contract ERC721Recipient is IERC721Receiver {
     address public operator;
@@ -72,7 +73,7 @@ contract TestDiamondERC721 is Test {
 
         assertEq(token.balanceOf(address(0xBEEF)), 0);
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert(ERC721InvalidTokenId.selector);
         token.ownerOf(1337);
     }
 
@@ -92,9 +93,10 @@ contract TestDiamondERC721 is Test {
         token.burn(1337);
 
         assertEq(token.balanceOf(address(this)), 0);
-        assertEq(token.getApproved(1337), address(0));
+        vm.expectRevert(ERC721InvalidTokenId.selector);
+        token.getApproved(1337);
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert(ERC721InvalidTokenId.selector);
         token.ownerOf(1337);
     }
 
@@ -384,7 +386,7 @@ contract TestDiamondERC721 is Test {
 
         assertEq(token.balanceOf(to), 0);
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert(ERC721InvalidTokenId.selector);
         token.ownerOf(id);
     }
 
@@ -406,9 +408,10 @@ contract TestDiamondERC721 is Test {
         token.burn(id);
 
         assertEq(token.balanceOf(address(this)), 0);
+        vm.expectRevert(ERC721InvalidTokenId.selector);
         assertEq(token.getApproved(id), address(0));
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert(ERC721InvalidTokenId.selector);
         token.ownerOf(id);
     }
 

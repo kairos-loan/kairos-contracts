@@ -38,7 +38,7 @@ contract TestAuction is External {
         args[0].positionIds = oneInArray;
         mintPosition(signer2, getProvision());
         vm.startPrank(signer);
-        vm.expectRevert(abi.encodeWithSelector(ERC721CallerIsNotOwnerNorApproved.selector));
+        vm.expectRevert(ERC721CallerIsNotOwnerNorApproved.selector);
         kairos.buy(args);
     }
 
