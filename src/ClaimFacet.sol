@@ -65,7 +65,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             }
             loan.payment.borrowerClaimed = true;
             if (loan.payment.liquidated) {
-                sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent));
+                sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent)); // todo check paid price
             } else {
                 sentTemp = 0;
             }
@@ -75,6 +75,8 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             }
             sent += sentTemp;
         }
+
+        // todo #423 missing event on claimasborrower
     }
 
     /// @notice sends principal plus interests of the loan to `msg.sender`

@@ -13,7 +13,7 @@ import {RayMath} from "../utils/RayMath.sol";
 import {Erc20CheckedTransfer} from "../utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
 /* solhint-disable-next-line max-line-length */
-import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountIsNull, RequestedAmountTooHigh, InvalidTranche} from "../DataStructure/Errors.sol";
+import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
@@ -29,8 +29,6 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         OfferArg memory arg,
         CollateralState memory collatState
     ) internal returns (CollateralState memory) {
-        Protocol storage proto = protocolStorage();
-
         address signer = checkOfferArg(arg);
         Ray shareMatched;
 
@@ -39,10 +37,8 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             revert InconsistentAssetRequests(collatState.assetLent, arg.offer.assetToLend);
         }
         if (arg.offer.tranche != collatState.tranche) {
+            // all offers used for a collateral must refer to the same interest rate tranche
             revert InconsistentTranches(collatState.tranche, arg.offer.tranche);
-        }
-        if (arg.amount == 0) {
-            revert RequestedAmountIsNull(arg.offer);
         }
 
         checkCollateral(arg.offer, collatState.nft);
@@ -59,9 +55,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         if (arg.offer.duration < collatState.minOfferDuration) {
             collatState.minOfferDuration = arg.offer.duration;
         }
-        if (arg.offer.tranche >= proto.nbOfTranches) {
-            revert InvalidTranche(proto.nbOfTranches);
-        }
+
         collatState.assetLent.checkedTransferFrom(signer, collatState.from, arg.amount);
         safeMint(signer, Provision({amount: arg.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);
@@ -78,22 +72,15 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         NFToken memory nft
     ) internal returns (Loan memory loan) {
         Protocol storage proto = protocolStorage();
-        uint256 lent;
         uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
-        CollateralState memory collatState = CollateralState({
-            matched: Ray.wrap(0),
-            assetLent: args[0].offer.assetToLend,
-            tranche: args[0].offer.tranche,
-            minOfferDuration: type(uint256).max,
-            from: from,
-            nft: nft,
-            loanId: ++proto.nbOfLoans // returns incremented value (also increments in storage)
-        });
+        CollateralState memory collatState = initializedCollateralState(args[0], from, nft);
+        Payment memory notPaid;
+        uint256 lent;
+
         for (uint256 i = 0; i < args.length; i++) {
             collatState = useOffer(args[i], collatState);
             lent += args[i].amount;
         }
-        Payment memory notPaid;
         uint256 endDate = block.timestamp + collatState.minOfferDuration;
         loan = Loan({
             assetLent: collatState.assetLent,
@@ -110,6 +97,24 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             nbOfPositions: args.length
         });
         proto.loan[collatState.loanId] = loan;
+
         emit Borrow(collatState.loanId, abi.encode(loan));
+    }
+
+    function initializedCollateralState(
+        OfferArg memory firstOfferArg,
+        address from,
+        NFToken memory nft
+    ) internal returns (CollateralState memory) {
+        return
+            CollateralState({
+                matched: Ray.wrap(0),
+                assetLent: firstOfferArg.offer.assetToLend,
+                tranche: firstOfferArg.offer.tranche,
+                minOfferDuration: type(uint256).max,
+                from: from,
+                nft: nft,
+                loanId: ++protocolStorage().nbOfLoans // returns incremented value (also increments in storage)
+            });
     }
 }
