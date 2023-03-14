@@ -2,7 +2,7 @@
 pragma solidity 0.8.18;
 
 import {IClaimFacet} from "./interface/IClaimFacet.sol";
-import {BorrowerAlreadyClaimed, ERC20TransferFailed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
+import {BorrowerAlreadyClaimed, ERC20TransferFailed, LoanNotRepaidOrLiquidatedYet, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
@@ -34,6 +34,9 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
+            if (loan.payment.paid < loan.lent && !loan.payment.liquidated) {
+                revert LoanNotRepaidOrLiquidatedYet(loanId);
+            }
             sentTemp = loan.payment.liquidated
                 ? sendShareOfSaleAsSupplier(loan, provision)
                 : sendInterests(loan, provision);
