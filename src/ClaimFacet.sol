@@ -34,7 +34,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
-            if (loan.payment.paid < loan.lent) {
+            if (loan.payment.paid < loan.lent && !loan.payment.liquidated) {
                 revert LoanNotRepaidOrLiquidatedYet(loanId);
             }
             sentTemp = loan.payment.liquidated

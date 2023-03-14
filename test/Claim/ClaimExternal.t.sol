@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
-import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
+import {BorrowerAlreadyClaimed, LoanNotRepaidOrLiquidatedYet, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
 import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
@@ -50,6 +50,18 @@ contract TestClaim is External {
         vm.prank(BORROWER);
         vm.expectRevert(abi.encodeWithSelector(BorrowerAlreadyClaimed.selector, loanIds[0]));
         kairos.claimAsBorrower(loanIds);
+    }
+
+    function testClaimOfNotLiquidatedLoan() public {
+        Loan memory loan = getLoan();
+        store(loan, 1);
+
+        Provision memory provision = getProvision();
+        mintPosition(signer, provision);
+
+        vm.prank(signer);
+        vm.expectRevert(abi.encodeWithSelector(LoanNotRepaidOrLiquidatedYet.selector, 1));
+        kairos.claim(oneInArray);
     }
 
     function claimN(uint8 nbOfClaims) internal {
