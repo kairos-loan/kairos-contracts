@@ -95,17 +95,6 @@ contract TestAuction is External {
         loan.endDate = block.timestamp - 2 days;
     }
 
-    function storeAndGetArgs(Loan memory loan, uint256 loanId) private returns (BuyArg[] memory) {
-        BuyArg[] memory args = new BuyArg[](1);
-        store(loan, loanId);
-        args[0] = BuyArg({loanId: loanId, to: signer, positionIds: emptyArray});
-        return args;
-    }
-
-    function storeAndGetArgs(Loan memory loan) private returns (BuyArg[] memory) {
-        return storeAndGetArgs(loan, 1);
-    }
-
     function setupLoan(uint256 loanAndNftId) private returns (BuyArg[] memory) {
         Loan memory loan = getLoan();
         loan.collateral = NFToken({implem: nft, id: loanAndNftId});

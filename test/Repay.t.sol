@@ -2,9 +2,10 @@
 pragma solidity 0.8.18;
 
 import {External} from "./Commons/External.sol";
-import {Loan} from "../src/DataStructure/Storage.sol";
-import {Ray} from "../src/DataStructure/Objects.sol";
+import {Loan, Provision} from "../src/DataStructure/Storage.sol";
+import {BuyArg, Ray} from "../src/DataStructure/Objects.sol";
 import {RayMath} from "../src/utils/RayMath.sol";
+import {LoanAlreadyRepaid} from "../src/DataStructure/Errors.sol";
 
 contract TestRepay is External {
     using RayMath for Ray;
@@ -16,6 +17,40 @@ contract TestRepay is External {
 
     function testMultipleRepays() public {
         repayNTimes(12);
+    }
+
+    function testRepayAlreadyRepaid() public {
+        uint256[] memory loanIds = new uint256[](1);
+        loanIds[0] = 1;
+        repayNTimes(1);
+        vm.expectRevert(abi.encodeWithSelector(LoanAlreadyRepaid.selector, 1));
+        kairos.repay(loanIds);
+    }
+
+    // should try to repay a loan whose collat has been claimed by the single supplir, and share of liquidation claimed by the borrower
+    function testRepayBorrowerClaimed() public {
+        Loan memory loan = getLoan();
+        uint256[] memory loanIds = oneInArray;
+        BuyArg[] memory args = storeAndGetArgs(loan);
+        args[0].positionIds = oneInArray;
+        Provision memory provision = getProvision();
+        mintPosition(signer, provision);
+        nft.mintOneTo(address(kairos));
+
+        skip(2 weeks);
+
+        vm.prank(signer);
+        kairos.buy(args);
+
+        vm.prank(BORROWER);
+        kairos.claimAsBorrower(loanIds);
+
+        Loan memory storedLoan = kairos.getLoan(1);
+        assertEq(storedLoan.payment.paid, 0);
+        assertEq(storedLoan.payment.borrowerClaimed, true);
+
+        vm.expectRevert(abi.encodeWithSelector(LoanAlreadyRepaid.selector, 1));
+        kairos.repay(loanIds);
     }
 
     function repayNTimes(uint8 nbOfRepays) internal {

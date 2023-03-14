@@ -5,6 +5,7 @@ import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Hol
 
 import {IDCHelperFacet} from "../../src/interface/IDCHelperFacet.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
+import {BuyArg} from "../../src/DataStructure/Objects.sol";
 import {Money} from "../../src/mock/Money.sol";
 import {NFT} from "../../src/mock/NFT.sol";
 import {SetUp} from "./SetUp.sol";
@@ -23,6 +24,17 @@ contract External is SetUp, ERC721Holder {
             address(dcTarget),
             abi.encodeWithSelector(dcTarget.storeProvision.selector, provision, positionId)
         );
+    }
+
+    function storeAndGetArgs(Loan memory loan, uint256 loanId) internal returns (BuyArg[] memory) {
+        BuyArg[] memory args = new BuyArg[](1);
+        store(loan, loanId);
+        args[0] = BuyArg({loanId: loanId, to: signer, positionIds: emptyArray});
+        return args;
+    }
+
+    function storeAndGetArgs(Loan memory loan) internal returns (BuyArg[] memory) {
+        return storeAndGetArgs(loan, 1);
     }
 
     function mintPosition(address to, Provision memory provision) internal returns (uint256 tokenId) {
