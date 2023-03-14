@@ -51,11 +51,11 @@ contract TestClaim is External {
         kairos.claimAsBorrower(loanIds);
     }
 
-    function claimN(uint8 nbOfClaims) internal {
+    function claimN(uint256 nbOfClaims) internal {
         uint256[] memory positionIds = new uint256[](nbOfClaims);
         uint256 balanceBefore;
 
-        for (uint8 i = 0; i < nbOfClaims; i++) {
+        for (uint256 i = 0; i < nbOfClaims; i++) {
             positionIds[i] = i + 1;
             Loan memory loan = getLoan();
             loan.supplyPositionIndex = i + 1;
@@ -78,16 +78,16 @@ contract TestClaim is External {
             "signer balance invalid"
         );
 
-        for (uint8 i = 0; i < nbOfClaims; i++) {
+        for (uint256 i = 0; i < nbOfClaims; i++) {
             vm.expectRevert(ERC721InvalidTokenId.selector);
             kairos.ownerOf(i);
         }
     }
 
-    function claimNAsBorrower(uint8 nbOfClaims) internal {
+    function claimNAsBorrower(uint256 nbOfClaims) internal {
         uint256[] memory loanIds = new uint256[](nbOfClaims);
 
-        for (uint8 i = 0; i < nbOfClaims; i++) {
+        for (uint256 i = 0; i < nbOfClaims; i++) {
             loanIds[i] = i + 1;
             Loan memory loan = getLoan();
             loan.payment.paid = 1 ether;

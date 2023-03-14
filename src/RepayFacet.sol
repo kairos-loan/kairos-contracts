@@ -27,7 +27,7 @@ contract RepayFacet is IRepayFacet {
         uint256 lent;
         uint256 toRepay;
 
-        for (uint8 i = 0; i < loanIds.length; i++) {
+        for (uint256 i = 0; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
             if (loan.payment.paid > 0 || loan.payment.borrowerClaimed) {
                 revert LoanAlreadyRepaid(loanIds[i]); // todo #412 LoanAlreadyRepaid incomplete coverage

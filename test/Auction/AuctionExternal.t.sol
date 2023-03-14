@@ -50,13 +50,13 @@ contract TestAuction is External {
     function auctionN(uint256 nbOfAuctions) internal {
         BuyArg[] memory args = new BuyArg[](nbOfAuctions);
         getFlooz(signer, money, nbOfAuctions * 1 ether);
-        for (uint8 i = 0; i < nbOfAuctions; i++) {
+        for (uint256 i = 0; i < nbOfAuctions; i++) {
             nft.mintOneTo(address(kairos));
             args[i] = setupLoan(i + 1)[0];
         }
         vm.prank(signer);
         kairos.buy(args);
-        for (uint8 i = 0; i < nbOfAuctions; i++) {
+        for (uint256 i = 0; i < nbOfAuctions; i++) {
             assertEq(nft.ownerOf(i + 1), signer);
         }
         assertEq(money.balanceOf(signer), 0, "incorrect balance of signer");

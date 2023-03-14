@@ -53,14 +53,14 @@ contract TestBorrow is External {
         borrowNTimes(12);
     }
 
-    function borrowNTimes(uint8 nbOfLoans) internal {
+    function borrowNTimes(uint256 nbOfLoans) internal {
         BorrowArg[] memory borrowArgs = new BorrowArg[](nbOfLoans);
         Offer memory offer;
         uint256 currentTokenId;
 
         getFlooz(signer, money, nbOfLoans * getOfferArg().amount);
 
-        for (uint8 i = 0; i < nbOfLoans; i++) {
+        for (uint256 i = 0; i < nbOfLoans; i++) {
             OfferArg[] memory offerArgs = new OfferArg[](1);
             currentTokenId = getJpeg(BORROWER, nft);
             offer = getOffer();
@@ -80,7 +80,7 @@ contract TestBorrow is External {
         assertEq(money.balanceOf(signer), 0);
         assertEq(money.balanceOf(BORROWER), nbOfLoans * getOfferArg().amount);
         assertEq(nft.balanceOf(address(kairos)), nbOfLoans);
-        for (uint8 i = 0; i < nbOfLoans; i++) {
+        for (uint256 i = 0; i < nbOfLoans; i++) {
             assertEq(nft.ownerOf(i + 1), address(kairos));
         }
     }

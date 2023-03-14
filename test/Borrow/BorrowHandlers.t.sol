@@ -7,6 +7,7 @@ import {CollateralState, NFToken, Offer, OfferArg, Ray} from "../../src/DataStru
 import {Internal} from "../Commons/Internal.sol";
 import {Loan} from "../../src/DataStructure/Storage.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
+// solhint-disable-next-line max-line-length
 import {RequestedAmountTooHigh, InconsistentAssetRequests, InconsistentTranches} from "../../src/DataStructure/Errors.sol";
 import {ONE, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
 import {TestCommons} from "../Commons/TestCommons.sol";
@@ -82,7 +83,7 @@ contract TestBorrowHandlers is Internal {
     function testMultipleUseCollateral() public {
         OfferArg[] memory offerArgs = new OfferArg[](10);
 
-        for (uint8 i = 0; i < 10; i++) {
+        for (uint256 i = 0; i < 10; i++) {
             offerArgs[i] = getOfferArg(getOffer());
         }
 

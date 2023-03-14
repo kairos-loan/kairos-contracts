@@ -55,7 +55,7 @@ struct Loan {
     NFToken collateral;
     uint256 supplyPositionIndex;
     Payment payment;
-    uint8 nbOfPositions;
+    uint256 nbOfPositions;
 }
 
 /// @notice tracking of the payment state of a loan

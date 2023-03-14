@@ -34,7 +34,7 @@ contract BorrowFacet is IBorrowFacet, BorrowHandlers {
     /// @notice take loans, take ownership of NFTs specified as collateral, sends borrowed money to caller
     /// @param args list of arguments specifying at which terms each collateral should be used
     function borrow(BorrowArg[] calldata args) external {
-        for (uint8 i = 0; i < args.length; i++) {
+        for (uint256 i = 0; i < args.length; i++) {
             args[i].nft.implem.transferFrom(msg.sender, address(this), args[i].nft.id);
             useCollateral(args[i].args, msg.sender, args[i].nft);
         }

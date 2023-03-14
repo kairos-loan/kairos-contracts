@@ -23,7 +23,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
     function buy(BuyArg[] memory args) external {
-        for (uint8 i = 0; i < args.length; i++) {
+        for (uint256 i = 0; i < args.length; i++) {
             useLoan(args[i]);
         }
     }
