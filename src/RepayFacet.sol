@@ -29,8 +29,8 @@ contract RepayFacet is IRepayFacet {
 
         for (uint256 i = 0; i < loanIds.length; i++) {
             loan = proto.loan[loanIds[i]];
-            if (loan.payment.paid > 0 || loan.payment.borrowerClaimed) {
-                revert LoanAlreadyRepaid(loanIds[i]); // todo #412 LoanAlreadyRepaid incomplete coverage
+            if (loan.payment.paid > 0 || loan.payment.borrowerClaimed || loan.payment.liquidated) {
+                revert LoanAlreadyRepaid(loanIds[i]);
             }
             lent = loan.lent;
             toRepay = lent + lent.mul(loan.interestPerSecond.mul(block.timestamp - loan.startDate)); // todo #419 check torepay overflow

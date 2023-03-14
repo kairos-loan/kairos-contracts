@@ -33,6 +33,19 @@ contract External is SetUp, ERC721Holder {
         tokenId = abi.decode(data, (uint256));
     }
 
+    function mintLoan() internal returns (uint256 loanId) {
+        nft.mintOneTo(address(kairos));
+        return mintLoan(getLoan());
+    }
+
+    function mintLoan(Loan memory loan) internal returns (uint256 loanId) {
+        bytes memory data = IDCHelperFacet(address(kairos)).delegateCall(
+            address(dcTarget),
+            abi.encodeWithSelector(dcTarget.mintLoan.selector, loan)
+        );
+        loanId = abi.decode(data, (uint256));
+    }
+
     function getTokens(address receiver) internal returns (uint256 tokenId) {
         vm.startPrank(receiver);
 

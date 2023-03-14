@@ -87,14 +87,6 @@ contract DeployLocal is Script, External {
         vm.writeFile("./out/deployment.env", toWrite);
     }
 
-    function mintLoan(Loan memory loan) internal returns (uint256 loanId) {
-        bytes memory data = DCHelperFacet(address(kairos)).delegateCall(
-            address(dcTarget),
-            abi.encodeWithSelector(dcTarget.mintLoan.selector, loan)
-        );
-        loanId = abi.decode(data, (uint256));
-    }
-
     function updateLoanPositionAndCollateral(
         Provision memory provision,
         Loan memory loan,
