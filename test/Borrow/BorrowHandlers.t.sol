@@ -9,7 +9,7 @@ import {Loan} from "../../src/DataStructure/Storage.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 // solhint-disable-next-line max-line-length
 import {RequestedAmountTooHigh, InconsistentAssetRequests, InconsistentTranches} from "../../src/DataStructure/Errors.sol";
-import {ONE, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
+import {ONE, supplyPositionStorage, protocolStorage} from "../../src/DataStructure/Global.sol";
 import {TestCommons} from "../Commons/TestCommons.sol";
 
 contract TestBorrowHandlers is Internal {
@@ -109,6 +109,7 @@ contract TestBorrowHandlers is Internal {
         offer.tranche = 1;
         OfferArg memory arg = getOfferArg(offer);
 
+        protocolStorage().nbOfTranches = 2;
         vm.expectRevert(abi.encodeWithSelector(InconsistentTranches.selector, 0, 1));
         this.useOfferExternal(arg, collatState);
     }
