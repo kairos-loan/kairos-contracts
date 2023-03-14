@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {IBorrowHandlers} from "../interface/IBorrowHandlers.sol";
 
 import {BorrowCheckers} from "./BorrowCheckers.sol";
@@ -8,14 +10,16 @@ import {CollateralState, NFToken, OfferArg, Ray} from "../DataStructure/Objects.
 import {Loan, Payment, Protocol, Provision, Auction} from "../DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Global.sol";
 import {RayMath} from "../utils/RayMath.sol";
+import {Erc20CheckedTransfer} from "../utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
 /* solhint-disable-next-line max-line-length */
-import {ERC20TransferFailed, InconsistentAssetRequests, InconsistentTranches, RequestedAmountIsNull, RequestedAmountTooHigh, InvalidTranche} from "../DataStructure/Errors.sol";
+import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountIsNull, RequestedAmountTooHigh, InvalidTranche} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
+    using Erc20CheckedTransfer for IERC20;
 
     /// @notice handles usage of a loan offer to borrow from
     /// @param arg arguments for the usage of this offer
@@ -58,10 +62,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         if (arg.offer.tranche >= proto.nbOfTranches) {
             revert InvalidTranche(proto.nbOfTranches);
         }
-        if (!collatState.assetLent.transferFrom(signer, collatState.from, arg.amount)) {
-            revert ERC20TransferFailed(collatState.assetLent, signer, collatState.from);
-        }
-
+        collatState.assetLent.checkedTransferFrom(signer, collatState.from, arg.amount);
         safeMint(signer, Provision({amount: arg.amount, share: shareMatched, loanId: collatState.loanId}));
         return (collatState);
     }

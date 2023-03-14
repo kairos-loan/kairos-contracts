@@ -1,20 +1,24 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {IAuctionFacet} from "./interface/IAuctionFacet.sol";
+
 import {BuyArg, NFToken, Ray} from "./DataStructure/Objects.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {RayMath} from "./utils/RayMath.sol";
+import {Erc20CheckedTransfer} from "./utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
 // solhint-disable-next-line max-line-length
-import {ERC20TransferFailed, LoanAlreadyRepaid, CollateralIsNotLiquidableYet} from "./DataStructure/Errors.sol";
-import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
+import {LoanAlreadyRepaid, CollateralIsNotLiquidableYet} from "./DataStructure/Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is IAuctionFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
+    using Erc20CheckedTransfer for IERC20;
 
     /// @notice buy one or multiple NFTs in liquidation
     /// @param args arguments on what and how to buy
@@ -54,9 +58,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         loan.payment.liquidated = true;
         uint256 toPay = price(arg.loanId);
         loan.payment.paid = toPay;
-        if (!loan.assetLent.transferFrom(msg.sender, address(this), toPay)) {
-            revert ERC20TransferFailed(loan.assetLent, msg.sender, address(this));
-        }
+        loan.assetLent.checkedTransferFrom(msg.sender, address(this), toPay);
         loan.collateral.implem.safeTransferFrom(address(this), arg.to, loan.collateral.id);
 
         emit Buy(arg.loanId, abi.encode(arg));

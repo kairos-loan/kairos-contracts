@@ -3,7 +3,6 @@ pragma solidity 0.8.18;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {ERC20TransferFailed} from "../../src/DataStructure/Errors.sol";
 import {Internal} from "../Commons/Internal.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "../../src/DataStructure/Storage.sol";
 import {protocolStorage, supplyPositionStorage} from "../../src/DataStructure/Global.sol";
@@ -39,19 +38,6 @@ contract TestClaim is Internal {
             abi.encode(true)
         );
         assertEq(this.sendInterestsExternal(loan, provision), sentExpected);
-    }
-
-    function testFailedCurrencyTransferReverts() public {
-        protocolStorage().loan[0] = getLoan();
-        vm.mockCall(
-            address(money),
-            abi.encodeWithSelector(money.transfer.selector, address(this), sentExpected),
-            abi.encode(false)
-        );
-        vm.expectRevert(
-            abi.encodeWithSelector(ERC20TransferFailed.selector, address(money), address(this), address(this))
-        );
-        this.sendInterestsExternal(getLoan(), getProvision());
     }
 
     function testSendInterestsWithLowLent() public {

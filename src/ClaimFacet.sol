@@ -1,19 +1,24 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {IClaimFacet} from "./interface/IClaimFacet.sol";
-import {BorrowerAlreadyClaimed, ERC20TransferFailed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
+
+import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
 import {Ray} from "./DataStructure/Objects.sol";
 import {RayMath} from "./utils/RayMath.sol";
+import {Erc20CheckedTransfer} from "./utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 
 /// @notice claims supplier and borrower rights on loans or supply positions
 contract ClaimFacet is IClaimFacet, SafeMint {
     using RayMath for Ray;
     using RayMath for uint256;
+    using Erc20CheckedTransfer for IERC20;
 
     /// @notice claims principal plus interests or liquidation share due as a supplier
     /// @param positionIds identifiers of one or multiple supply position to burn
@@ -64,9 +69,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             } else {
                 sentTemp = 0;
             }
-            if (!loan.assetLent.transfer(msg.sender, sentTemp)) {
-                revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
-            }
+            loan.assetLent.checkedTransfer(msg.sender, sentTemp);
             if (sentTemp > 0) {
                 emit Claim(msg.sender, sentTemp, loanIds[i]);
             }
@@ -81,9 +84,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         uint256 interests = loan.payment.paid - loan.lent;
         sent = provision.amount + (interests * (provision.amount)) / loan.lent;
-        if (!loan.assetLent.transfer(msg.sender, sent)) {
-            revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
-        }
+        loan.assetLent.checkedTransfer(msg.sender, sent);
     }
 
     /// @notice sends liquidation share due to `msg.sender` as a supplier
@@ -95,9 +96,6 @@ contract ClaimFacet is IClaimFacet, SafeMint {
         Provision storage provision
     ) internal returns (uint256 sent) {
         sent = loan.payment.paid.mul(provision.share);
-
-        if (!loan.assetLent.transfer(msg.sender, sent)) {
-            revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
-        }
+        loan.assetLent.checkedTransfer(msg.sender, sent);
     }
 }
