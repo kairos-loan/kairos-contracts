@@ -64,13 +64,13 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             } else {
                 sentTemp = 0;
             }
-            if (!loan.assetLent.transfer(msg.sender, sentTemp)) {
-                revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
-            }
             if (sentTemp > 0) {
+                if (!loan.assetLent.transfer(msg.sender, sentTemp)) {
+                    revert ERC20TransferFailed(loan.assetLent, address(this), msg.sender);
+                }
+                sent += sentTemp;
                 emit Claim(msg.sender, sentTemp, loanIds[i]);
             }
-            sent += sentTemp;
         }
     }
 
