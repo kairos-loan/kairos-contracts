@@ -75,8 +75,6 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             }
             sent += sentTemp;
         }
-
-        // todo #423 missing event on claimasborrower
     }
 
     /// @notice sends principal plus interests of the loan to `msg.sender`

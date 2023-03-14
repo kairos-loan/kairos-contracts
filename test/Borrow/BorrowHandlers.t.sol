@@ -16,7 +16,8 @@ contract TestBorrowHandlers is Internal {
     using RayMath for uint256;
     using RayMath for Ray;
 
-    // useOffer tests
+    /// useOffer tests ///
+
     function testConsistentAssetRequests() public {
         CollateralState memory collatState = getCollateralState();
         Offer memory offer = getOffer();
@@ -79,6 +80,8 @@ contract TestBorrowHandlers is Internal {
 
         assertEq(res, collatState);
     }
+
+    /// useCollateral tests ///
 
     function testMultipleUseCollateral() public {
         OfferArg[] memory offerArgs = new OfferArg[](10);
