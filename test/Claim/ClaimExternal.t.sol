@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IClaimEmitter} from "../../src/interface/IClaimFacet.sol";
+
 // solhint-disable-next-line max-line-length
 import {BorrowerAlreadyClaimed, LoanNotRepaidOrLiquidatedYet, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
 import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";
@@ -10,7 +12,7 @@ import {ONE} from "../../src/DataStructure/Global.sol";
 import {Ray} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 
-contract TestClaim is External {
+contract TestClaim is External, IClaimEmitter {
     using RayMath for Ray;
 
     function testSimpleClaim() public {
@@ -73,7 +75,7 @@ contract TestClaim is External {
 
     function claimN(uint8 nbOfClaims) internal {
         uint256[] memory positionIds = new uint256[](nbOfClaims);
-        uint256 balanceBefore;
+        uint256 balanceBefore = money.balanceOf(signer);
 
         for (uint256 i = 0; i < nbOfClaims; i++) {
             positionIds[i] = i + 1;
@@ -86,8 +88,11 @@ contract TestClaim is External {
             mintPosition(signer, provision);
             money.mint(1 ether, address(kairos));
         }
+        for (uint256 i = 0; i < nbOfClaims; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Claim(signer, 1 ether, i + 1);
+        }
 
-        balanceBefore = money.balanceOf(signer);
         vm.prank(signer);
         kairos.claim(positionIds);
 
@@ -116,6 +121,10 @@ contract TestClaim is External {
 
             store(loan, i + 1);
             money.mint(1 ether / 2, address(kairos));
+        }
+        for (uint256 i = 0; i < nbOfClaims; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Claim(BORROWER, 1 ether / 2, i + 1);
         }
 
         vm.prank(BORROWER);
