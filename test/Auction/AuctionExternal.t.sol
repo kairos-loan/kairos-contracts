@@ -33,6 +33,15 @@ contract TestAuction is External {
         kairos.buy(args);
     }
 
+    function testErc721CallerIsNotOwnerNorApproved() public {
+        BuyArg[] memory args = setupLoan();
+        args[0].positionIds = oneInArray;
+        mintPosition(signer2, getProvision());
+        vm.startPrank(signer);
+        vm.expectRevert(ERC721CallerIsNotOwnerNorApproved.selector);
+        kairos.buy(args);
+    }
+
     function testPaidPrice() public {
         BuyArg[] memory args = new BuyArg[](1);
         getFlooz(signer, money);
@@ -67,17 +76,6 @@ contract TestAuction is External {
         loan = _getLoan();
         // price should be the same as lent amount (initial = lent * 3, duration : 3 days)
         loan.endDate = block.timestamp - 2 days;
-    }
-
-    function storeAndGetArgs(Loan memory loan, uint256 loanId) private returns (BuyArg[] memory) {
-        BuyArg[] memory args = new BuyArg[](1);
-        store(loan, loanId);
-        args[0] = BuyArg({loanId: loanId, to: signer});
-        return args;
-    }
-
-    function storeAndGetArgs(Loan memory loan) private returns (BuyArg[] memory) {
-        return storeAndGetArgs(loan, 1);
     }
 
     function setupLoan(uint256 loanAndNftId) private returns (BuyArg[] memory) {

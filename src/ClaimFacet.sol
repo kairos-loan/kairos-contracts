@@ -4,8 +4,7 @@ pragma solidity 0.8.18;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {IClaimFacet} from "./interface/IClaimFacet.sol";
-
-import {BorrowerAlreadyClaimed, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
+import {BorrowerAlreadyClaimed, LoanNotRepaidOrLiquidatedYet, NotBorrowerOfTheLoan} from "./DataStructure/Errors.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "./DataStructure/ERC721Errors.sol";
 import {Loan, Protocol, Provision, SupplyPosition} from "./DataStructure/Storage.sol";
 import {ONE, protocolStorage, supplyPositionStorage} from "./DataStructure/Global.sol";
@@ -39,6 +38,9 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
+            if (loan.payment.paid < loan.lent && !loan.payment.liquidated) {
+                revert LoanNotRepaidOrLiquidatedYet(loanId);
+            }
             sentTemp = loan.payment.liquidated
                 ? sendShareOfSaleAsSupplier(loan, provision)
                 : sendInterests(loan, provision);
@@ -69,11 +71,11 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             } else {
                 sentTemp = 0;
             }
-            loan.assetLent.checkedTransfer(msg.sender, sentTemp);
             if (sentTemp > 0) {
+                loan.assetLent.checkedTransfer(msg.sender, sentTemp);
+                sent += sentTemp;
                 emit Claim(msg.sender, sentTemp, loanIds[i]);
             }
-            sent += sentTemp;
         }
     }
 

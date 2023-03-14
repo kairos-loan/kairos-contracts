@@ -14,6 +14,7 @@ error RequestedAmountTooHigh(uint256 requested, uint256 offered, Offer offer);
 error InconsistentAssetRequests(IERC20 firstRequested, IERC20 requested); // 0x46aac2a9
 error InconsistentTranches(uint256 firstTrancheIdUsed, uint256 trancheIdFound);
 error LoanAlreadyRepaid(uint256 loanId); // 0xdae2c273
+error LoanNotRepaidOrLiquidatedYet(uint256 loanId);
 error NotBorrowerOfTheLoan(uint256 loanId); // 0xc250ea5d
 error BorrowerAlreadyClaimed(uint256 loanId); // 0x16600edc
 error CallerIsNotOwner(address admin);
