@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity >=0.8.0;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.18;
 
 import {DiamondERC721} from "../../src/SupplyPositionLogic/DiamondERC721.sol";
 
