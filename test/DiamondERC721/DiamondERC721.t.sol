@@ -409,7 +409,7 @@ contract TestDiamondERC721 is Test {
 
         assertEq(token.balanceOf(address(this)), 0);
         vm.expectRevert(ERC721InvalidTokenId.selector);
-        assertEq(token.getApproved(id), address(0));
+        token.getApproved(id);
 
         vm.expectRevert(ERC721InvalidTokenId.selector);
         token.ownerOf(id);
