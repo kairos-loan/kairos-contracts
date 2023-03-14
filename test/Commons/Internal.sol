@@ -59,6 +59,17 @@ contract Internal is TestCommons, BigKairos {
         return sendInterests(proto.loan[0], sp.provision[0]);
     }
 
+    function sendShareOfSaleAsSupplierExternal(
+        Loan memory loan,
+        Provision memory provision
+    ) external returns (uint256) {
+        Protocol storage proto = protocolStorage();
+        proto.loan[0] = loan;
+        SupplyPosition storage sp = supplyPositionStorage();
+        sp.provision[0] = provision;
+        return sendShareOfSaleAsSupplier(proto.loan[0], sp.provision[0]);
+    }
+
     function checkOfferArgExternal(OfferArg memory arg) external view returns (address) {
         return checkOfferArg(arg);
     }

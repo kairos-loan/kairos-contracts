@@ -32,14 +32,11 @@ contract TestClaim is External, IClaimEmitter {
     }
 
     function testNotBorrowerOfTheLoan() public {
-        uint256[] memory loanIds = new uint256[](1);
-
         Loan memory loan = getLoan();
         store(loan, 1);
-        loanIds[0] = 1;
         vm.prank(signer2);
-        vm.expectRevert(abi.encodeWithSelector(NotBorrowerOfTheLoan.selector, loanIds[0]));
-        kairos.claimAsBorrower(loanIds);
+        vm.expectRevert(abi.encodeWithSelector(NotBorrowerOfTheLoan.selector, 1));
+        kairos.claimAsBorrower(oneInArray);
     }
 
     function testBorrowerAlreadyClaimed() public {
