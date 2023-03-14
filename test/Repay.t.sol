@@ -28,7 +28,7 @@ contract TestRepay is External {
     }
 
     // should try to repay a loan whose collat has been claimed by the single supplir, and share of liquidation claimed by the borrower
-    function testRepayBorrowerClaimed() public {
+    function testRepayWhenBorrowerClaimed() public {
         Loan memory loan = getLoan();
         uint256[] memory loanIds = oneInArray;
         BuyArg[] memory args = storeAndGetArgs(loan);
