@@ -52,6 +52,13 @@ contract TestClaim is External {
         kairos.claimAsBorrower(loanIds);
     }
 
+    function testShouldRevertOnClaimingNonLiquidatedLoanAsBorrower() public {
+        mintLoan();
+        vm.prank(BORROWER);
+        vm.expectRevert(abi.encodeWithSelector(LoanNotRepaidOrLiquidatedYet.selector, 1));
+        kairos.claimAsBorrower(oneInArray);
+    }
+
     function testClaimOfNotLiquidatedLoan() public {
         Loan memory loan = getLoan();
         store(loan, 1);

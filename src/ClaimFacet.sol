@@ -38,12 +38,15 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             provision = sp.provision[positionIds[i]];
             loanId = provision.loanId;
             loan = proto.loan[loanId];
-            if (loan.payment.paid < loan.lent && !loan.payment.liquidated) {
-                revert LoanNotRepaidOrLiquidatedYet(loanId);
+
+            if (loan.payment.liquidated) {
+                sentTemp = sendShareOfSaleAsSupplier(loan, provision);
+            } else {
+                if (loan.payment.paid == 0) {
+                    revert LoanNotRepaidOrLiquidatedYet(loanId);
+                }
+                sentTemp = sendInterests(loan, provision);
             }
-            sentTemp = loan.payment.liquidated
-                ? sendShareOfSaleAsSupplier(loan, provision)
-                : sendInterests(loan, provision);
             emit Claim(msg.sender, sentTemp, loanId);
             sent += sentTemp;
         }
@@ -56,25 +59,27 @@ contract ClaimFacet is IClaimFacet, SafeMint {
         Protocol storage proto = protocolStorage();
         Loan storage loan;
         uint256 sentTemp;
+        uint256 loanId;
 
         for (uint256 i = 0; i < loanIds.length; i++) {
-            loan = proto.loan[loanIds[i]];
+            loanId = loanIds[i];
+            loan = proto.loan[loanId];
             if (loan.borrower != msg.sender) {
-                revert NotBorrowerOfTheLoan(loanIds[i]);
+                revert NotBorrowerOfTheLoan(loanId);
             }
             if (loan.payment.borrowerClaimed) {
-                revert BorrowerAlreadyClaimed(loanIds[i]);
+                revert BorrowerAlreadyClaimed(loanId);
             }
             loan.payment.borrowerClaimed = true;
             if (loan.payment.liquidated) {
                 sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent)); // todo check paid price
             } else {
-                sentTemp = 0;
+                revert LoanNotRepaidOrLiquidatedYet(loanId);
             }
             if (sentTemp > 0) {
                 loan.assetLent.checkedTransfer(msg.sender, sentTemp);
                 sent += sentTemp;
-                emit Claim(msg.sender, sentTemp, loanIds[i]);
+                emit Claim(msg.sender, sentTemp, loanId);
             }
         }
     }
