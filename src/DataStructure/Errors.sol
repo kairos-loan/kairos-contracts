@@ -20,3 +20,4 @@ error BorrowerAlreadyClaimed(uint256 loanId);
 error CallerIsNotOwner(address admin);
 error InvalidTranche(uint256 nbOfTranches);
 error CollateralIsNotLiquidableYet(uint256 endDate, uint256 loanId);
+error UnsafeAmountLent(uint256 lent);

@@ -13,7 +13,7 @@ import {RayMath} from "../utils/RayMath.sol";
 import {Erc20CheckedTransfer} from "../utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
 /* solhint-disable-next-line max-line-length */
-import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountTooHigh} from "../DataStructure/Errors.sol";
+import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountTooHigh, UnsafeAmountLent} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
@@ -80,6 +80,9 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         for (uint256 i = 0; i < args.length; i++) {
             collatState = useOffer(args[i], collatState);
             lent += args[i].amount;
+        }
+        if (lent > 1e40) {
+            revert UnsafeAmountLent(lent);
         }
         uint256 endDate = block.timestamp + collatState.minOfferDuration;
         loan = Loan({

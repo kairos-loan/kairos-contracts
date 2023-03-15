@@ -72,7 +72,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             }
             loan.payment.borrowerClaimed = true;
             if (loan.payment.liquidated) {
-                sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent)); // todo check paid price
+                sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent));
             } else {
                 revert LoanNotRepaidOrLiquidatedYet(loanId);
             }
