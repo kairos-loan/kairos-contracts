@@ -42,13 +42,13 @@ contract TestAdmin is External {
         loan.lent = borrowArgs[0].args[0].amount;
         vm.prank(BORROWER);
         kairos.borrow(borrowArgs);
-        assertEq(kairos.getLoan(1), loan);
+        assertEq(kairos.getLoan(1), loan, "unexpected loan");
 
         vm.prank(OWNER);
         kairos.setAuctionDuration(2);
         vm.prank(OWNER);
         kairos.setAuctionPriceFactor(Ray.wrap(2));
-        assertEq(kairos.getLoan(1), loan); // unchanged ancient loan
+        assertEq(kairos.getLoan(1), loan, "unchanged ancient loan fail"); // unchanged ancient loan
 
         vm.prank(address(kairos));
         nft.transferFrom(address(kairos), BORROWER, 1);
@@ -59,7 +59,7 @@ contract TestAdmin is External {
         loan.auction.duration = 2;
         loan.auction.priceFactor = Ray.wrap(2);
         loan.supplyPositionIndex = 2;
-        assertEq(kairos.getLoan(2), loan); // for new loan the params have changed
+        assertEq(kairos.getLoan(2), loan, "new changed loan fail"); // for new loan the params have changed
     }
 
     function testCreateTranche() public {

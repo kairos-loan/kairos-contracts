@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+// solhint-disable no-console
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -83,9 +84,9 @@ contract Loggers is Test {
     function logPayment(bool prefixed, Payment memory payment) internal view {
         string memory prefix = prefixed ? "payment." : "";
         console.log("%spaid         %s", prefix, payment.paid);
+        console.log("%sminToRepay   %s", prefix, payment.minToRepay);
         console.log("%sliquidated   %s", prefix, payment.liquidated);
         console.log("%sborrClaimed  %s", prefix, payment.borrowerClaimed);
-        console.log("%sborrBought   %s", prefix, payment.borrowerClaimed);
     }
 
     function logAuction(Auction memory auction, string memory name) internal view {

@@ -70,8 +70,8 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             if (loan.payment.borrowerClaimed) {
                 revert BorrowerAlreadyClaimed(loanId);
             }
-            loan.payment.borrowerClaimed = true;
             if (loan.payment.liquidated) {
+                loan.payment.borrowerClaimed = true;
                 sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent));
             } else {
                 revert LoanNotRepaidOrLiquidatedYet(loanId);
@@ -90,7 +90,11 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         uint256 interests = loan.payment.paid - loan.lent;
-        sent = provision.amount + (interests * (provision.amount)) / loan.lent;
+        if (interests == loan.payment.minToRepay) {
+            sent = provision.amount + (interests / loan.nbOfPositions);
+        } else {
+            sent = provision.amount + (interests * (provision.amount)) / loan.lent;
+        }
         loan.assetLent.checkedTransfer(msg.sender, sent);
     }
 

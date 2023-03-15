@@ -85,12 +85,12 @@ abstract contract TestCommons is Loggers {
             });
     }
 
-    function getOfferArg() internal returns (OfferArg memory) {
-        return getOfferArg(getOffer());
-    }
-
     function getOfferArg(Offer memory offer) internal returns (OfferArg memory arg) {
         arg = OfferArg({signature: getSignature(offer), amount: offer.loanToValue / 10, offer: offer});
+    }
+
+    function getOfferArg() internal returns (OfferArg memory) {
+        return getOfferArg(getOffer());
     }
 
     function getOfferArgs() internal returns (OfferArg[] memory) {
@@ -103,11 +103,15 @@ abstract contract TestCommons is Loggers {
         return ret;
     }
 
+    function getBorrowArgs(OfferArg[] memory offerArgs) internal view returns (BorrowArg[] memory) {
+        BorrowArg[] memory args = new BorrowArg[](1);
+        args[0] = BorrowArg({nft: getNft(), args: offerArgs});
+        return args;
+    }
+
     /// @notice to modify the default offer, but not the collateral
     function getBorrowArgs(Offer memory offer) internal returns (BorrowArg[] memory) {
-        BorrowArg[] memory args = new BorrowArg[](1);
-        args[0] = BorrowArg({nft: getNft(), args: getOfferArgs(offer)});
-        return args;
+        return getBorrowArgs(getOfferArgs(offer));
     }
 
     function getBorrowArgs() internal returns (BorrowArg[] memory) {
@@ -148,12 +152,19 @@ abstract contract TestCommons is Loggers {
         return _getLoan();
     }
 
-    function assertEq(Loan memory actual, Loan memory expected) internal view {
+    function assertEq(Loan memory actual, Loan memory expected, string memory message) internal view {
         if (keccak256(abi.encode(actual)) != keccak256(abi.encode(expected))) {
+            if (bytes(message).length > 0) {
+                console.log("error: %s", message);
+            }
             logLoan(expected, "expected");
             logLoan(actual, "actual  ");
             revert AssertionFailedLoanDontMatch();
         }
+    }
+
+    function assertEq(Loan memory actual, Loan memory expected) internal view {
+        assertEq(actual, expected, "");
     }
 
     function assertEq(CollateralState memory actual, CollateralState memory expected) internal view {

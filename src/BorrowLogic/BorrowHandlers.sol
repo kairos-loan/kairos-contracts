@@ -72,6 +72,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         NFToken memory nft
     ) internal returns (Loan memory loan) {
         CollateralState memory collatState = initializedCollateralState(args[0], from, nft);
+        uint256 firstSupplyPositionId = supplyPositionStorage().totalSupply + 1;
         uint256 nbOfOffers = args.length;
         uint256 lent;
 
@@ -82,7 +83,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         if (lent > 1e40) {
             revert UnsafeAmountLent(lent);
         }
-        loan = initializedLoan(collatState, from, nft, nbOfOffers, lent);
+        loan = initializedLoan(collatState, from, nft, nbOfOffers, lent, firstSupplyPositionId);
         protocolStorage().loan[collatState.loanId] = loan;
 
         emit Borrow(collatState.loanId, abi.encode(loan));
@@ -110,10 +111,10 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         address from,
         NFToken memory nft,
         uint256 nbOfOffers,
-        uint256 lent
+        uint256 lent,
+        uint256 firstSupplyPositionId
     ) internal view returns (Loan memory) {
         Protocol storage proto = protocolStorage();
-        uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
         uint256 endDate = block.timestamp + collatState.minOfferDuration;
         Payment memory notPaid;
         notPaid.minToRepay = nbOfOffers * proto.minOfferCost[collatState.assetLent];
@@ -129,7 +130,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
                 interestPerSecond: proto.tranche[collatState.tranche],
                 borrower: from,
                 collateral: nft,
-                supplyPositionIndex: supplyPositionIndex,
+                supplyPositionIndex: firstSupplyPositionId,
                 payment: notPaid,
                 nbOfPositions: nbOfOffers
             });
