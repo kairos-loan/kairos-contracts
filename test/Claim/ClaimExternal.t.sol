@@ -5,6 +5,7 @@ import {IClaimEmitter} from "../../src/interface/IClaimFacet.sol";
 
 // solhint-disable-next-line max-line-length
 import {BorrowerAlreadyClaimed, LoanNotRepaidOrLiquidatedYet, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
+import {ERC721CallerIsNotOwnerNorApproved} from "../../src/DataStructure/ERC721Errors.sol";
 import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
@@ -68,6 +69,32 @@ contract TestClaim is External, IClaimEmitter {
         vm.prank(signer);
         vm.expectRevert(abi.encodeWithSelector(LoanNotRepaidOrLiquidatedYet.selector, 1));
         kairos.claim(oneInArray);
+    }
+
+    function testShouldRevertOnUsingAPositionNoOwnedOrApproved() public {
+        mintLoan();
+        mintPosition();
+
+        vm.expectRevert(abi.encodeWithSelector(ERC721CallerIsNotOwnerNorApproved.selector));
+        // not calling as the owner of the position
+        kairos.claim(oneInArray);
+    }
+
+    function testClaimOnLiquidatedLoanAsSupplier() public {
+        Loan memory loan = getLoan();
+        uint256 balanceBefore = money.balanceOf(signer);
+
+        loan.payment.liquidated = true;
+        loan.payment.paid = 1 ether;
+
+        store(loan, 1);
+        mintPosition();
+        getFlooz(address(kairos), money);
+
+        vm.prank(signer);
+        kairos.claim(oneInArray);
+
+        assertEq(money.balanceOf(address(signer)), balanceBefore + 1 ether);
     }
 
     function claimN(uint8 nbOfClaims) internal {
