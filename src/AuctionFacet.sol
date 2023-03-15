@@ -32,6 +32,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @param loanId identifier of the loan
     /// @return price computed price
     function price(uint256 loanId) public view returns (uint256) {
+        // todo test price
         Loan storage loan = protocolStorage().loan[loanId];
         uint256 loanEndDate = loan.endDate;
         if (block.timestamp < loanEndDate) {

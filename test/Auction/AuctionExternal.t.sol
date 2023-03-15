@@ -33,7 +33,7 @@ contract TestAuction is External {
         kairos.buy(args);
     }
 
-    function testPaidPrice() public {
+    function testPaidPriceShouldBeTheSameAsReturnedByPriceMethod() public {
         BuyArg[] memory args = new BuyArg[](1);
         getFlooz(signer, money);
         uint256 balanceBefore = money.balanceOf(signer);
@@ -44,8 +44,6 @@ contract TestAuction is External {
         kairos.buy(args);
         assertEq(balanceBefore - money.balanceOf(signer), kairos.price(1));
     }
-
-    // todo #356 check paid price on buying nft in auction as a borrower / as a supplier
 
     function auctionN(uint256 nbOfAuctions) internal {
         BuyArg[] memory args = new BuyArg[](nbOfAuctions);
