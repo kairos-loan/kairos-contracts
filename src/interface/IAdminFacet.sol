@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {Ray} from "../DataStructure/Objects.sol";
 
 interface IAdminFacet {
@@ -17,9 +19,17 @@ interface IAdminFacet {
     /// @param newTrancheId identifier of the new tranche
     event NewTranche(Ray indexed tranche, uint256 indexed newTrancheId);
 
+    /// @notice the minimum cost to repay per used loan offer
+    ///     when borrowing a certain currency has been updated
+    /// @param currency the erc20 on which a new minimum borrow cost is taking effect
+    /// @param newMinOfferCost the new minimum amount that will need to be repaid per loan offer used
+    event NewMininimumOfferCost(IERC20 indexed currency, uint256 indexed newMinOfferCost);
+
     function setAuctionDuration(uint256 newAuctionDuration) external;
 
     function setAuctionPriceFactor(Ray newAuctionPriceFactor) external;
 
     function createTranche(Ray newTranche) external returns (uint256 newTrancheId);
+
+    function setMinOfferCost(IERC20 currency, uint256 newMinOfferCost) external;
 }

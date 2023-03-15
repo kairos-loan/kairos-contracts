@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {IOwnershipFacet} from "./interface/IOwnershipFacet.sol";
 import {IAdminFacet} from "./interface/IAdminFacet.sol";
 
@@ -41,5 +43,15 @@ contract AdminFacet is IAdminFacet {
 
         newTrancheId = proto.nbOfTranches++;
         proto.tranche[newTrancheId] = newTranche;
+
+        emit NewTranche(newTranche, newTrancheId);
+    }
+
+    /// @notice updates the minimum amount to repay per used loan offer when borrowing a certain currency
+    /// @param currency the erc20 on which a new minimum borrow cost will take effect
+    /// @param newMinOfferCost the new minimum amount that will need to be repaid per loan offer used
+    function setMinOfferCost(IERC20 currency, uint256 newMinOfferCost) external onlyOwner {
+        protocolStorage().minOfferCost[currency] = newMinOfferCost;
+        emit NewMininimumOfferCost(currency, newMinOfferCost);
     }
 }

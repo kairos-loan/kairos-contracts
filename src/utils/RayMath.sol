@@ -88,4 +88,12 @@ library RayMath {
     function eq(Ray a, Ray b) internal pure returns (bool) {
         return Ray.unwrap(a) == Ray.unwrap(b);
     }
+
+    // ~~~ uint256 method ~~~ //
+
+    /// @notice highest value among `a` and `b`
+    /// @return maximum
+    function max(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a > b ? a : b;
+    }
 }

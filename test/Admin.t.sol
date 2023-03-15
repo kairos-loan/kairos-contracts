@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {External} from "./Commons/External.sol";
 import {CallerIsNotOwner} from "../src/DataStructure/Errors.sol";
 import {Ray, BorrowArg, Offer} from "../src/DataStructure/Objects.sol";
@@ -23,6 +25,11 @@ contract TestAdmin is External {
         kairos.createTranche(Ray.wrap(2));
         vm.prank(OWNER);
         kairos.createTranche(Ray.wrap(2));
+
+        vm.expectRevert(abi.encodeWithSelector(CallerIsNotOwner.selector, OWNER));
+        kairos.setMinOfferCost(IERC20(address(15)), 100);
+        vm.prank(OWNER);
+        kairos.setMinOfferCost(IERC20(address(15)), 100);
     }
 
     function testChangingAuctionParamsModifyOnlyNewLoans() public {

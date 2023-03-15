@@ -71,35 +71,19 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         address from,
         NFToken memory nft
     ) internal returns (Loan memory loan) {
-        Protocol storage proto = protocolStorage();
-        uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
         CollateralState memory collatState = initializedCollateralState(args[0], from, nft);
-        Payment memory notPaid;
+        uint256 nbOfOffers = args.length;
         uint256 lent;
 
-        for (uint256 i = 0; i < args.length; i++) {
+        for (uint256 i = 0; i < nbOfOffers; i++) {
             collatState = useOffer(args[i], collatState);
             lent += args[i].amount;
         }
         if (lent > 1e40) {
             revert UnsafeAmountLent(lent);
         }
-        uint256 endDate = block.timestamp + collatState.minOfferDuration;
-        loan = Loan({
-            assetLent: collatState.assetLent,
-            lent: lent,
-            shareLent: collatState.matched,
-            startDate: block.timestamp,
-            endDate: endDate,
-            auction: Auction({duration: proto.auction.duration, priceFactor: proto.auction.priceFactor}),
-            interestPerSecond: proto.tranche[collatState.tranche],
-            borrower: from,
-            collateral: nft,
-            supplyPositionIndex: supplyPositionIndex,
-            payment: notPaid,
-            nbOfPositions: args.length
-        });
-        proto.loan[collatState.loanId] = loan;
+        loan = initializedLoan(collatState, from, nft, nbOfOffers, lent);
+        protocolStorage().loan[collatState.loanId] = loan;
 
         emit Borrow(collatState.loanId, abi.encode(loan));
     }
@@ -118,6 +102,36 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
                 from: from,
                 nft: nft,
                 loanId: ++protocolStorage().nbOfLoans // returns incremented value (also increments in storage)
+            });
+    }
+
+    function initializedLoan(
+        CollateralState memory collatState,
+        address from,
+        NFToken memory nft,
+        uint256 nbOfOffers,
+        uint256 lent
+    ) internal view returns (Loan memory) {
+        Protocol storage proto = protocolStorage();
+        uint256 supplyPositionIndex = supplyPositionStorage().totalSupply + 1;
+        uint256 endDate = block.timestamp + collatState.minOfferDuration;
+        Payment memory notPaid;
+        notPaid.minToRepay = nbOfOffers * proto.minOfferCost[collatState.assetLent];
+
+        return
+            Loan({
+                assetLent: collatState.assetLent,
+                lent: lent,
+                shareLent: collatState.matched,
+                startDate: block.timestamp,
+                endDate: endDate,
+                auction: Auction({duration: proto.auction.duration, priceFactor: proto.auction.priceFactor}),
+                interestPerSecond: proto.tranche[collatState.tranche],
+                borrower: from,
+                collateral: nft,
+                supplyPositionIndex: supplyPositionIndex,
+                payment: notPaid,
+                nbOfPositions: nbOfOffers
             });
     }
 }
