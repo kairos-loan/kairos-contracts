@@ -42,7 +42,8 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         Ray decreasingFactor = timeSinceLiquidable >= loan.auction.duration
             ? ZERO
             : ONE.sub(timeSinceLiquidable.div(loan.auction.duration));
-        return loan.lent.mul(loan.auction.priceFactor).mul(decreasingFactor);
+        uint256 estimatedValue = loan.lent.mul(ONE.div(loan.shareLent));
+        return estimatedValue.mul(loan.auction.priceFactor).mul(decreasingFactor);
     }
 
     /// @notice handles buying one NFT
