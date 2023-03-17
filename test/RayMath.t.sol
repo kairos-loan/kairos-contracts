@@ -80,31 +80,31 @@ contract TestRayMath is Test {
     function testDiv() public {
         Ray a = Ray.wrap(6e26);
         Ray b = Ray.wrap(3e26);
-        assertEq(Ray.unwrap(a.mul(b)), 2e27);
+        assertEq(Ray.unwrap(a.div(b)), 2e27);
 
         a = ONE;
         b = ONE;
         assertEq(a.div(b), ONE);
 
-        a = ONE.div(3).div(2);
-        b = ONE.div(2);
+        a = ONE.mul(3).div(2);
+        b = ONE.mul(2);
         assertEq(a.div(b), ONE.mul(3).div(4));
-        assertEq(a.div(b), Ray.wrap(375e25));
+        assertEq(a.div(b), Ray.wrap(75e25));
     }
 
     function testDivUintRay() public {
         Ray a = Ray.wrap(6e26);
         uint256 b = 3;
-        assertEq(Ray.unwrap(a.div(b)), 2e27);
+        assertEq(Ray.unwrap(a.div(b)), 2e26);
 
         a = ONE;
         b = 1;
         assertEq(a.div(b), ONE);
 
-        a = ONE.div(3).div(2);
+        a = ONE.mul(3).div(2);
         b = 2;
         assertEq(a.div(b), ONE.mul(3).div(4));
-        assertEq(a.div(b), Ray.wrap(375e25));
+        assertEq(a.div(b), Ray.wrap(75e25));
     }
 
     function testLt() public {
