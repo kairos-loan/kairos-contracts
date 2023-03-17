@@ -13,20 +13,20 @@ import {Signature} from "./Signature.sol";
 /// @dev contract handles all borrowing logic through inheritance
 contract BorrowFacet is IBorrowFacet, BorrowHandlers {
     /// @notice borrow using sent NFT as collateral without needing approval through transfer callback
-    /// @param from owner of the NFT sent according to the NFT implementation contract
+    /// @param operator account that initialized the transfer action according to the NFT implementation contract
     /// @param tokenId token identifier of the NFT sent according to the NFT implementation contract
     /// @param data abi encoded arguments for the loan
     /// @return selector `this.onERC721Received.selector` ERC721-compliant response, signaling compatibility
     /// @dev param data must be of format OfferArg[]
     function onERC721Received(
-        address,
-        address from,
+        address operator,
+        address, // from
         uint256 tokenId,
         bytes calldata data
     ) external returns (bytes4) {
         OfferArg[] memory args = abi.decode(data, (OfferArg[]));
 
-        useCollateral(args, from, NFToken({implem: IERC721(msg.sender), id: tokenId}));
+        useCollateral(args, operator, NFToken({implem: IERC721(msg.sender), id: tokenId}));
 
         return this.onERC721Received.selector;
     }
