@@ -44,8 +44,8 @@ struct Protocol {
 /// @param interestPerSecond share of the amount lent added to the debt per second
 /// @param borrower borrowing account
 /// @param collateral NFT asset used as collateral
-/// @param supplyPositionIndex identifier of the first supply position used in the loan
 /// @param payment data on the payment, a non-0 payment.paid value means the loan lifecyle is over
+/// @param supplyPositionIndex identifier of the first supply position used in the loan
 /// @param nbOfPositions number of supply positions used, which ids are consecutive to the index
 struct Loan {
     IERC20 assetLent;
@@ -57,8 +57,8 @@ struct Loan {
     Ray interestPerSecond;
     address borrower;
     NFToken collateral;
-    uint256 supplyPositionIndex;
     Payment payment;
+    uint256 supplyPositionIndex;
     uint256 nbOfPositions;
 }
 
