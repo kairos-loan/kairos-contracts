@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
-import {BadCollateral, RequestedAmountIsNull} from "../../src/DataStructure/Errors.sol";
+import {BadCollateral, RequestedAmountIsUnderMinimum} from "../../src/DataStructure/Errors.sol";
 import {BorrowArg, NFToken, Offer, OfferArg} from "../../src/DataStructure/Objects.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
@@ -41,7 +41,9 @@ contract TestBorrow is External {
         borrowArgs[0].args[0].amount = 0;
 
         vm.prank(BORROWER);
-        vm.expectRevert(abi.encodeWithSelector(RequestedAmountIsNull.selector, borrowArgs[0].args[0].offer));
+        vm.expectRevert(
+            abi.encodeWithSelector(RequestedAmountIsUnderMinimum.selector, borrowArgs[0].args[0].offer, 0, 0)
+        );
         kairos.borrow(borrowArgs);
     }
 

@@ -9,7 +9,7 @@ error CollateralDoesntMatchSpecs(IERC721 sentCollateral, uint256 tokenId);
 error BadCollateral(Offer offer, NFToken providedNft);
 error ERC20TransferFailed(IERC20 token, address from, address to);
 error OfferHasExpired(Offer offer, uint256 expirationDate);
-error RequestedAmountIsNull(Offer offer);
+error RequestedAmountIsUnderMinimum(Offer offer, uint256 requested, uint256 lowerBound);
 error RequestedAmountTooHigh(uint256 requested, uint256 offered, Offer offer);
 error InconsistentAssetRequests(IERC20 firstRequested, IERC20 requested);
 error InconsistentTranches(uint256 firstTrancheIdUsed, uint256 trancheIdFound);

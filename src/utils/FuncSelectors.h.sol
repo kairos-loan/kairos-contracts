@@ -122,12 +122,13 @@ function claimFS() pure returns (bytes4[] memory) {
 }
 
 function adminFS() pure returns (bytes4[] memory) {
-    bytes4[] memory functionSelectors = new bytes4[](4);
+    bytes4[] memory functionSelectors = new bytes4[](5);
 
     functionSelectors[0] = IAdminFacet.setAuctionDuration.selector;
     functionSelectors[1] = IAdminFacet.setAuctionPriceFactor.selector;
     functionSelectors[2] = IAdminFacet.createTranche.selector;
     functionSelectors[3] = IAdminFacet.setMinOfferCost.selector;
+    functionSelectors[4] = IAdminFacet.setBorrowAmountPerOfferLowerBound.selector;
 
     return functionSelectors;
 }

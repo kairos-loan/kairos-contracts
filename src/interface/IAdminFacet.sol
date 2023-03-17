@@ -25,6 +25,11 @@ interface IAdminFacet {
     /// @param newMinOfferCost the new minimum amount that will need to be repaid per loan offer used
     event NewMininimumOfferCost(IERC20 indexed currency, uint256 indexed newMinOfferCost);
 
+    /// @notice the borrow amount lower bound per offer has been updated
+    /// @param currency the erc20 on which a new borrow amount lower bound is taking effect
+    /// @param newLowerBound the new lower bound
+    event NewBorrowAmountPerOfferLowerBound(IERC20 indexed currency, uint256 indexed newLowerBound);
+
     function setAuctionDuration(uint256 newAuctionDuration) external;
 
     function setAuctionPriceFactor(Ray newAuctionPriceFactor) external;
@@ -32,4 +37,6 @@ interface IAdminFacet {
     function createTranche(Ray newTranche) external returns (uint256 newTrancheId);
 
     function setMinOfferCost(IERC20 currency, uint256 newMinOfferCost) external;
+
+    function setBorrowAmountPerOfferLowerBound(IERC20 currency, uint256 newLowerBound) external;
 }

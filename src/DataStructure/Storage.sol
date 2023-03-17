@@ -23,6 +23,7 @@ struct Auction {
 ///         I.e lent * time since loan start * tranche = interests to repay
 /// @param loan - of id -
 /// @param minOfferCost minimum amount repaid per offer used in a loan
+/// @param offerBorrowAmountLowerBound borrow amount per offer has to be strightly higher than this value
 struct Protocol {
     uint256 nbOfLoans;
     uint256 nbOfTranches;
@@ -30,6 +31,7 @@ struct Protocol {
     mapping(uint256 => Ray) tranche;
     mapping(uint256 => Loan) loan;
     mapping(IERC20 => uint256) minOfferCost;
+    mapping(IERC20 => uint256) offerBorrowAmountLowerBound;
 }
 
 /// @notice Issued Loan (corresponding to one collateral)

@@ -11,7 +11,7 @@ import {Offer, OfferArg, NFToken} from "../../src/DataStructure/Objects.sol";
 import {Protocol} from "../../src/DataStructure/Storage.sol";
 import {protocolStorage} from "../../src/DataStructure/Global.sol";
 // solhint-disable-next-line max-line-length
-import {BadCollateral, OfferHasExpired, RequestedAmountTooHigh, RequestedAmountIsNull, InvalidTranche} from "../../src/DataStructure/Errors.sol";
+import {BadCollateral, OfferHasExpired, RequestedAmountTooHigh, RequestedAmountIsUnderMinimum, InvalidTranche} from "../../src/DataStructure/Errors.sol";
 
 /// @notice handles checks to verify validity of a loan request
 abstract contract BorrowCheckers is IBorrowCheckers, Signature {
@@ -23,9 +23,10 @@ abstract contract BorrowCheckers is IBorrowCheckers, Signature {
     function checkOfferArg(OfferArg memory arg) internal view returns (address signer) {
         Protocol storage proto = protocolStorage();
         signer = ECDSA.recover(offerDigest(arg.offer), arg.signature);
+        uint256 amountLowerBound = proto.offerBorrowAmountLowerBound[arg.offer.assetToLend];
 
-        if (arg.amount == 0) {
-            revert RequestedAmountIsNull(arg.offer);
+        if (!(arg.amount > amountLowerBound)) {
+            revert RequestedAmountIsUnderMinimum(arg.offer, arg.amount, amountLowerBound);
         }
         if (block.timestamp > arg.offer.expirationDate) {
             revert OfferHasExpired(arg.offer, arg.offer.expirationDate);

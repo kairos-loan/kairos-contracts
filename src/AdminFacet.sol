@@ -54,4 +54,12 @@ contract AdminFacet is IAdminFacet {
         protocolStorage().minOfferCost[currency] = newMinOfferCost;
         emit NewMininimumOfferCost(currency, newMinOfferCost);
     }
+
+    /// @notice updates the borrow amount lower bound per offer for one currency
+    /// @param currency the erc20 on which a new borrow amount lower bound is taking effect
+    /// @param newLowerBound the new lower bound
+    function setBorrowAmountPerOfferLowerBound(IERC20 currency, uint256 newLowerBound) external onlyOwner {
+        protocolStorage().offerBorrowAmountLowerBound[currency] = newLowerBound;
+        emit NewBorrowAmountPerOfferLowerBound(currency, newLowerBound);
+    }
 }
