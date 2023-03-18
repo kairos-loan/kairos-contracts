@@ -20,7 +20,6 @@
     "deploy-tokens:prod": "hardhat run scripts/ts/deployNftAndMoney.ts"
   },
   "dependencies": {
-    "@kairos-loan/chain-types": "workspace:*",
     "@openzeppelin/contracts": "^4.6.0",
     "diamond": "https://github.com/mudgen/diamond-1-hardhat",
     "dotenv": "^16.0.3",
