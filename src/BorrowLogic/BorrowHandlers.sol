@@ -13,7 +13,7 @@ import {RayMath} from "../utils/RayMath.sol";
 import {Erc20CheckedTransfer} from "../utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
 /* solhint-disable-next-line max-line-length */
-import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountTooHigh, UnsafeAmountLent} from "../DataStructure/Errors.sol";
+import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountTooHigh, UnsafeAmountLent, UnsafeOfferLoanToValuesGap} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
@@ -54,6 +54,19 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         }
         if (arg.offer.duration < collatState.minOfferDuration) {
             collatState.minOfferDuration = arg.offer.duration;
+        }
+        if (arg.offer.loanToValue < collatState.minOfferLoanToValue) {
+            collatState.minOfferDuration = arg.offer.loanToValue;
+        }
+        if (arg.offer.loanToValue > collatState.maxOfferLoanToValue) {
+            collatState.maxOfferLoanToValue = arg.offer.loanToValue;
+        }
+        // explain check
+        if (collatState.maxOfferLoanToValue > collatState.minOfferLoanToValue * 2) {
+            revert UnsafeOfferLoanToValuesGap(
+                collatState.minOfferLoanToValue,
+                collatState.maxOfferLoanToValue
+            );
         }
 
         collatState.assetLent.checkedTransferFrom(signer, collatState.from, arg.amount);
@@ -100,6 +113,8 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
                 assetLent: firstOfferArg.offer.assetToLend,
                 tranche: firstOfferArg.offer.tranche,
                 minOfferDuration: type(uint256).max,
+                minOfferLoanToValue: firstOfferArg.offer.loanToValue,
+                maxOfferLoanToValue: firstOfferArg.offer.loanToValue,
                 from: from,
                 nft: nft,
                 loanId: ++protocolStorage().nbOfLoans // returns incremented value (also increments in storage)

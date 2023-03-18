@@ -8,11 +8,14 @@ import {IAdminFacet} from "./interface/IAdminFacet.sol";
 
 import {Ray} from "./DataStructure/Objects.sol";
 import {SupplyPosition, Protocol} from "./DataStructure/Storage.sol";
-import {protocolStorage} from "./DataStructure/Global.sol";
+import {protocolStorage, ONE} from "./DataStructure/Global.sol";
 import {CallerIsNotOwner} from "./DataStructure/Errors.sol";
+import {RayMath} from "./utils/RayMath.sol";
 
 /// @notice admin-only setters for global protocol parameters
 contract AdminFacet is IAdminFacet {
+    using RayMath for Ray;
+
     /// @notice restrict a method access to the protocol owner only
     modifier onlyOwner() {
         address admin = IOwnershipFacet(address(this)).owner();
@@ -32,6 +35,7 @@ contract AdminFacet is IAdminFacet {
     /// @notice sets the factor applied to the loan to value setting initial price of auction for future loans
     /// @param newAuctionPriceFactor the new factor multiplied to the loan to value
     function setAuctionPriceFactor(Ray newAuctionPriceFactor) external onlyOwner {
+        require(newAuctionPriceFactor.gte(ONE.mul(5).div(2)), "");
         protocolStorage().auction.priceFactor = newAuctionPriceFactor;
         emit NewAuctionPriceFactor(newAuctionPriceFactor);
     }

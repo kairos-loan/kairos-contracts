@@ -42,6 +42,8 @@ struct OfferArg {
 /// @param assetLent - ERC20 that the protocol will send as loan
 /// @param tranche identifier of the interest rate tranche that will be used for the loan
 /// @param minOfferDuration minimal duration among offers used
+/// @param minOfferLoanToValue
+/// @param maxOfferLoanToValue
 /// @param from original owner of the nft (borrower in most cases)
 /// @param nft the collateral asset
 /// @param loanId loan identifier
@@ -50,6 +52,8 @@ struct CollateralState {
     IERC20 assetLent;
     uint256 tranche;
     uint256 minOfferDuration;
+    uint256 minOfferLoanToValue;
+    uint256 maxOfferLoanToValue;
     address from;
     NFToken nft;
     uint256 loanId;
