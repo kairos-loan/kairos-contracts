@@ -72,11 +72,14 @@ contract ClaimFacet is IClaimFacet, SafeMint {
             }
             if (loan.payment.liquidated) {
                 loan.payment.borrowerClaimed = true;
+                // 1 - shareLent = share belonging to the borrower (not used as collateral)
                 sentTemp = loan.payment.paid.mul(ONE.sub(loan.shareLent));
             } else {
                 revert LoanNotRepaidOrLiquidatedYet(loanId);
             }
             if (sentTemp > 0) {
+                /* the function may be called to store that the borrower claimed its due, but if this due is of 0 there
+                is no point in emitting a transfer and claim event */
                 loan.assetLent.checkedTransfer(msg.sender, sentTemp);
                 sent += sentTemp;
                 emit Claim(msg.sender, sentTemp, loanId);
@@ -91,8 +94,12 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         uint256 interests = loan.payment.paid - loan.lent;
         if (interests == loan.payment.minToRepay) {
+            // this is the case if the loan is repaid shortly after issuance
+            // each lender gets its minimal interest, as an anti ddos measure to spam offer
             sent = provision.amount + (interests / loan.nbOfPositions);
         } else {
+            /* provision.amount / lent = share of the interests belonging to the lender. The parenthesis make the
+            calculus in the order that maximizes precison */
             sent = provision.amount + (interests * (provision.amount)) / loan.lent;
         }
         loan.assetLent.checkedTransfer(msg.sender, sent);
@@ -106,6 +113,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
         Loan storage loan,
         Provision storage provision
     ) internal returns (uint256 sent) {
+        // in the case of a liqudidation, provision.share is considered the share of the NFT acquired by the lender
         sent = loan.payment.paid.mul(provision.share);
         loan.assetLent.checkedTransfer(msg.sender, sent);
     }
