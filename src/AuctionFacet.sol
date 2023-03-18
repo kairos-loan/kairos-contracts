@@ -60,13 +60,11 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         Loan storage loan = protocolStorage().loan[arg.loanId];
 
         checkLoanStatus(arg.loanId);
-
-        // store as liquidated before transfers to avoid malicious reentrency
-        loan.payment.liquidated = true;
-
         uint256 toPay = price(arg.loanId);
 
-        // same as liquidated status, follow checks-effects-interaction pattern
+        /* store as liquidated and paid before transfers to avoid malicious reentrency, following
+        checks-effects-interaction pattern */
+        loan.payment.liquidated = true;
         loan.payment.paid = toPay;
         loan.assetLent.checkedTransferFrom(msg.sender, address(this), toPay);
         loan.collateral.implem.safeTransferFrom(address(this), arg.to, loan.collateral.id);
