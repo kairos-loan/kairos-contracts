@@ -79,6 +79,8 @@ abstract contract TestCommons is Loggers {
                 assetLent: getOffer().assetToLend,
                 tranche: 0,
                 minOfferDuration: getOffer().duration,
+                minOfferLoanToValue: getOffer().loanToValue,
+                maxOfferLoanToValue: getOffer().loanToValue,
                 from: BORROWER,
                 nft: getOffer().collateral,
                 loanId: 1

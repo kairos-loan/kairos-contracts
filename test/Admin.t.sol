@@ -6,10 +6,14 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {External} from "./Commons/External.sol";
 import {CallerIsNotOwner} from "../src/DataStructure/Errors.sol";
 import {Ray, BorrowArg, Offer} from "../src/DataStructure/Objects.sol";
+import {ONE} from "../src/DataStructure/Global.sol";
 import {Loan} from "../src/DataStructure/Storage.sol";
 import {InvalidTranche} from "../src/DataStructure/Errors.sol";
+import {RayMath} from "../src/utils/RayMath.sol";
 
 contract TestAdmin is External {
+    using RayMath for Ray;
+
     function testOnlyOwner() public {
         vm.expectRevert(abi.encodeWithSelector(CallerIsNotOwner.selector, OWNER));
         kairos.setAuctionDuration(2);
@@ -17,9 +21,9 @@ contract TestAdmin is External {
         kairos.setAuctionDuration(2);
 
         vm.expectRevert(abi.encodeWithSelector(CallerIsNotOwner.selector, OWNER));
-        kairos.setAuctionPriceFactor(Ray.wrap(2));
+        kairos.setAuctionPriceFactor(ONE.mul(5).div(2));
         vm.prank(OWNER);
-        kairos.setAuctionPriceFactor(Ray.wrap(2));
+        kairos.setAuctionPriceFactor(ONE.mul(5).div(2));
 
         vm.expectRevert(abi.encodeWithSelector(CallerIsNotOwner.selector, OWNER));
         kairos.createTranche(Ray.wrap(2));
@@ -47,7 +51,7 @@ contract TestAdmin is External {
         vm.prank(OWNER);
         kairos.setAuctionDuration(2);
         vm.prank(OWNER);
-        kairos.setAuctionPriceFactor(Ray.wrap(2));
+        kairos.setAuctionPriceFactor(ONE.mul(5).div(2));
         assertEq(kairos.getLoan(1), loan, "unchanged ancient loan fail"); // unchanged ancient loan
 
         vm.prank(address(kairos));
@@ -57,7 +61,7 @@ contract TestAdmin is External {
         vm.prank(BORROWER);
         kairos.borrow(borrowArgs);
         loan.auction.duration = 2;
-        loan.auction.priceFactor = Ray.wrap(2);
+        loan.auction.priceFactor = ONE.mul(5).div(2);
         loan.supplyPositionIndex = 2;
         assertEq(kairos.getLoan(2), loan, "new changed loan fail"); // for new loan the params have changed
     }

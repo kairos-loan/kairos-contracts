@@ -26,6 +26,8 @@ contract BorrowFacet is IBorrowFacet, BorrowHandlers {
     ) external returns (bytes4) {
         OfferArg[] memory args = abi.decode(data, (OfferArg[]));
 
+        // `operator` will be considered the borrower, enabling integration contracts to fully manage loans,
+        // similarly how an approved contract can take a loan on behalf of the nft owner with the `borrow` method
         useCollateral(args, operator, NFToken({implem: IERC721(msg.sender), id: tokenId}));
 
         return this.onERC721Received.selector;
