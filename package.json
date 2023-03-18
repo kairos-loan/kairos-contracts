@@ -2,7 +2,6 @@
   "name": "@kairos-loan/contracts",
   "version": "0.1.0",
   "scripts": {
-    "postinstall": "cp -rf ../install/foundry-interfaces ../../node_modules/forge-std/src/interfaces",
     "build": "yarn build:foundry",
     "build:foundry": "forge build --extra-output-files abi",
     "build:hardhat": "hardhat compile",
