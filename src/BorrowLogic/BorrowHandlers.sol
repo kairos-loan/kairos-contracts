@@ -172,12 +172,12 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         uint256 endDate = block.timestamp + collatState.minOfferDuration;
         Payment memory notPaid; // not paid as it corresponds to the meaning of the uninitialized struct
 
-        /* the minimum amount to repay is used as anti ddos mechanism to prevent borrowers to produce lots of dust
-        supply positions that the lenders will have to pay gas to claim. This is why it is determined on a per-offer
-        basis, as each position can be used to claim funds separetely and induce a gas cost. With a design approach
-        similar to the auction parameters setting, this minimal cost is set at borrow time to avoid bad surprises
-        arising from governance setting new parameters during the loan life. cf docs for more details.*/
-        notPaid.minToRepay = nbOfOffers * proto.minOfferCost[collatState.assetLent];
+        /* the minimum interests amount to repay is used as anti ddos mechanism to prevent borrowers to produce lots of
+        dust supply positions that the lenders will have to pay gas to claim. This is why it is determined on a
+        per-offer basis, as each position can be used to claim funds separetely and induce a gas cost. With a design
+        approach similar to the auction parameters setting, this minimal cost is set at borrow time to avoid bad
+        surprises arising from governance setting new parameters during the loan life. cf docs for more details. */
+        notPaid.minInterestsToRepay = nbOfOffers * proto.minOfferCost[collatState.assetLent];
 
         return
             Loan({

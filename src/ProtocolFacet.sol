@@ -44,6 +44,11 @@ contract ProtocolFacet is IProtocolFacet {
         return protocolStorage().loan[id];
     }
 
+    /// @notice get the minimal amount to repay per offer used in loan and minimum amount to borrow per offer.
+    ///     Gives currently active settings, may not concern loans already issued.
+    /// @param currency the erc20 asset lent on which the parameters apply
+    /// @return minOfferCost the minimal amount to repay per offer used in loan
+    /// @return offerBorrowAmountLowerBound  minimum amount to borrow per offer used in loan
     function getMinOfferCostAndBorrowableAmount(
         IERC20 currency
     ) external view returns (uint256 minOfferCost, uint256 offerBorrowAmountLowerBound) {

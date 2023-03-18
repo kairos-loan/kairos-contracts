@@ -64,12 +64,12 @@ struct Loan {
 
 /// @notice tracking of the payment state of a loan
 /// @param paid amount sent on the tx closing the loan, non-zero value means loan's lifecycle is over
-/// @param minToRepay minimum amount that the borrower will need to repay
+/// @param minInterestsToRepay minimum amount of interests that the borrower will need to repay
 /// @param liquidated this loan has been closed at the liquidation stage, the collateral has been sold
 /// @param borrowerClaimed borrower claimed his rights on this loan (either collateral or share of liquidation)
 struct Payment {
     uint256 paid;
-    uint256 minToRepay;
+    uint256 minInterestsToRepay;
     bool liquidated;
     bool borrowerClaimed;
 }

@@ -22,7 +22,6 @@ contract Initializer {
     /// @notice initilizes the kairos protocol
     /// @dev specify this method in diamond constructor
     function init() external {
-        // todo #414 test initializer
         // adding ERC165 data
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
         ds.supportedInterfaces[type(IERC165).interfaceId] = true;

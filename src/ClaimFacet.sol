@@ -93,7 +93,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
     /// @return sent amount sent
     function sendInterests(Loan storage loan, Provision storage provision) internal returns (uint256 sent) {
         uint256 interests = loan.payment.paid - loan.lent;
-        if (interests == loan.payment.minToRepay) {
+        if (interests == loan.payment.minInterestsToRepay) {
             // this is the case if the loan is repaid shortly after issuance
             // each lender gets its minimal interest, as an anti ddos measure to spam offer
             sent = provision.amount + (interests / loan.nbOfPositions);

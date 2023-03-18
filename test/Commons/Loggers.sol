@@ -84,7 +84,7 @@ contract Loggers is Test {
     function logPayment(bool prefixed, Payment memory payment) internal view {
         string memory prefix = prefixed ? "payment." : "";
         console.log("%spaid         %s", prefix, payment.paid);
-        console.log("%sminToRepay   %s", prefix, payment.minToRepay);
+        console.log("%sminToRepay   %s", prefix, payment.minInterestsToRepay);
         console.log("%sliquidated   %s", prefix, payment.liquidated);
         console.log("%sborrClaimed  %s", prefix, payment.borrowerClaimed);
     }
