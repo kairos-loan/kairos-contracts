@@ -56,7 +56,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             collatState.minOfferDuration = arg.offer.duration;
         }
         if (arg.offer.loanToValue < collatState.minOfferLoanToValue) {
-            collatState.minOfferDuration = arg.offer.loanToValue;
+            collatState.minOfferLoanToValue = arg.offer.loanToValue;
         }
         if (arg.offer.loanToValue > collatState.maxOfferLoanToValue) {
             collatState.maxOfferLoanToValue = arg.offer.loanToValue;
