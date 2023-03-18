@@ -5,13 +5,7 @@ out = 'out/foundry'
 cache_path = 'out/foundry-cache'
 broadcast = 'out/foundry-broadcast'
 fs_permissions = [{ access = "write", path = "./out/"}]
-allow_paths= ['../../node_modules']
-remappings= [
-  '@openzeppelin/=../../node_modules/@openzeppelin/',
-  'forge-std/=../../node_modules/forge-std/src/',
-  'ds-test/=../../node_modules/ds-test/src/',
-  'diamond/=../../node_modules/diamond/'
-]
+allow_paths= ['./node_modules']
 
 [profile.doc]
 out = 'out/docs'
