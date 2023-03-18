@@ -32,17 +32,25 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     /// @param loanId identifier of the loan
     /// @return price computed price
     function price(uint256 loanId) public view returns (uint256) {
-        // todo test price
         Loan storage loan = protocolStorage().loan[loanId];
         uint256 loanEndDate = loan.endDate;
-        if (block.timestamp < loanEndDate) {
-            revert CollateralIsNotLiquidableYet(loanEndDate, loanId);
-        }
         uint256 timeSinceLiquidable = block.timestamp - loanEndDate;
+
+        checkLoanStatus(loanId);
+
+        /* the decreasing factor controls the evolution of the price from its initial value to 0 (and staying at 0)
+        over the course of the auction duration */
         Ray decreasingFactor = timeSinceLiquidable >= loan.auction.duration
             ? ZERO
             : ONE.sub(timeSinceLiquidable.div(loan.auction.duration));
+
+        /* the estimated value arises from the mean of the loan offer loanToValues used in the loan regarding their
+        share in the collateral usage. This must stay consitent even if less than the full value of the NFT has been
+        used as collateral */
         uint256 estimatedValue = loan.lent.mul(ONE.div(loan.shareLent));
+
+        /* by mutliplying the estimated price by some factor and slowly decreasing this price over time we aim to
+        make sure a liquidator will buy the NFT at fair market price. */
         return estimatedValue.mul(loan.auction.priceFactor).mul(decreasingFactor);
     }
 
@@ -51,18 +59,31 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     function useLoan(BuyArg memory arg) internal {
         Loan storage loan = protocolStorage().loan[arg.loanId];
 
-        if (block.timestamp < loan.endDate) {
-            revert CollateralIsNotLiquidableYet(loan.endDate, arg.loanId);
-        }
-        if (loan.payment.paid != 0 || loan.payment.liquidated) {
-            revert LoanAlreadyRepaid(arg.loanId);
-        }
+        checkLoanStatus(arg.loanId);
+
+        // store as liquidated before transfers to avoid malicious reentrency
         loan.payment.liquidated = true;
+
         uint256 toPay = price(arg.loanId);
+
+        // same as liquidated status, follow checks-effects-interaction pattern
         loan.payment.paid = toPay;
         loan.assetLent.checkedTransferFrom(msg.sender, address(this), toPay);
         loan.collateral.implem.safeTransferFrom(address(this), arg.to, loan.collateral.id);
 
         emit Buy(arg.loanId, abi.encode(arg));
+    }
+
+    /// @notice checks that loan is liquidable, revert if not
+    /// @param loanId identifier of the loan
+    function checkLoanStatus(uint256 loanId) internal view {
+        Loan storage loan = protocolStorage().loan[loanId];
+
+        if (block.timestamp < loan.endDate) {
+            revert CollateralIsNotLiquidableYet(loan.endDate, loanId);
+        }
+        if (loan.payment.paid != 0 || loan.payment.liquidated) {
+            revert LoanAlreadyRepaid(loanId);
+        }
     }
 }
