@@ -22,7 +22,12 @@ this repository.
 forge test
 ```
 
-### ."something".sol reference
+### Test architecture
+
+In the `test/Commons` folder are helpers and not actual tests.
+[`TestCommons`](test/Commons/TestCommons.sol) has general helpers. An example of the contract deployment can be found in [`SetUp`](test/Commons/SetUp.sol). [`Loggers`](test/Commons/Loggers.sol) exposes methods to look into structs. Contracts testing external methods inherit from [`External`](test/Commons/External.sol) that exposes the `kairos` contract diamond. Contracts testing internal methods inherit from [`Internal`](test/Commons/Internal.sol) that itself contains all internal methods normally found in multiple facets in the same contract by extending [`BigKairos`](test/Commons/BigKairos.sol).
+
+## ."something".sol reference
 
 - .h as "header" for function selectors getters
 - .s as "script"
