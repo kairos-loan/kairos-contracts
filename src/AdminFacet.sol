@@ -18,6 +18,7 @@ contract AdminFacet is IAdminFacet {
 
     /// @notice restrict a method access to the protocol owner only
     modifier onlyOwner() {
+        // the admin/owner is the same account that can upgrade the protocol.
         address admin = IOwnershipFacet(address(this)).owner();
         if (msg.sender != admin) {
             revert CallerIsNotOwner(admin);
@@ -35,6 +36,7 @@ contract AdminFacet is IAdminFacet {
     /// @notice sets the factor applied to the loan to value setting initial price of auction for future loans
     /// @param newAuctionPriceFactor the new factor multiplied to the loan to value
     function setAuctionPriceFactor(Ray newAuctionPriceFactor) external onlyOwner {
+        // see auction facet for the rationale of this check
         require(newAuctionPriceFactor.gte(ONE.mul(5).div(2)), "");
         protocolStorage().auction.priceFactor = newAuctionPriceFactor;
         emit NewAuctionPriceFactor(newAuctionPriceFactor);
@@ -50,6 +52,11 @@ contract AdminFacet is IAdminFacet {
 
         emit NewTranche(newTranche, newTrancheId);
     }
+
+    /* Both minimal offer cost and lower amount per offer lower bound are anti ddos mechanisms used to prevent the
+    borrowers to spam the minting of supply positions that lenders would have no incentive to claim the corresponding
+    dust funds from due to gas costs. The minimal offer cost mainly prevents this for claims after repayment, the amount
+    per offer lower bound mainly prevents this for claims after liquidation. */
 
     /// @notice updates the minimum amount to repay per used loan offer when borrowing a certain currency
     /// @param currency the erc20 on which a new minimum borrow cost will take effect
