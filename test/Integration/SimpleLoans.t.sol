@@ -2,7 +2,7 @@
 pragma solidity 0.8.18;
 
 import {External} from "../Commons/External.sol";
-import {OfferArg, Ray, Offer} from "../../src/DataStructure/Objects.sol";
+import {OfferArg, Ray, Offer, BuyArg} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
 
 /// @notice tests of entire loan lifecycles
@@ -79,5 +79,26 @@ contract TestIntegration is External {
         assertEq(money.balanceOf(BORROWER), borrowerInitialBalance - 2 ether, "borr bal");
         assertEq(money.balanceOf(signer), signerInitialBalance, "signer bal");
         assertEq(money.balanceOf(address(kairos)), 2 ether, "kairos bal");
+    }
+
+    function testLenderShouldNotLoseMoneyOnOkayEstimation() public {
+        getFlooz(BORROWER, money, 10 ether);
+        uint256 amountBorrowed = 1 ether;
+        getFlooz(signer, money, amountBorrowed);
+        getFlooz(signer2, money, 10 ether);
+        uint256 signerInitialBalance = money.balanceOf(signer);
+        OfferArg[] memory offerArgs = getOfferArgs();
+        uint256 tokenId = nft.mintOneTo(BORROWER);
+        vm.prank(BORROWER);
+        // what is borrowed is one 10th of the ltv
+        nft.safeTransferFrom(BORROWER, address(kairos), tokenId, abi.encode(offerArgs));
+        skip(2 weeks + 2 days); // enter auction, skip to price = ltv
+        BuyArg[] memory buyArg = new BuyArg[](1);
+        buyArg[0] = BuyArg({loanId: 1, to: signer2});
+        vm.prank(signer2);
+        kairos.buy(buyArg);
+        vm.prank(signer);
+        kairos.claim(oneInArray);
+        assertEq(money.balanceOf(signer), signerInitialBalance);
     }
 }
