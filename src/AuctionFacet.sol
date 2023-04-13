@@ -12,7 +12,7 @@ import {Erc20CheckedTransfer} from "./utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "./SupplyPositionLogic/SafeMint.sol";
 import {protocolStorage, supplyPositionStorage, ONE, ZERO} from "./DataStructure/Global.sol";
 // solhint-disable-next-line max-line-length
-import {LoanAlreadyRepaid, CollateralIsNotLiquidableYet} from "./DataStructure/Errors.sol";
+import {LoanAlreadyRepaid, CollateralIsNotLiquidableYet, PriceOverMaximum} from "./DataStructure/Errors.sol";
 
 /// @notice handles sale of collaterals being liquidated, following a dutch auction starting at repayment date
 contract AuctionFacet is IAuctionFacet, SafeMint {
@@ -35,7 +35,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         Loan storage loan = protocolStorage().loan[loanId];
         uint256 loanEndDate = loan.endDate;
         uint256 timeSinceLiquidable = block.timestamp - loanEndDate;
-
         checkLoanStatus(loanId);
 
         /* the decreasing factor controls the evolution of the price from its initial value to 0 (and staying at 0)
@@ -59,11 +58,16 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     function useLoan(BuyArg memory arg) internal {
         Loan storage loan = protocolStorage().loan[arg.loanId];
 
-        checkLoanStatus(arg.loanId);
-        uint256 toPay = price(arg.loanId);
+        uint256 toPay = price(arg.loanId); // includes checks on loan status
+
+        if (toPay > arg.maxPrice) {
+            /* in case of a reorg, the transaction can be included at a block timestamp date earlier than actual
+            transaction signature date, resulting in a price unexpectedly high. */
+            revert PriceOverMaximum(arg.maxPrice, toPay);
+        }
 
         /* store as liquidated and paid before transfers to avoid malicious reentrency, following
-        checks-effects-interaction pattern */
+        checks-effects-interactions pattern */
         loan.payment.liquidated = true;
         loan.payment.paid = toPay;
         loan.assetLent.checkedTransferFrom(msg.sender, address(this), toPay);
@@ -77,7 +81,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     function checkLoanStatus(uint256 loanId) internal view {
         Loan storage loan = protocolStorage().loan[loanId];
 
-        if (block.timestamp < loan.endDate) {
+        if (block.timestamp <= loan.endDate) {
             revert CollateralIsNotLiquidableYet(loan.endDate, loanId);
         }
         if (loan.payment.paid != 0 || loan.payment.liquidated) {

@@ -12,9 +12,11 @@ type Ray is uint256;
 /// @notice Arguments to buy the collateral of one loan
 /// @param loanId loan identifier
 /// @param to address that will receive the collateral
+/// @param maxPrice maximum price to pay for the collateral
 struct BuyArg {
     uint256 loanId;
     address to;
+    uint256 maxPrice;
 }
 
 /// @notice Arguments to borrow from one collateral
