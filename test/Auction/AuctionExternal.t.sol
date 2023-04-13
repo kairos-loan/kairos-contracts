@@ -5,7 +5,7 @@ import {BuyArg, NFToken} from "../../src/DataStructure/Objects.sol";
 import {ERC721CallerIsNotOwnerNorApproved} from "../../src/DataStructure/ERC721Errors.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
-import {LoanAlreadyRepaid} from "../../src/DataStructure/Errors.sol";
+import {LoanAlreadyRepaid, PriceOverMaximum} from "../../src/DataStructure/Errors.sol";
 
 contract TestAuction is External {
     // test simplest case of auction
@@ -44,6 +44,21 @@ contract TestAuction is External {
         vm.prank(signer);
         kairos.buy(args);
         assertEq(balanceBefore - money.balanceOf(signer), price);
+    }
+
+    function testShouldRevertOnPriceHigherThanMaxPrice() public {
+        uint256 maxPriceTooLow = 1;
+        BuyArg[] memory args = new BuyArg[](1);
+        args[0] = setupLoan(1)[0]; 
+        nft.mintOneTo(address(kairos));
+        args[0].maxPrice = maxPriceTooLow;
+        args[0].loanId = 1;
+        vm.warp(kairos.getLoan(1).endDate + 1);
+        uint256 price = kairos.price(1);
+        assert(price > args[0].maxPrice);
+        vm.prank(signer);
+        vm.expectRevert(abi.encodeWithSelector(PriceOverMaximum.selector, maxPriceTooLow, price));
+        kairos.buy(args);
     }
 
     function auctionN(uint256 nbOfAuctions) internal {
