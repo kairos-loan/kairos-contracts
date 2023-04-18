@@ -34,6 +34,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
     function price(uint256 loanId) public view returns (uint256) {
         Loan storage loan = protocolStorage().loan[loanId];
         uint256 loanEndDate = loan.endDate;
+        checkLoanStatus(loanId);
         uint256 timeSinceLiquidable = block.timestamp - loanEndDate;
 
         /* the decreasing factor controls the evolution of the price from its initial value to 0 (and staying at 0)
@@ -42,10 +43,7 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
             ? ZERO
             : ONE.sub(timeSinceLiquidable.div(loan.auction.duration));
 
-        /* the estimated value arises from the mean of the loan offer loanToValues used in the loan regarding their
-        share in the collateral usage. This must stay consitent even if less than the full value of the NFT has been
-        used as collateral */
-        uint256 estimatedValue = loan.lent.mul(ONE.div(loan.shareLent));
+        uint256 estimatedValue = loan.lent.div(loan.shareLent);
 
         /* by mutliplying the estimated price by some factor and slowly decreasing this price over time we aim to
         make sure a liquidator will buy the NFT at fair market price. */

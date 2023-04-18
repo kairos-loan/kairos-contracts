@@ -12,13 +12,21 @@ import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Glob
 import {RayMath} from "../utils/RayMath.sol";
 import {Erc20CheckedTransfer} from "../utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
-import {RequestedAmountTooHigh, UnsafeAmountLent, MultipleOffersUsed} from "../DataStructure/Errors.sol";
+import {RequestedAmountTooHigh, UnsafeAmountLent, MultipleOffersUsed, ShareMatchedIsTooLow} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     using RayMath for uint256;
     using RayMath for Ray;
     using Erc20CheckedTransfer for IERC20;
+
+    Ray immutable minShareLent;
+
+    constructor() {
+        /* see testWorstCaseEstimatedValue() in RayMath.t.sol for the test showing worst case considered values
+        in the return value calculation of AuctionFacet.sol's price(uint256 loanId) method */
+        minShareLent = ONE.div(100_000_000);
+    }
 
     /// @notice handles usage of a loan offer to borrow from
     /// @param arg arguments for the usage of this offer
@@ -35,6 +43,12 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
 
         // we keep track of the share of the maximum value (`loanToValue`) proposed by an offer used by the borrower.
         shareMatched = arg.amount.div(arg.offer.loanToValue);
+
+        // a 0 share or too low can lead to DOS, cf https://github.com/sherlock-audit/2023-02-kairos-judging/issues/76
+        if (shareMatched.lt(minShareLent)) {
+            revert ShareMatchedIsTooLow(arg.offer, arg.amount);
+        }
+
         collatState.matched = collatState.matched.add(shareMatched);
 
         /* we consider that lenders are acquiring shares of the NFT used as collateral by lending the amount
