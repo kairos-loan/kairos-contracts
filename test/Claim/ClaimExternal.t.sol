@@ -5,7 +5,6 @@ import {IClaimEmitter} from "../../src/interface/IClaimFacet.sol";
 
 // solhint-disable-next-line max-line-length
 import {BorrowerAlreadyClaimed, LoanNotRepaidOrLiquidatedYet, NotBorrowerOfTheLoan} from "../../src/DataStructure/Errors.sol";
-import {ERC721CallerIsNotOwnerNorApproved} from "../../src/DataStructure/ERC721Errors.sol";
 import {ERC721InvalidTokenId} from "../../src/DataStructure/ERC721Errors.sol";
 import {External} from "../Commons/External.sol";
 import {Loan, Provision} from "../../src/DataStructure/Storage.sol";
@@ -71,15 +70,6 @@ contract TestClaim is External, IClaimEmitter {
         kairos.claim(oneInArray);
     }
 
-    function testShouldRevertOnUsingAPositionNoOwnedOrApproved() public {
-        mintLoan();
-        mintPosition();
-
-        vm.expectRevert(abi.encodeWithSelector(ERC721CallerIsNotOwnerNorApproved.selector));
-        // not calling as the owner of the position
-        kairos.claim(oneInArray);
-    }
-
     function testClaimOnLiquidatedLoanAsSupplier() public {
         Loan memory loan = getLoan();
         uint256 balanceBefore = money.balanceOf(signer);
@@ -104,7 +94,6 @@ contract TestClaim is External, IClaimEmitter {
         for (uint256 i = 0; i < nbOfClaims; i++) {
             positionIds[i] = i + 1;
             Loan memory loan = getLoan();
-            loan.supplyPositionIndex = i + 1;
             loan.payment.paid = 1 ether;
             store(loan, i + 1);
             Provision memory provision = getProvision();

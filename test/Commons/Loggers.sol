@@ -21,16 +21,6 @@ contract Loggers is Test {
         console.log("borrower            ", loan.borrower);
         logNft("collateral.", loan.collateral);
         logPayment(true, loan.payment);
-        console.log("supplyPositionIndex:");
-        if (loan.nbOfPositions >= 2) {
-            console.log(
-                "from %s to %s",
-                loan.supplyPositionIndex,
-                loan.supplyPositionIndex + loan.nbOfPositions - 1
-            );
-        } else {
-            console.log("position ", loan.supplyPositionIndex);
-        }
         console.log("~~~~~~~ end loan ", name, "   ~~~~~~~");
     }
 
@@ -86,7 +76,7 @@ contract Loggers is Test {
     function logPayment(bool prefixed, Payment memory payment) internal view {
         string memory prefix = prefixed ? "payment." : "";
         console.log("%spaid         %s", prefix, payment.paid);
-        console.log("%sminToRepay   %s", prefix, payment.minInterestsToRepay);
+        console.log("%sminInToRepay %s", prefix, payment.minInterestsToRepay);
         console.log("%sliquidated   %s", prefix, payment.liquidated);
         console.log("%sborrClaimed  %s", prefix, payment.borrowerClaimed);
     }

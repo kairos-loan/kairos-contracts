@@ -33,13 +33,17 @@ contract Internal is TestCommons, BigKairos {
         nft2 = NFT(address(bytes20(keccak256("mock address nft2"))));
         vm.etch(address(nft2), randoCode);
         vm.label(address(nft2), "nft2");
+        proto.minOfferCost[money] = hundredthEth;
+        proto.minOfferCost[money2] = hundredthEth;
+        proto.offerBorrowAmountLowerBound[money] = hundredthEth;
+        proto.offerBorrowAmountLowerBound[money2] = hundredthEth;
     }
 
     /* solhint-disable-next-line ordering */
     function useOfferExternal(
         OfferArg memory arg,
         CollateralState memory collatState
-    ) external returns (CollateralState memory) {
+    ) external view returns (CollateralState memory, address) {
         return useOffer(arg, collatState);
     }
 

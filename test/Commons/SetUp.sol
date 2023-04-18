@@ -45,6 +45,12 @@ contract SetUp is TestCommons, ContractsCreator {
         vm.label(address(money), "money");
         money2 = new Money();
         vm.label(address(money2), "money2");
+        vm.startPrank(OWNER);
+        kairos.setMinOfferCost(money, 1 ether / 100);
+        kairos.setMinOfferCost(money2, 1 ether / 100);
+        kairos.setBorrowAmountPerOfferLowerBound(money, 1 ether / 100);
+        kairos.setBorrowAmountPerOfferLowerBound(money2, 1 ether / 100);
+        vm.stopPrank();
     }
 
     function testFacetCuts() internal view returns (IDiamond.FacetCut[] memory) {

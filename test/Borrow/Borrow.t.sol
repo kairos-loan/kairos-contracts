@@ -15,11 +15,17 @@ contract TestBorrow is External {
     function testSimpleNFTonReceived() public {
         getFlooz(signer, money, getOfferArg(getOffer()).amount);
         uint256 tokenId = nft.mintOneTo(BORROWER);
+        assertEq(nft.balanceOf(BORROWER), 1);
 
         bytes memory data = abi.encode(getOfferArgs(getOffer()));
 
         vm.prank(BORROWER);
         nft.safeTransferFrom(BORROWER, address(kairos), tokenId, data);
+        assertEq(nft.balanceOf(BORROWER), 0);
+        assertEq(nft.ownerOf(tokenId), address(kairos));
+        assertEq(money.balanceOf(BORROWER), getOfferArg(getOffer()).amount);
+        assertEq(kairos.getLoan(1).borrower, BORROWER);
+        assertEq(address(kairos.getLoan(1).collateral.implem), address(nft));
     }
 
     function testWrongNFTAddress() public {
@@ -42,7 +48,12 @@ contract TestBorrow is External {
 
         vm.prank(BORROWER);
         vm.expectRevert(
-            abi.encodeWithSelector(RequestedAmountIsUnderMinimum.selector, borrowArgs[0].args[0].offer, 0, 0)
+            abi.encodeWithSelector(
+                RequestedAmountIsUnderMinimum.selector,
+                borrowArgs[0].args[0].offer,
+                0,
+                1 ether / 100
+            )
         );
         kairos.borrow(borrowArgs);
     }
