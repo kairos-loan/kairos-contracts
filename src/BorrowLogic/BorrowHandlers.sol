@@ -12,8 +12,7 @@ import {ONE, protocolStorage, supplyPositionStorage} from "../DataStructure/Glob
 import {RayMath} from "../utils/RayMath.sol";
 import {Erc20CheckedTransfer} from "../utils/Erc20CheckedTransfer.sol";
 import {SafeMint} from "../SupplyPositionLogic/SafeMint.sol";
-/* solhint-disable-next-line max-line-length */
-import {InconsistentAssetRequests, InconsistentTranches, RequestedAmountTooHigh, UnsafeAmountLent, UnsafeOfferLoanToValuesGap} from "../DataStructure/Errors.sol";
+import {RequestedAmountTooHigh, UnsafeAmountLent, MultipleOffersUsed} from "../DataStructure/Errors.sol";
 
 /// @notice handles usage of entities to borrow with
 abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
@@ -28,18 +27,9 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     function useOffer(
         OfferArg memory arg,
         CollateralState memory collatState
-    ) internal returns (CollateralState memory) {
+    ) internal view returns (CollateralState memory, address /* signer */) {
         address signer = checkOfferArg(arg);
         Ray shareMatched;
-
-        if (arg.offer.assetToLend != collatState.assetLent) {
-            // all offers used for a collateral must refer to the same erc20
-            revert InconsistentAssetRequests(collatState.assetLent, arg.offer.assetToLend);
-        }
-        if (arg.offer.tranche != collatState.tranche) {
-            // all offers used for a collateral must refer to the same interest rate tranche
-            revert InconsistentTranches(collatState.tranche, arg.offer.tranche);
-        }
 
         checkCollateral(arg.offer, collatState.nft);
 
@@ -57,39 +47,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
             );
         }
 
-        // the shortest duration offered among all offers used will be used to determine the loan end date.
-        if (arg.offer.duration < collatState.minOfferDuration) {
-            collatState.minOfferDuration = arg.offer.duration;
-        }
-        if (arg.offer.loanToValue < collatState.minOfferLoanToValue) {
-            collatState.minOfferLoanToValue = arg.offer.loanToValue;
-        }
-        if (arg.offer.loanToValue > collatState.maxOfferLoanToValue) {
-            collatState.maxOfferLoanToValue = arg.offer.loanToValue;
-        }
-
-        /* This check serves to prevent a manipulation of the auction start price. The auction price is determined by
-        a multiple of the mean of the offer loanToValues used in the loan. Being lender and borrower at the same time,
-        one could influence this price by providing an infinitesimal loanToValue price, get a loan instantly liquidable
-        at a price inferior a the loanToValue of another offer used in the loan. buying its own NFT in auction would
-        result in a net gain arising from the difference between the sale price of the NFT and the loanToValue provided
-        by the other offer (effectively stealing the funds of the lender). This is prevented by limiting the max gap
-        between two offer loanToValue to a factor 2, and making the priceFactor of the auction equal or superior to 2.5.
-        In the worst case, the attacker can influence the start price of the auction to be
-        (attacked_offer_ltv / 2) * 2.5 which is superior to the attacked offer loan to value. */
-        if (collatState.maxOfferLoanToValue > collatState.minOfferLoanToValue * 2) {
-            revert UnsafeOfferLoanToValuesGap(
-                collatState.minOfferLoanToValue,
-                collatState.maxOfferLoanToValue
-            );
-        }
-
-        // transferring the borrowed funds from the lender to the borrower
-        collatState.assetLent.checkedTransferFrom(signer, collatState.from, arg.amount);
-
-        // issuing supply position NFT to the signer of the loan offer with metadatas
-        safeMint(signer, Provision({amount: arg.amount, share: shareMatched, loanId: collatState.loanId}));
-        return (collatState);
+        return (collatState, signer);
     }
 
     /// @notice handles usage of one collateral to back a loan request
@@ -102,25 +60,35 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         address from,
         NFToken memory nft
     ) internal returns (Loan memory loan) {
+        address signer;
         CollateralState memory collatState = initializedCollateralState(args[0], from, nft);
 
-        // total supply is later incremented as part of the minting of the first supply position
-        uint256 firstSupplyPositionId = supplyPositionStorage().totalSupply + 1;
-        uint256 nbOfOffers = args.length;
-        uint256 lent; // keep track of the total amount lent/borrowed
-
-        for (uint256 i = 0; i < nbOfOffers; i++) {
-            collatState = useOffer(args[i], collatState);
-            lent += args[i].amount;
+        /* following the sherlock audit, we found some possible manipulations in multi offers loans. This condition is
+        change-minimized prevention to this, keeping the code as close to the reviewed version as possible. An optimized
+        Kairos Loan v2 will soon be published. */
+        if (args.length > 1) {
+            revert MultipleOffersUsed();
         }
+
+        (collatState, signer) = useOffer(args[0], collatState);
+        uint256 lent = args[0].amount;
 
         // cf RepayFacet for the rationale of this check. We prevent repaying being impossible due to an overflow in the
         // interests to repay calculation.
         if (lent > 1e40) {
             revert UnsafeAmountLent(lent);
         }
-        loan = initializedLoan(collatState, from, nft, nbOfOffers, lent, firstSupplyPositionId);
+        loan = initializedLoan(collatState, from, nft, lent);
         protocolStorage().loan[collatState.loanId] = loan;
+
+        // transferring the borrowed funds from the lender to the borrower
+        collatState.assetLent.checkedTransferFrom(signer, collatState.from, lent);
+
+        /* issuing supply position NFT to the signer of the loan offer with metadatas
+        The only position of the loan is not minted in useOffer but in the end of this functions as a way to better
+        follow the checks-effects-interactions pattern as it includes an external call, to prevent unforseen
+        consequences of a reentrency. */
+        safeMint(signer, Provision({amount: lent, share: collatState.matched, loanId: collatState.loanId}));
 
         emit Borrow(collatState.loanId, abi.encode(loan));
     }
@@ -153,17 +121,13 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
     /// @notice initializes the loan struct representing borrowed funds from one NFT collateral, will be stored
     /// @param collatState contains info on share of the collateral value used by the borrower
     /// @param nft - used as collateral
-    /// @param nbOfOffers number of loan offers used (I.e number of supply positions minted)
     /// @param lent amount lent/borrowed
-    /// @param firstSupplyPositionId identifier of the first supply position (I.e NFT token id)
     /// @return loan tne initialized loan to store
     function initializedLoan(
         CollateralState memory collatState,
         address from,
         NFToken memory nft,
-        uint256 nbOfOffers,
-        uint256 lent,
-        uint256 firstSupplyPositionId
+        uint256 lent
     ) internal view returns (Loan memory) {
         Protocol storage proto = protocolStorage();
 
@@ -173,11 +137,11 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
         Payment memory notPaid; // not paid as it corresponds to the meaning of the uninitialized struct
 
         /* the minimum interests amount to repay is used as anti ddos mechanism to prevent borrowers to produce lots of
-        dust supply positions that the lenders will have to pay gas to claim. This is why it is determined on a
-        per-offer basis, as each position can be used to claim funds separetely and induce a gas cost. With a design
-        approach similar to the auction parameters setting, this minimal cost is set at borrow time to avoid bad
-        surprises arising from governance setting new parameters during the loan life. cf docs for more details. */
-        notPaid.minInterestsToRepay = nbOfOffers * proto.minOfferCost[collatState.assetLent];
+        dust supply positions that the lenders will have to pay gas to claim. as each position can be used to claim
+        funds separetely and induce a gas cost. With a design approach similar to the auction parameters setting,
+        this minimal cost is set at borrow time to avoid bad surprises arising from governance setting new parameters
+        during the loan life. cf docs for more details. */
+        notPaid.minInterestsToRepay = proto.minOfferCost[collatState.assetLent];
 
         return
             Loan({
@@ -195,11 +159,7 @@ abstract contract BorrowHandlers is IBorrowHandlers, BorrowCheckers, SafeMint {
                 interestPerSecond: proto.tranche[collatState.tranche],
                 borrower: from,
                 collateral: nft,
-                supplyPositionIndex: firstSupplyPositionId,
-                payment: notPaid,
-                /* from the first supply position id and the number of offers used all supply position ids can be
-                deduced + the number of offers/positions is directly accessible for other purposes */
-                nbOfPositions: nbOfOffers
+                payment: notPaid
             });
     }
 }

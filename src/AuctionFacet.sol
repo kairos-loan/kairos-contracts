@@ -35,7 +35,6 @@ contract AuctionFacet is IAuctionFacet, SafeMint {
         Loan storage loan = protocolStorage().loan[loanId];
         uint256 loanEndDate = loan.endDate;
         uint256 timeSinceLiquidable = block.timestamp - loanEndDate;
-        checkLoanStatus(loanId);
 
         /* the decreasing factor controls the evolution of the price from its initial value to 0 (and staying at 0)
         over the course of the auction duration */
