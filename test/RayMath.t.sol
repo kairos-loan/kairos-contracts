@@ -9,6 +9,7 @@ import {stdError} from "forge-std/StdError.sol";
 
 contract TestRayMath is Test {
     using RayMath for Ray;
+    using RayMath for uint256;
 
     function testAdd() public {
         Ray a = Ray.wrap(100);
@@ -137,6 +138,18 @@ contract TestRayMath is Test {
         a = Ray.wrap(100);
         b = Ray.wrap(200);
         assertFalse(a.eq(b));
+    }
+
+    /// @notice this test shows that the worst case scenario values in the return value calculation of
+    ///     AuctionFacet.sol's price(uint256 loanId) method will not overflow
+    function testWorstCaseEstimatedValue() public pure {
+        // governance won't decide to set the initial price of liquidated NFTs to be over 100x their estimated value
+        Ray priceFactor = ONE.mul(100);
+        Ray decreasingFactor = ONE; // ONE is the max value of decreasingFactor
+        Ray shareLent = ONE.div(100_000_000); // we empirically chose this value as minimum shareLent
+        // 1e40 is the max value of loan.lent
+        uint256 estimatedValue = uint256(1e40).div(shareLent);
+        estimatedValue.mul(priceFactor).mul(decreasingFactor);
     }
 
     function assertEq(Ray a, Ray b) private {
