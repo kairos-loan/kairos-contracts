@@ -22,3 +22,4 @@ error InvalidTranche(uint256 nbOfTranches);
 error CollateralIsNotLiquidableYet(uint256 endDate, uint256 loanId);
 error UnsafeOfferLoanToValuesGap(uint256 minLoanToValue, uint256 maxLoanToValue);
 error UnsafeAmountLent(uint256 lent);
+error PriceOverMaximum(uint256 maxPrice, uint256 price);

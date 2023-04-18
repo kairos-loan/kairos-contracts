@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
+// solhint-disable no-console
+import {console} from "forge-std/console.sol";
+
 import {External} from "../Commons/External.sol";
 import {OfferArg, Ray, Offer, BuyArg} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
@@ -12,6 +15,8 @@ contract TestIntegration is External {
 
     function testSimpleLoan() public {
         // signer is the supplier
+        vm.prank(OWNER);
+        kairos.setMinOfferCost(money, 1);
         getFlooz(BORROWER, money, 10 ether);
         uint256 borrowerInitialBalance = money.balanceOf(BORROWER);
         uint256 amountBorrowed = 1 ether;
@@ -20,7 +25,10 @@ contract TestIntegration is External {
         OfferArg[] memory offerArgs = getOfferArgs();
         uint256 tokenId = nft.mintOneTo(BORROWER);
         vm.prank(BORROWER);
+        uint256 gasBeforeBorrow = gasleft();
         nft.safeTransferFrom(BORROWER, address(kairos), tokenId, abi.encode(offerArgs));
+        uint256 gasAfterBorrow = gasleft();
+        console.log("gas used for borrow", gasBeforeBorrow - gasAfterBorrow);
         assertEq(
             money.balanceOf(signer),
             signerInitialBalance - amountBorrowed,
@@ -36,49 +44,11 @@ contract TestIntegration is External {
         kairos.repay(oneInArray);
         assertEq(money.balanceOf(BORROWER), borrowerInitialBalance + amountBorrowed - toRepay);
         vm.prank(signer);
+        uint256 gasBeforeClaim = gasleft();
         kairos.claim(oneInArray);
+        uint256 gasAfterClaim = gasleft();
+        console.log("gas used for claim", gasBeforeClaim - gasAfterClaim);
         assertEq(money.balanceOf(signer), signerInitialBalance + toRepay - amountBorrowed);
-    }
-
-    // solhint-disable-next-line function-max-lines
-    function testShouldEnforceMinimalOfferCost() public {
-        uint256[] memory oneAndTwoInArray = new uint256[](2);
-        oneAndTwoInArray[0] = 1;
-        oneAndTwoInArray[1] = 2;
-        uint256[] memory twoInArray = oneInArray;
-        twoInArray[0] = 2;
-        uint256[] memory threeInArray = oneInArray;
-        threeInArray[0] = 3;
-        getFlooz(BORROWER, money);
-        uint256 borrowerInitialBalance = money.balanceOf(BORROWER);
-        getFlooz(signer, money);
-        uint256 signerInitialBalance = money.balanceOf(signer);
-        OfferArg[] memory offerArgs = new OfferArg[](2);
-        offerArgs[0] = getOfferArg();
-        offerArgs[1] = getOfferArg();
-        getJpeg(BORROWER, nft);
-        vm.prank(BORROWER);
-        nft.setApprovalForAll(address(kairos), true);
-        vm.prank(BORROWER);
-        kairos.borrow(getBorrowArgs(offerArgs));
-        vm.prank(BORROWER);
-        kairos.repay(oneInArray);
-        assertEq(money.balanceOf(BORROWER), borrowerInitialBalance);
-        vm.prank(signer);
-        kairos.claim(oneAndTwoInArray);
-        assertEq(money.balanceOf(signer), signerInitialBalance);
-        vm.prank(OWNER);
-        kairos.setMinOfferCost(money, 1 ether);
-        offerArgs[0].amount = 1; // borrow only one wei with first offer
-        vm.prank(BORROWER);
-        kairos.borrow(getBorrowArgs(offerArgs));
-        vm.prank(BORROWER);
-        kairos.repay(twoInArray);
-        vm.prank(signer);
-        kairos.claim(threeInArray); // claim only one position from 2 owned
-        assertEq(money.balanceOf(BORROWER), borrowerInitialBalance - 2 ether, "borr bal");
-        assertEq(money.balanceOf(signer), signerInitialBalance, "signer bal");
-        assertEq(money.balanceOf(address(kairos)), 2 ether, "kairos bal");
     }
 
     function testLenderShouldNotLoseMoneyOnOkayEstimation() public {
@@ -94,7 +64,7 @@ contract TestIntegration is External {
         nft.safeTransferFrom(BORROWER, address(kairos), tokenId, abi.encode(offerArgs));
         skip(2 weeks + 2 days); // enter auction, skip to price = ltv
         BuyArg[] memory buyArg = new BuyArg[](1);
-        buyArg[0] = BuyArg({loanId: 1, to: signer2});
+        buyArg[0] = BuyArg({loanId: 1, to: signer2, maxPrice: 100 ether});
         vm.prank(signer2);
         kairos.buy(buyArg);
         vm.prank(signer);

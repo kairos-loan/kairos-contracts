@@ -29,7 +29,7 @@ contract External is SetUp, ERC721Holder {
     function storeAndGetArgs(Loan memory loan, uint256 loanId) internal returns (BuyArg[] memory) {
         BuyArg[] memory args = new BuyArg[](1);
         store(loan, loanId);
-        args[0] = BuyArg({loanId: loanId, to: signer});
+        args[0] = BuyArg({loanId: loanId, to: signer, maxPrice: 100 ether});
         return args;
     }
 
