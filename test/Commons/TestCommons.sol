@@ -32,6 +32,7 @@ abstract contract TestCommons is Loggers {
     address internal immutable signer2;
     address internal constant BORROWER = address(bytes20(keccak256("borrower")));
     address internal constant OWNER = address(bytes20(keccak256("owner")));
+    uint256 internal constant hundredthEth = 1 ether / 100;
     bytes4 internal immutable erc721SafeTransferFromSelector;
     bytes4 internal immutable erc721SafeTransferFromDataSelector;
     Money internal money;
@@ -133,6 +134,7 @@ abstract contract TestCommons is Loggers {
     /// @dev created as override helper, to modify only few elements in loan
     function _getLoan() internal view returns (Loan memory) {
         Payment memory payment;
+        payment.minInterestsToRepay = 1 ether / 100;
         return
             Loan({
                 assetLent: getOffer().assetToLend,
@@ -144,9 +146,7 @@ abstract contract TestCommons is Loggers {
                 interestPerSecond: getTranche(0),
                 borrower: BORROWER,
                 collateral: getOffer().collateral,
-                supplyPositionIndex: 1,
-                payment: payment,
-                nbOfPositions: 1
+                payment: payment
             });
     }
 

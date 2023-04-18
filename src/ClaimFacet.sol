@@ -96,7 +96,7 @@ contract ClaimFacet is IClaimFacet, SafeMint {
         if (interests == loan.payment.minInterestsToRepay) {
             // this is the case if the loan is repaid shortly after issuance
             // each lender gets its minimal interest, as an anti ddos measure to spam offer
-            sent = provision.amount + (interests / loan.nbOfPositions);
+            sent = provision.amount + interests;
         } else {
             /* provision.amount / lent = share of the interests belonging to the lender. The parenthesis make the
             calculus in the order that maximizes precison */

@@ -62,7 +62,6 @@ contract TestAdmin is External {
         kairos.borrow(borrowArgs);
         loan.auction.duration = 2;
         loan.auction.priceFactor = ONE.mul(5).div(2);
-        loan.supplyPositionIndex = 2;
         assertEq(kairos.getLoan(2), loan, "new changed loan fail"); // for new loan the params have changed
     }
 

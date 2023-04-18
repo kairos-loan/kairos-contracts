@@ -5,8 +5,9 @@ pragma solidity 0.8.18;
 import {console} from "forge-std/console.sol";
 
 import {External} from "../Commons/External.sol";
-import {OfferArg, Ray, Offer, BuyArg} from "../../src/DataStructure/Objects.sol";
+import {OfferArg, Ray, Offer, BuyArg, BorrowArg} from "../../src/DataStructure/Objects.sol";
 import {RayMath} from "../../src/utils/RayMath.sol";
+import {MultipleOffersUsed} from "../../src/DataStructure/Errors.sol";
 
 /// @notice tests of entire loan lifecycles
 contract TestIntegration is External {
@@ -70,5 +71,17 @@ contract TestIntegration is External {
         vm.prank(signer);
         kairos.claim(oneInArray);
         assertEq(money.balanceOf(signer), signerInitialBalance);
+    }
+
+    function testOnlyOneOfferPerLoanIsAllowed() public {
+        OfferArg[] memory offerArgs = new OfferArg[](2);
+        offerArgs[0] = getOfferArg(getOffer());
+        offerArgs[1] = getOfferArg(getOffer());
+        uint256 tokenId = nft.mintOneTo(BORROWER);
+        vm.prank(BORROWER);
+        nft.approve(address(kairos), tokenId);
+        vm.prank(BORROWER);
+        vm.expectRevert(abi.encodeWithSelector(MultipleOffersUsed.selector));
+        kairos.borrow(getBorrowArgs(offerArgs));
     }
 }
